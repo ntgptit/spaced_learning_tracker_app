@@ -1,0 +1,1 @@
+// Responsive data table placeholder 

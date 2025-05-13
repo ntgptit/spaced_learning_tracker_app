@@ -1,0 +1,438 @@
+# 📱 DANH SÁCH TOÀN DIỆN WIDGET DÙNG CHUNG – PREFIX `Slt`
+
+## 📋 Mục lục
+- [UI State Widgets](#-1-ui-state-widgets)
+- [Dialog Widgets](#-2-dialog-widgets)
+- [Form Input Widgets](#-3-form-input-widgets)
+- [Button Widgets](#-4-button-widgets)
+- [Card & Tile Widgets](#-5-card--tile-widgets)
+- [List / Table Widgets](#-6-list--table-widgets)
+- [Filter / Search Widgets](#-7-filter--search-widgets)
+- [Common Layout Widgets](#-8-common-layout-widgets)
+- [Media & Image Widgets](#-9-media--image-widgets)
+- [Navigation & Bottom Bar Widgets](#-10-navigation--bottom-bar-widgets)
+- [Animation & Transition Widgets](#-11-animation--transition-widgets)
+- [Chart & Analytics Widgets](#-12-chart--analytics-widgets)
+- [Permission & Auth Widgets](#-13-permission--auth-widgets)
+- [Service Widgets](#-14-service-widgets)
+- [Theme, Constants, Utilities](#%EF%B8%8F-15-theme-constants-utilities)
+- [Clean Architecture Components](#-16-clean-architecture-components)
+- [Testing Utilities](#-17-testing-utilities)
+
+---
+
+## 🟦 1. **UI State Widgets**
+
+| Class                        | Mục đích                   |
+| ---------------------------- | -------------------------- |
+| `SltLoadingStateWidget`      | Hiển thị loading trung tâm |
+| `SltErrorStateWidget`        | Hiển thị lỗi + retry       |
+| `SltEmptyStateWidget`        | Khi không có dữ liệu       |
+| `SltOfflineStateWidget`      | Mất kết nối mạng           |
+| `SltUnauthorizedStateWidget` | Không có quyền truy cập    |
+| `SltSuccessStateWidget`      | Hiển thị thành công + action|
+| `SltMaintenanceStateWidget`  | Thông báo bảo trì          |
+| `SltTimeoutStateWidget`      | Hiển thị timeout kết nối   |
+
+📁 `widgets/states/`
+
+---
+
+## 🟪 2. **Dialog Widgets**
+
+| Class                         | Mục đích                              |
+| ----------------------------- | ------------------------------------- |
+| `SltConfirmDialog`            | Dialog xác nhận (OK/Cancel)           |
+| `SltInputDialog`              | Dialog nhập văn bản                   |
+| `SltScoreInputDialogContent`  | Dialog nhập điểm học (Slider + Input) |
+| `SltDatePickerDialog`         | Chọn ngày                             |
+| `SltTimePickerDialog`         | Chọn giờ                              |
+| `SltAlertDialog`              | Dialog thông báo/cảnh báo             |
+| `SltFullScreenDialog`         | Dialog toàn màn hình                  |
+| `SltMultiSelectDialog`        | Dialog chọn nhiều mục                 |
+| `SltBottomSheetDialog`        | BottomSheet tùy chỉnh                 |
+| `SltProgressDialog`           | Dialog hiển thị tiến trình            |
+
+📁 `widgets/dialogs/`
+
+---
+
+## 🟧 3. **Form Input Widgets**
+
+| Class                    | Mục đích                        |
+| ------------------------ | ------------------------------- |
+| `SltTextField`           | Input thường                    |
+| `SltPasswordTextField`   | Input mật khẩu có nút show/hide |
+| `SltDropdown`            | Dropdown chọn giá trị           |
+| `SltCheckboxTile`        | Checkbox dạng ListTile          |
+| `SltRadioGroup`          | Nhóm radio buttons              |
+| `SltFormSectionTitle`    | Tiêu đề khu vực nhập form       |
+| `SltSearchField`         | Ô tìm kiếm với auto-suggest     |
+| `SltDatePicker`          | Chọn ngày dạng input            |
+| `SltTimePicker`          | Chọn giờ dạng input             |
+| `SltSlider`              | Thanh trượt với label           |
+| `SltRangeSlider`         | Thanh trượt chọn khoảng         |
+| `SltMultiSelect`         | Chọn nhiều mục từ danh sách     |
+| `SltColorPicker`         | Chọn màu sắc                    |
+| `SltOtpInput`            | Nhập mã OTP                     |
+| `SltPhoneInput`          | Nhập số điện thoại với mã quốc gia|
+| `SltRatingInput`         | Đánh giá sao                    |
+| `SltFormValidator`       | Widget kiểm tra lỗi form        |
+
+📁 `widgets/inputs/`
+
+---
+
+## 🟨 4. **Button Widgets**
+
+| Class                  | Mục đích                              |
+| ---------------------- | ------------------------------------- |
+| `SltPrimaryButton`     | Nút chính (submit, lưu)               |
+| `SltSecondaryButton`   | Nút phụ (huỷ, thoát)                  |
+| `SltIconButton`        | Nút icon nhỏ (thường dùng trong list) |
+| `SltTextButton`        | Nút văn bản không có background       |
+| `SltProgressButton`    | Nút có loading vòng khi đang xử lý    |
+| `SltOutlinedButton`    | Nút viền không có background          |
+| `SltFloatingActionButton` | Nút nổi (FAB)                      |
+| `SltToggleButton`      | Nút chuyển đổi trạng thái             |
+| `SltSegmentedButton`   | Nút phân đoạn (chọn 1 trong nhiều)    |
+| `SltExpandableButton`  | Nút mở rộng                           |
+| `SltSocialButton`      | Nút đăng nhập mạng xã hội             |
+| `SltChipButton`        | Nút dạng chip                         |
+
+📁 `widgets/buttons/`
+
+---
+
+## 🟩 5. **Card & Tile Widgets**
+
+| Class                | Mục đích                      |
+| -------------------- | ----------------------------- |
+| `SltCard`            | Card chuẩn hoá padding, shape |
+| `SltListCardItem`    | Card item trong danh sách     |
+| `SltProgressCard`    | Hiển thị tiến độ học          |
+| `SltUserCard`        | Hiển thị thông tin người dùng |
+| `SltExpandableCard`  | Card có thể mở rộng           |
+| `SltInfoCard`        | Card hiển thị thông tin       |
+| `SltActionCard`      | Card với các nút hành động    |
+| `SltImageCard`       | Card có hình ảnh background   |
+| `SltStatCard`        | Card hiển thị số liệu thống kê|
+| `SltGridTile`        | Tile trong GridView           |
+| `SltGradientCard`    | Card với gradient background  |
+| `SltNotificationCard`| Card thông báo                |
+
+📁 `widgets/cards/`
+
+---
+
+## 🟫 6. **List / Table Widgets**
+
+| Class                      | Mục đích                              |
+| -------------------------- | ------------------------------------- |
+| `SltPaginatedListView`     | ListView có lazy loading              |
+| `SltSelectableListTile`    | List item có thể chọn                 |
+| `SltResponsiveDataTable`   | Table cho màn web/tablet              |
+| `SltListSectionHeader`     | Hiển thị tiêu đề phân nhóm trong List |
+| `SltSwipeableListTile`     | List item có thể vuốt để thao tác     |
+| `SltExpandableListTile`    | List item có thể mở rộng              |
+| `SltReorderableList`       | List có thể kéo thả sắp xếp lại       |
+| `SltInfiniteGridView`      | GridView có lazy loading              |
+| `SltGroupedListView`       | ListView có nhóm theo section         |
+| `SltStickyHeaderList`      | List với header cố định khi cuộn      |
+| `SltSortableDataTable`     | Table có thể sắp xếp theo cột         |
+| `SltFilterableList`        | List có bộ lọc tích hợp               |
+
+📁 `widgets/lists/`
+
+---
+
+## 🔵 7. **Filter / Search Widgets**
+
+| Class                  | Mục đích                          |
+| ---------------------- | --------------------------------- |
+| `SltFilterBar`         | Bộ lọc theo ngày, trạng thái      |
+| `SltSearchBar`         | Tìm kiếm từ khoá                  |
+| `SltFilterChipGroup`   | Nhóm filter chip (nhiều lựa chọn) |
+| `SltAdvancedFilterPanel` | Bảng lọc nâng cao               |
+| `SltDateRangeFilter`   | Lọc theo khoảng thời gian         |
+| `SltCategoryFilter`    | Lọc theo danh mục                 |
+| `SltSortSelector`      | Chọn tiêu chí sắp xếp             |
+| `SltSearchSuggestion`  | Gợi ý tìm kiếm                    |
+| `SltSearchHistory`     | Lịch sử tìm kiếm                  |
+| `SltFilterBottomSheet` | Bottom sheet chứa bộ lọc          |
+
+📁 `widgets/filters/`
+
+---
+
+## 🟤 8. **Common Layout Widgets**
+
+| Class                              | Mục đích                       |
+| ---------------------------------- | ------------------------------ |
+| `SltAppBar`                        | AppBar tái sử dụng             |
+| `SltBottomActionBar`               | Thanh nút dưới cùng            |
+| `SltLearningFooter`                | Footer riêng cho chức năng học |
+| `SltSectionDivider`                | Divider tiêu chuẩn             |
+| `SltScreenHeader`                  | Tiêu đề màn hình có icon/mô tả |
+| `SltPadding` (widget hoặc const)   | Padding chuẩn từ `AppDimens`   |
+| `SltResponsiveLayout`              | Layout thích ứng kích thước màn hình |
+| `SltSafeArea`                      | SafeArea tùy chỉnh             |
+| `SltScaffold`                      | Scaffold tùy chỉnh             |
+| `SltPageWrapper`                   | Wrapper cho trang với padding  |
+| `SltScrollContainer`               | Container cuộn tùy chỉnh       |
+| `SltGridLayout`                    | Layout grid tùy chỉnh          |
+| `SltModalBottomSheet`              | Bottom sheet tùy chỉnh         |
+| `SltSliver`                        | Sliver widget tùy chỉnh        |
+| `SltStatusBar`                     | Thanh trạng thái tùy chỉnh     |
+
+📁 `widgets/common/`
+
+---
+
+## 🟣 9. **Media & Image Widgets**
+
+| Class                    | Mục đích                                |
+| ------------------------ | --------------------------------------- |
+| `SltNetworkImage`        | Image có skeleton loading + error       |
+| `SltAvatarImage`         | Ảnh đại diện (hình tròn) + fallback     |
+| `SltImagePicker`         | Chọn ảnh từ thư viện/camera            |
+| `SltVideoPlayer`         | Phát video với controls chuẩn           |
+| `SltFilePreview`         | Xem trước tài liệu (PDF, doc...)       |
+| `SltImageViewer`         | Xem ảnh với zoom, pan                  |
+| `SltImageGallery`        | Thư viện ảnh có thể lướt               |
+| `SltMediaUploader`       | Widget upload media                     |
+| `SltDocumentViewer`      | Xem tài liệu (PDF, DOCX)               |
+| `SltAudioPlayer`         | Phát âm thanh                          |
+| `SltCameraView`          | Hiển thị camera                        |
+| `SltThumbnail`           | Thumbnail có placeholder               |
+| `SltQrScanner`           | Quét mã QR                             |
+| `SltCropImageView`       | Cắt ảnh                                |
+
+📁 `widgets/media/`
+
+---
+
+## 🟠 10. **Navigation & Bottom Bar Widgets**
+
+| Class                      | Mục đích                              |
+| -------------------------- | ------------------------------------- |
+| `SltBottomNavBar`          | Bottom navigation với badge & icons   |
+| `SltTabBar`                | Tab bar tùy chỉnh với indicator       |
+| `SltNavigationRail`        | Side nav cho tablet/desktop           |
+| `SltDrawer`                | Drawer menu tùy chỉnh                 |
+| `SltPageIndicator`         | Chỉ báo trang (dots, line)            |
+| `SltBreadcrumb`            | Breadcrumb navigation                 |
+| `SltBottomSheet`           | Bottom sheet tùy chỉnh                |
+| `SltNestedTabBar`          | Tab bar lồng nhau                     |
+| `SltAppTopBar`             | Top bar với actions                   |
+| `SltSideMenu`              | Menu bên cạnh                         |
+| `SltNestedNavigation`      | Navigation lồng nhau                  |
+| `SltQuickActionBar`        | Thanh hành động nhanh                 |
+
+📁 `widgets/navigation/`
+
+---
+
+## 🔶 11. **Animation & Transition Widgets**
+
+| Class                      | Mục đích                                 |
+| -------------------------- | ---------------------------------------- |
+| `SltFadeAnimation`         | Hiệu ứng fade in/out cho widget          |
+| `SltSlideTransition`       | Hiệu ứng slide cho page transition       |
+| `SltShimmerLoading`        | Hiệu ứng shimmer cho skeleton loading    |
+| `SltAnimatedCounter`       | Số đếm animation (điểm, thành tích...)   |
+| `SltPulseAnimation`        | Hiệu ứng nhịp đập                        |
+| `SltBounceAnimation`       | Hiệu ứng nảy lên                         |
+| `SltRotationAnimation`     | Hiệu ứng xoay                            |
+| `SltFlipAnimation`         | Hiệu ứng lật                             |
+| `SltScaleAnimation`        | Hiệu ứng phóng to/thu nhỏ                |
+| `SltTypingAnimation`       | Hiệu ứng đang nhập                       |
+| `SltHeroTransition`        | Transition giữa các màn hình             |
+| `SltAnimatedProgressBar`   | Thanh tiến trình có animation            |
+| `SltFlareAnimation`        | Tích hợp animation Flare                 |
+| `SltLottieAnimation`       | Tích hợp animation Lottie                |
+
+📁 `widgets/animations/`
+
+---
+
+## 🟡 12. **Chart & Analytics Widgets**
+
+| Class                      | Mục đích                                  |
+| -------------------------- | ----------------------------------------- |
+| `SltBarChart`              | Biểu đồ cột với animation                 |
+| `SltLineChart`             | Biểu đồ đường (học tập, thành tích)       |
+| `SltPieChart`              | Biểu đồ tròn (phân bổ thời gian...)       |
+| `SltStatisticCard`         | Card hiển thị số liệu thống kê + biểu đồ  |
+| `SltRadarChart`            | Biểu đồ radar (kỹ năng)                   |
+| `SltProgressChart`         | Biểu đồ tiến trình                        |
+| `SltHistogram`             | Biểu đồ histogram                         |
+| `SltScatterPlot`           | Biểu đồ phân tán                          |
+| `SltStackedBarChart`       | Biểu đồ cột chồng                         |
+| `SltAreaChart`             | Biểu đồ diện tích                         |
+| `SltCandlestickChart`      | Biểu đồ nến (tài chính)                   |
+| `SltHeatMap`               | Bản đồ nhiệt                              |
+| `SltBubbleChart`           | Biểu đồ bong bóng                         |
+| `SltGaugeChart`            | Biểu đồ đồng hồ đo                        |
+| `SltDataTable`             | Bảng dữ liệu thống kê                     |
+
+📁 `widgets/charts/`
+
+---
+
+## 🔷 13. **Permission & Auth Widgets**
+
+| Class                      | Mục đích                                    |
+| -------------------------- | ------------------------------------------- |
+| `SltPermissionRequest`     | Widget yêu cầu quyền (camera, location...)  |
+| `SltRoleBasedAccess`       | Widget ẩn/hiện theo role người dùng         |
+| `SltAuthScreen`            | Layout chung cho màn hình đăng nhập/đăng ký |
+| `SltLoginForm`             | Form đăng nhập                              |
+| `SltRegisterForm`          | Form đăng ký                                |
+| `SltPasswordReset`         | Form đặt lại mật khẩu                       |
+| `SltBiometricAuth`         | Xác thực sinh trắc học                      |
+| `SltSocialAuth`            | Đăng nhập qua mạng xã hội                   |
+| `SltVerificationCode`      | Nhập mã xác thực                            |
+| `SltAuthGuard`             | Bảo vệ route yêu cầu đăng nhập              |
+| `SltPermissionManager`     | Quản lý quyền ứng dụng                      |
+| `SltSecureStorage`         | Widget làm việc với secure storage          |
+
+📁 `widgets/auth/`
+
+---
+
+## 🔴 14. **Service Widgets**
+
+| Class                       | Mục đích                              |
+| --------------------------- | ------------------------------------- |
+| `SltUiNotifierService`      | Hiển thị snackbar/toast               |
+| `SltConnectivityService`    | Theo dõi trạng thái kết nối           |
+| `SltDialogService`          | Quản lý hiện dialog từ toàn cục       |
+| `SltLocalStorageService`    | Quản lý lưu trữ local                 |
+| `SltAnalyticsService`       | Theo dõi sự kiện người dùng            |
+| `SltThemeService`           | Quản lý chuyển đổi theme              |
+| `SltLocalizationService`    | Quản lý đa ngôn ngữ                   |
+| `SltPushNotificationService`| Quản lý thông báo đẩy                 |
+| `SltNavigationService`      | Quản lý navigation toàn cục           |
+| `SltAuthenticationService`  | Quản lý xác thực người dùng            |
+| `SltCacheService`           | Quản lý cache dữ liệu                 |
+| `SltDeviceInfoService`      | Thông tin thiết bị                    |
+| `SltErrorHandlingService`   | Xử lý lỗi tập trung                   |
+| `SltDeepLinkService`        | Xử lý deep link                       |
+| `SltBackgroundTaskService`  | Quản lý tác vụ nền                    |
+| `SltFileService`            | Quản lý file                          |
+| `SltLogService`             | Ghi log                               |
+| `SltPermissionService`      | Quản lý quyền                         |
+
+📁 `core/services/`
+
+---
+
+## ⚙️ 15. **Theme, Constants, Utilities**
+
+| File                                   | Mục đích                          |
+| -------------------------------------- | --------------------------------- |
+| `app_colors.dart`                      | Toàn bộ màu chủ đề                |
+| `app_dimens.dart`                      | Padding, spacing chuẩn            |
+| `app_typography.dart`                  | TextStyle định nghĩa chung        |
+| `app_theme.dart`                       | ThemeData light/dark              |
+| `app_strings.dart`                     | Chuỗi hiển thị toàn app           |
+| `app_routes.dart`                      | Định tuyến màn hình               |
+| `date_utils.dart`                      | Tiện ích xử lý ngày tháng         |
+| `format_utils.dart`                    | Tiện ích định dạng                |
+| `validation_utils.dart`                | Tiện ích kiểm tra dữ liệu         |
+| `device_utils.dart`                    | Tiện ích liên quan đến thiết bị   |
+| `file_utils.dart`                      | Tiện ích xử lý file               |
+| `string_utils.dart`                    | Tiện ích xử lý chuỗi              |
+| `network_utils.dart`                   | Tiện ích mạng                     |
+| `image_utils.dart`                     | Tiện ích xử lý ảnh                |
+| `app_constants.dart`                   | Hằng số toàn ứng dụng             |
+| `app_assets.dart`                      | Đường dẫn asset                   |
+| `app_animations.dart`                  | Animation constant                |
+| `app_icons.dart`                       | Icon custom                       |
+
+📁 `core/theme/`, `core/utils/`, `core/router/`, `core/constants/`
+
+---
+
+## 🧩 16. **Clean Architecture Components**
+
+| Class/File                          | Mục đích                                 |
+| ----------------------------------- | ---------------------------------------- |
+| `env_config.dart`                   | Cấu hình môi trường (dev, prod, staging) |
+| `dependency_injection.dart`         | Quản lý DI theo Clean Architecture       |
+| `app_logger.dart`                   | Logging framework chuẩn                  |
+| `error_handler.dart`                | Xử lý lỗi tập trung                      |
+| `api_client.dart`                   | Client API chuẩn                         |
+| `base_repository.dart`              | Repository base class                    |
+| `base_use_case.dart`                | UseCase base class                       |
+| `base_state.dart`                   | State management base                    |
+| `result.dart`                       | Result pattern                           |
+| `failure.dart`                      | Failure handling                         |
+| `interceptors/`                     | HTTP interceptors (auth, log, retry)     |
+| `mappers/`                          | Data mappers                             |
+| `extensions/`                       | Extension methods                        |
+
+📁 `core/config/`, `core/di/`, `core/logging/`, `core/network/`, `core/architecture/`
+
+---
+
+## 🧪 17. **Testing Utilities**
+
+| Class/File                          | Mục đích                                |
+| ----------------------------------- | --------------------------------------- |
+| `test_helpers.dart`                 | Helper cho unit test                    |
+| `widget_test_utils.dart`            | Utility cho widget test                 |
+| `mock_services.dart`                | Mock service cho test                   |
+| `test_fixtures.dart`                | Dữ liệu mẫu cho test                    |
+| `integration_test_utils.dart`       | Utility cho integration test            |
+| `screen_robot.dart`                 | Robot pattern cho screen test           |
+| `golden_test_utils.dart`            | Utility cho golden test                 |
+
+📁 `test/helpers/`, `test/fixtures/`, `test/robots/`
+
+---
+
+## ✅ Kết luận
+
+* 📌 **Mọi widget phải dùng prefix `Slt`** và chia rõ theo folder chức năng
+* 📌 Đảm bảo tái sử dụng 100% UI logic trên toàn app
+* 📌 Kết hợp với `AppDimens`, `AppColors`, `AppTypography` để giữ **đồng bộ UI**
+* 📌 Dễ mở rộng ra package nội bộ nếu cần chia sẻ giữa các app khác nhau
+* 📌 Phù hợp với Clean Architecture, Design Patterns và nguyên tắc SOLID
+* 📌 Hỗ trợ testing hiệu quả với các tiện ích kiểm thử đi kèm
+
+## 🛠️ Quy ước phát triển
+
+1. **Return sớm, không dùng else:**
+   ```dart
+   Widget build(BuildContext context) {
+     if (isLoading) return SltLoadingStateWidget();
+     if (error != null) return SltErrorStateWidget(error: error);
+     if (data.isEmpty) return SltEmptyStateWidget();
+     
+     return ListView.builder(...);
+   }
+   ```
+
+2. **Factory Pattern cho widget phức tạp:**
+   ```dart
+   factory SltButton.primary({...}) => SltPrimaryButton(...);
+   factory SltButton.secondary({...}) => SltSecondaryButton(...);
+   ```
+
+3. **Builder Pattern cho widget nhiều tham số:**
+   ```dart
+   SltCard(
+     title: "Title",
+     content: "Content",
+   ).withElevation(2.0).withRoundedCorners().withPadding();
+   ```
+
+4. **Single Responsibility cho từng widget:**
+   - Mỗi widget chỉ nên phục vụ một mục đích duy nhất
+   - Chia nhỏ widget phức tạp thành các widget con
+
+5. **Dependency Injection:**
+   - Sử dụng DI để tiêm các dependency vào widget
+   - Tách biệt logic business và presentation layer
