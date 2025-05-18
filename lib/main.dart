@@ -15,9 +15,7 @@ class SpacedLearningApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeStateProvider);
-
-    // Lấy GoRouter từ provider đã generate (sau khi build_runner)
-    final goRouter = ref.watch(goRouterProvider);
+    final goRouter = ref.watch(appRouterProvider); // Đúng tên provider đã sinh
 
     return MaterialApp.router(
       title: 'Spaced Learning',

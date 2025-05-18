@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 
-/// Extension to manipulate colors
+/// Color extension for mapping and manipulation
 extension ColorExtension on Color {
-  /// Create a new color with modified values
+  /// Return color with custom ARGB or RGB values
   Color withValues({int? red, int? green, int? blue, double? alpha}) {
     return Color.fromARGB(
       alpha != null ? (alpha * 255).round() : this.alpha,
@@ -14,48 +14,42 @@ extension ColorExtension on Color {
     );
   }
 
-  /// Create a new color with modified brightness
+  /// Modify brightness (-1.0 to 1.0)
   Color withBrightness(double factor) {
-    assert(
-      factor >= -1.0 && factor <= 1.0,
-      'Factor must be between -1.0 and 1.0',
-    );
-
+    assert(factor >= -1.0 && factor <= 1.0, 'Factor: -1.0 to 1.0');
     int r = red;
     int g = green;
     int b = blue;
-
     if (factor < 0) {
-      // Darken
       r = (r * (1 + factor)).round().clamp(0, 255);
       g = (g * (1 + factor)).round().clamp(0, 255);
       b = (b * (1 + factor)).round().clamp(0, 255);
-    } else if (factor > 0) {
-      // Lighten
+      return Color.fromARGB(alpha, r, g, b);
+    }
+    if (factor > 0) {
       r = (r + (255 - r) * factor).round().clamp(0, 255);
       g = (g + (255 - g) * factor).round().clamp(0, 255);
       b = (b + (255 - b) * factor).round().clamp(0, 255);
+      return Color.fromARGB(alpha, r, g, b);
     }
-
-    return Color.fromARGB(alpha, r, g, b);
+    return this;
   }
 
-  /// Darken a color
+  /// Darken color
   Color darken([double amount = 0.1]) {
-    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
+    assert(amount >= 0 && amount <= 1);
     return withBrightness(-amount);
   }
 
-  /// Lighten a color
+  /// Lighten color
   Color lighten([double amount = 0.1]) {
-    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
+    assert(amount >= 0 && amount <= 1);
     return withBrightness(amount);
   }
 
   /// Mix with another color
   Color mix(Color other, [double amount = 0.5]) {
-    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
-
+    assert(amount >= 0 && amount <= 1);
     final r = (red * (1 - amount) + other.red * amount).round().clamp(0, 255);
     final g = (green * (1 - amount) + other.green * amount).round().clamp(
       0,
@@ -66,96 +60,79 @@ extension ColorExtension on Color {
       0,
       255,
     );
-
     return Color.fromARGB(a, r, g, b);
   }
 
-  /// Convert color to a hex string
+  /// To hex string
   String toHex({bool includeAlpha = false, bool includeHash = true}) {
     String hex = includeHash ? '#' : '';
-
-    if (includeAlpha) {
-      hex += alpha.toRadixString(16).padLeft(2, '0');
-    }
-
+    if (includeAlpha) hex += alpha.toRadixString(16).padLeft(2, '0');
     hex += red.toRadixString(16).padLeft(2, '0');
     hex += green.toRadixString(16).padLeft(2, '0');
     hex += blue.toRadixString(16).padLeft(2, '0');
-
     return hex.toUpperCase();
   }
 
-  /// Get a MaterialStateColor for use in Material buttons, inputs, etc.
+  /// MaterialStateColor for Material widgets
   MaterialStateColor toMaterialStateColor() {
-    return MaterialStateColor.resolveWith((states) => this);
+    return MaterialStateColor.resolveWith((_) => this);
   }
 
-  /// Check if a color is light
+  /// Is color light
   bool get isLight => computeLuminance() > 0.5;
 
-  /// Check if a color is dark
+  /// Is color dark
   bool get isDark => !isLight;
 
-  /// Get contrasting foreground color (white or black)
+  /// Foreground contrast color
   Color get contrastText =>
       isLight ? AppColors.textPrimary : AppColors.textPrimaryDark;
 }
 
-/// Extension to get MaterialColor tonal palette from a base Color
+/// MaterialColor extension for mapping tonal palettes
 extension MaterialColorExtension on Color {
-  /// Create a MaterialColor from a base color
+  /// Basic MaterialColor swatch
   MaterialColor toMaterialColor() {
-    final int r = red;
-    final int g = green;
-    final int b = blue;
-
-    // Create shades by adjusting the brightness up and down
+    final int r = red, g = green, b = blue;
     return MaterialColor(value, {
-      50: Color.fromRGBO(r, g, b, 0.1),
-      100: Color.fromRGBO(r, g, b, 0.2),
-      200: Color.fromRGBO(r, g, b, 0.3),
-      300: Color.fromRGBO(r, g, b, 0.4),
-      400: Color.fromRGBO(r, g, b, 0.5),
-      500: Color.fromRGBO(r, g, b, 0.6),
-      600: Color.fromRGBO(r, g, b, 0.7),
-      700: Color.fromRGBO(r, g, b, 0.8),
-      800: Color.fromRGBO(r, g, b, 0.9),
+      50: Color.fromRGBO(r, g, b, .1),
+      100: Color.fromRGBO(r, g, b, .2),
+      200: Color.fromRGBO(r, g, b, .3),
+      300: Color.fromRGBO(r, g, b, .4),
+      400: Color.fromRGBO(r, g, b, .5),
+      500: Color.fromRGBO(r, g, b, .6),
+      600: Color.fromRGBO(r, g, b, .7),
+      700: Color.fromRGBO(r, g, b, .8),
+      800: Color.fromRGBO(r, g, b, .9),
       900: Color.fromRGBO(r, g, b, 1.0),
     });
   }
 
-  /// Create a custom MaterialColor with proper tonal steps
-  /// Create a custom MaterialColor with proper tonal steps
+  /// Custom MaterialColor palette (better for theming)
   MaterialColor toCustomMaterialColor() {
-    // Định nghĩa hàm helper _colorFromHSL trước khi sử dụng
-    Color _colorFromHSL(HSLColor hslColor, double lightness) {
-      final newLightness = (lightness.clamp(0.0, 1.0));
-      return hslColor.withLightness(newLightness).toColor();
-    }
+    Color _colorFromHSL(HSLColor hsl, double lightness) =>
+        hsl.withLightness(lightness.clamp(0.0, 1.0)).toColor();
 
-    // Sau đó mới sử dụng nó trong _getSwatch
     Map<int, Color> _getSwatch(Color color) {
-      final hslColor = HSLColor.fromColor(color);
-      final lightness = hslColor.lightness;
-
-      // Create a map of tonal variations
+      final hsl = HSLColor.fromColor(color);
+      final l = hsl.lightness;
       return {
-        050: _colorFromHSL(hslColor, lightness + 0.35),
-        100: _colorFromHSL(hslColor, lightness + 0.30),
-        200: _colorFromHSL(hslColor, lightness + 0.25),
-        300: _colorFromHSL(hslColor, lightness + 0.15),
-        400: _colorFromHSL(hslColor, lightness + 0.05),
-        500: _colorFromHSL(hslColor, lightness),
-        600: _colorFromHSL(hslColor, lightness - 0.05),
-        700: _colorFromHSL(hslColor, lightness - 0.10),
-        800: _colorFromHSL(hslColor, lightness - 0.15),
-        900: _colorFromHSL(hslColor, lightness - 0.20),
+        50: _colorFromHSL(hsl, l + 0.35),
+        100: _colorFromHSL(hsl, l + 0.30),
+        200: _colorFromHSL(hsl, l + 0.25),
+        300: _colorFromHSL(hsl, l + 0.15),
+        400: _colorFromHSL(hsl, l + 0.05),
+        500: _colorFromHSL(hsl, l),
+        600: _colorFromHSL(hsl, l - 0.05),
+        700: _colorFromHSL(hsl, l - 0.10),
+        800: _colorFromHSL(hsl, l - 0.15),
+        900: _colorFromHSL(hsl, l - 0.20),
       };
     }
 
     final swatch = _getSwatch(this);
-    return MaterialColor(this.value, {
-      50: swatch[050]!,
+    return MaterialColor(value, {
+      50: swatch[50]!,
       100: swatch[100]!,
       200: swatch[200]!,
       300: swatch[300]!,
@@ -169,191 +146,155 @@ extension MaterialColorExtension on Color {
   }
 }
 
-/// Extension for creating colors from hex strings
+/// Parse hex string to Color
 extension StringColorExtension on String {
-  /// Parse a hex color string to a Color object
   Color toColor() {
-    // Handle color strings in various formats
-    String colorString = this.trim();
-
-    if (colorString.isEmpty) {
-      return Colors.transparent;
+    String str = trim();
+    if (str.isEmpty) return Colors.transparent;
+    if (str.startsWith('#')) str = str.substring(1);
+    if (str.length == 6) str = 'FF$str';
+    if (str.length == 3) {
+      final r = str[0], g = str[1], b = str[2];
+      str = 'FF$r$r$g$g$b$b';
     }
-
-    // Remove hash if present
-    if (colorString.startsWith('#')) {
-      colorString = colorString.substring(1);
-    }
-
-    // Add alpha value if needed
-    if (colorString.length == 6) {
-      colorString = 'FF$colorString';
-    } else if (colorString.length == 3) {
-      // Handle shorthand hex format (e.g. #F00)
-      final r = colorString[0];
-      final g = colorString[1];
-      final b = colorString[2];
-      colorString = 'FF$r$r$g$g$b$b';
-    }
-
-    // Parse the hex value to int
-    int? value = int.tryParse(colorString, radix: 16);
+    final value = int.tryParse(str, radix: 16);
     return value != null ? Color(value) : Colors.transparent;
   }
 }
 
-/// Utility class for color manipulation
+/// Color utils for mapping and palette
 class ColorUtils {
-  // Private constructor to prevent instantiation
   ColorUtils._();
 
-  /// Return appropriate text color (black or white) for a given background color
-  static Color getContrastingTextColor(Color backgroundColor) {
-    return backgroundColor.computeLuminance() > 0.5
+  /// Black or white for readable text
+  static Color getContrastingTextColor(Color bg) {
+    return bg.computeLuminance() > 0.5
         ? AppColors.textPrimary
         : AppColors.textPrimaryDark;
   }
 
-  /// Generate a color scheme from a seed color
+  /// Generate color scheme from seed
   static ColorScheme generateColorScheme(
-    Color seedColor, {
+    Color seed, {
     Brightness brightness = Brightness.light,
-  }) {
-    return ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
-  }
+  }) => ColorScheme.fromSeed(seedColor: seed, brightness: brightness);
 
-  /// Generate a random color
+  /// Get random color
   static Color getRandomColor({int alpha = 255}) {
     final random = DateTime.now().millisecondsSinceEpoch;
     return Color((random & 0xFFFFFF) | (alpha << 24));
   }
 
-  /// Convert RGB to HSL
-  static HSLColor rgbToHsl(int r, int g, int b) {
-    return HSLColor.fromColor(Color.fromARGB(255, r, g, b));
-  }
+  /// RGB to HSL
+  static HSLColor rgbToHsl(int r, int g, int b) =>
+      HSLColor.fromColor(Color.fromARGB(255, r, g, b));
 
-  /// Convert HSL to RGB
-  static Color hslToRgb(double h, double s, double l) {
-    return HSLColor.fromAHSL(1.0, h, s, l).toColor();
-  }
+  /// HSL to RGB
+  static Color hslToRgb(double h, double s, double l) =>
+      HSLColor.fromAHSL(1.0, h, s, l).toColor();
 
-  /// Create a color palette (5 colors) from a base color
-  static List<Color> createPalette(Color baseColor, {bool harmonious = true}) {
-    final hslColor = HSLColor.fromColor(baseColor);
-    final hue = hslColor.hue;
-
+  /// Palette from base color
+  static List<Color> createPalette(Color base, {bool harmonious = true}) {
+    final hsl = HSLColor.fromColor(base);
+    final hue = hsl.hue;
     if (harmonious) {
-      // Create harmonious palette (analogous)
       return [
         HSLColor.fromAHSL(
-          1.0,
+          1,
           (hue - 40) % 360,
-          hslColor.saturation,
-          hslColor.lightness,
+          hsl.saturation,
+          hsl.lightness,
         ).toColor(),
         HSLColor.fromAHSL(
-          1.0,
+          1,
           (hue - 20) % 360,
-          hslColor.saturation,
-          hslColor.lightness,
+          hsl.saturation,
+          hsl.lightness,
         ).toColor(),
-        baseColor,
+        base,
         HSLColor.fromAHSL(
-          1.0,
+          1,
           (hue + 20) % 360,
-          hslColor.saturation,
-          hslColor.lightness,
+          hsl.saturation,
+          hsl.lightness,
         ).toColor(),
         HSLColor.fromAHSL(
-          1.0,
+          1,
           (hue + 40) % 360,
-          hslColor.saturation,
-          hslColor.lightness,
-        ).toColor(),
-      ];
-    } else {
-      // Create tonal palette (different lightness)
-      return [
-        HSLColor.fromAHSL(
-          1.0,
-          hue,
-          hslColor.saturation,
-          (hslColor.lightness + 0.3).clamp(0.0, 1.0),
-        ).toColor(),
-        HSLColor.fromAHSL(
-          1.0,
-          hue,
-          hslColor.saturation,
-          (hslColor.lightness + 0.15).clamp(0.0, 1.0),
-        ).toColor(),
-        baseColor,
-        HSLColor.fromAHSL(
-          1.0,
-          hue,
-          hslColor.saturation,
-          (hslColor.lightness - 0.15).clamp(0.0, 1.0),
-        ).toColor(),
-        HSLColor.fromAHSL(
-          1.0,
-          hue,
-          hslColor.saturation,
-          (hslColor.lightness - 0.3).clamp(0.0, 1.0),
+          hsl.saturation,
+          hsl.lightness,
         ).toColor(),
       ];
     }
+    return [
+      HSLColor.fromAHSL(
+        1.0,
+        hue,
+        hsl.saturation,
+        (hsl.lightness + 0.3).clamp(0.0, 1.0),
+      ).toColor(),
+      HSLColor.fromAHSL(
+        1.0,
+        hue,
+        hsl.saturation,
+        (hsl.lightness + 0.15).clamp(0.0, 1.0),
+      ).toColor(),
+      base,
+      HSLColor.fromAHSL(
+        1.0,
+        hue,
+        hsl.saturation,
+        (hsl.lightness - 0.15).clamp(0.0, 1.0),
+      ).toColor(),
+      HSLColor.fromAHSL(
+        1.0,
+        hue,
+        hsl.saturation,
+        (hsl.lightness - 0.3).clamp(0.0, 1.0),
+      ).toColor(),
+    ];
   }
 
-  /// Create complementary color
+  /// Complementary color
   static Color getComplementary(Color color) {
-    final hslColor = HSLColor.fromColor(color);
+    final hsl = HSLColor.fromColor(color);
     return HSLColor.fromAHSL(
       1.0,
-      (hslColor.hue + 180) % 360,
-      hslColor.saturation,
-      hslColor.lightness,
+      (hsl.hue + 180) % 360,
+      hsl.saturation,
+      hsl.lightness,
     ).toColor();
   }
 
-  /// Create a linear gradient from colors
+  /// Linear gradient
   static LinearGradient createLinearGradient(
     List<Color> colors, {
     AlignmentGeometry begin = Alignment.topLeft,
     AlignmentGeometry end = Alignment.bottomRight,
-  }) {
-    return LinearGradient(colors: colors, begin: begin, end: end);
-  }
+  }) => LinearGradient(colors: colors, begin: begin, end: end);
 
-  /// Create a radial gradient from colors
+  /// Radial gradient
   static RadialGradient createRadialGradient(
     List<Color> colors, {
     AlignmentGeometry center = Alignment.center,
     double radius = 0.5,
-  }) {
-    return RadialGradient(colors: colors, center: center, radius: radius);
-  }
+  }) => RadialGradient(colors: colors, center: center, radius: radius);
 }
 
-/// Extension to add semantic color extensions to ThemeData
+/// ThemeData semantic color extension
 extension ThemeDataColorExtension on ThemeData {
-  /// Get appropriate color based on the current theme brightness
-  Color colorByBrightness(Color lightColor, Color darkColor) {
-    return brightness == Brightness.light ? lightColor : darkColor;
-  }
+  Color colorByBrightness(Color lightColor, Color darkColor) =>
+      brightness == Brightness.light ? lightColor : darkColor;
 
-  /// Get appropriate background color based on theme brightness
   Color get backgroundColor =>
       colorByBrightness(AppColors.backgroundLight, AppColors.backgroundDark);
 
-  /// Get appropriate surface color based on theme brightness
   Color get surfaceColor =>
       colorByBrightness(AppColors.surface, AppColors.surfaceDark);
 
-  /// Get appropriate text color based on theme brightness
   Color get textColor =>
       colorByBrightness(AppColors.textPrimary, AppColors.textPrimaryDark);
 
-  /// Get appropriate secondary text color based on theme brightness
   Color get textSecondaryColor =>
       colorByBrightness(AppColors.textSecondary, AppColors.textSecondaryDark);
 }
