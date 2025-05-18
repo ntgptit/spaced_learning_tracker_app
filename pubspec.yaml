@@ -99,6 +99,7 @@ dev_dependencies:
   riverpod_generator: ^2.6.5
   custom_lint: ^0.7.5
   riverpod_lint: ^2.3.7
+  cached_network_image: ^3.3.1
 
 # Cấu hình logo cho ứng dụng
 flutter_launcher_icons:

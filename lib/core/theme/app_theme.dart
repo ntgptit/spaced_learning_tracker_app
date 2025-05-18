@@ -168,18 +168,26 @@ class AppTheme {
   }
 
   static ListTileThemeData _buildListTileTheme(bool isLight) {
+    final colorScheme = _buildColorScheme(
+      isLight,
+    ); // Lấy colorScheme dựa trên isLight
+
     return ListTileThemeData(
       contentPadding: AppDimens.listTilePadding,
       dense: false,
-      horizontalTitleGap: AppDimens.gapS,
-      minLeadingWidth: 24,
+      horizontalTitleGap: AppDimens.spaceS,
+      minLeadingWidth: AppDimens.iconM,
       tileColor: isLight ? AppColors.surface : AppColors.surfaceDark,
       selectedTileColor: isLight
-          ? AppColors.primary.withValues(alpha: 0.1)
-          : AppColors.primaryLight.withValues(alpha: 0.1),
-      iconColor: isLight ? AppColors.primary : AppColors.primaryLight,
-      textColor: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
-      selectedColor: isLight ? AppColors.primary : AppColors.primaryLight,
+          ? colorScheme.primaryContainer.withOpacity(
+              AppDimens.opacitySemi,
+            ) // Sử dụng opacitySemi từ AppDimens
+          : colorScheme.primaryContainer.withOpacity(AppDimens.opacitySemi),
+      iconColor: isLight ? colorScheme.primary : colorScheme.primary,
+      textColor: isLight ? colorScheme.onSurface : colorScheme.onSurface,
+      selectedColor: isLight ? colorScheme.primary : colorScheme.primary,
+      minVerticalPadding: AppDimens.paddingS,
+      visualDensity: VisualDensity.standard, // M3 default
     );
   }
 
