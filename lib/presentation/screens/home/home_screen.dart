@@ -1,15 +1,12 @@
 // lib/presentation/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:spaced_learning_app/core/router/app_routes.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/learning_stats_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/progress_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/theme_viewmodel.dart';
-import 'package:spaced_learning_app/presentation/widgets/buttons/slt_icon_button.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_insight_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_progress_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_stat_card.dart';
@@ -19,6 +16,7 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
+import '../../viewmodels/bottom_navigation_provider.dart';
 import '../../widgets/cards/slt_section_divider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -52,15 +50,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get theme mode (dark/light)
-    final isDark = ref.watch(isDarkModeProvider);
-
-    // Get user, home state, stats, and progress data
-    final user = ref.watch(currentUserProvider);
+    // Get home state, stats, and progress data
     final homeState = ref.watch(homeViewModelProvider);
     final learningStats = ref.watch(learningStatsStateProvider);
     final learningInsights = ref.watch(learningInsightsProvider);
     final dueProgress = ref.watch(todayDueTasksProvider);
+
+    // Get user
+    final user = ref.watch(currentUserProvider);
 
     // Personalized welcome message
     final welcomeMessage = user != null
@@ -69,22 +66,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return SltScaffold(
       appBar: SltAppBar(
-        title: 'Spaced Learning',
+        title: 'Dashboard',
         centerTitle: true,
         actions: [
           // Theme toggle button
-          SltIconButton(
-            icon: isDark ? Icons.light_mode : Icons.dark_mode,
+          IconButton(
+            icon: Icon(
+              ref.watch(isDarkModeProvider)
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
             onPressed: () {
               ref.read(themeStateProvider.notifier).toggleTheme();
             },
-            tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
-          ),
-          // Logout button
-          SltIconButton(
-            icon: Icons.logout,
-            onPressed: _handleLogout,
-            tooltip: 'Logout',
+            tooltip: ref.watch(isDarkModeProvider)
+                ? 'Switch to Light Mode'
+                : 'Switch to Dark Mode',
           ),
           const SizedBox(width: AppDimens.paddingS),
         ],
@@ -363,8 +360,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     'You\'re all caught up! Start a new module or check back later.',
                 buttonText: 'Browse Modules',
                 onButtonPressed: () {
-                  // Navigate to modules screen
-                  // context.push(AppRoutes.modules);
+                  // Navigate to books/modules screen
+                  ref.read(bottomNavigationStateProvider.notifier).goToBooks();
                 },
                 icon: Icons.check_circle_outline,
               )
@@ -479,33 +476,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // Navigate to module details screen
   void _navigateToModuleDetails(String progressId) {
     // context.push('${AppRoutes.moduleDetails}/$progressId');
-  }
-
-  // Handle logout with confirmation dialog
-  Future<void> _handleLogout() async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout Confirmation'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldLogout == true) {
-      await ref.read(authStateProvider.notifier).logout();
-      if (context.mounted) {
-        context.go(AppRoutes.login);
-      }
-    }
   }
 }

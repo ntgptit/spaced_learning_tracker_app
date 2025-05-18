@@ -1,24 +1,22 @@
+// lib/core/router/app_routes.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/presentation/screens/auth/login_screen.dart';
 import 'package:spaced_learning_app/presentation/screens/auth/register_screen.dart';
-import 'package:spaced_learning_app/presentation/screens/home/home_screen.dart';
+import 'package:spaced_learning_app/presentation/screens/main/main_screen.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/bottom_navigation_provider.dart';
 
 part 'app_routes.g.dart';
 
 /// App routes
 class AppRoutes {
   static const String initial = '/';
-  static const String home = '/home';
+  static const String main = '/main';
   static const String login = '/login';
   static const String register = '/register';
-  static const String profile = '/profile';
-  static const String settings = '/settings';
-  static const String notifications = '/notifications';
-  static const String search = '/search';
   static const String courseDetails = '/course/:id';
   static const String lessonDetails = '/lesson/:id';
   static const String quizDetails = '/quiz/:id';
@@ -34,10 +32,10 @@ class AppRoutes {
   static const String privacyPolicy = '/privacy-policy';
 }
 
-// *** Dời provider này RA NGOÀI CLASS ***
 @riverpod
 GoRouter goRouter(Ref ref) {
   final authState = ref.watch(authStateProvider);
+  final bottomNavTab = ref.watch(bottomNavigationStateProvider);
 
   return GoRouter(
     debugLogDiagnostics: true,
@@ -52,18 +50,24 @@ GoRouter goRouter(Ref ref) {
       }
 
       if (isAuthenticated && (isLoggingIn || isRegistering)) {
-        return AppRoutes.home;
+        return AppRoutes.main;
       }
 
       return null;
     },
     routes: [
-      GoRoute(path: AppRoutes.initial, redirect: (_, __) => AppRoutes.home),
+      GoRoute(path: AppRoutes.initial, redirect: (_, __) => AppRoutes.main),
+
+      // Main screen with bottom navigation
       GoRoute(
-        path: AppRoutes.home,
-        pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const HomeScreen()),
+        path: AppRoutes.main,
+        pageBuilder: (context, state) => NoTransitionPage(
+          key: state.pageKey,
+          child: MainScreen(tab: bottomNavTab),
+        ),
       ),
+
+      // Auth routes
       GoRoute(
         path: AppRoutes.login,
         pageBuilder: (context, state) =>
@@ -74,7 +78,6 @@ GoRouter goRouter(Ref ref) {
         pageBuilder: (context, state) =>
             MaterialPage(key: state.pageKey, child: const RegisterScreen()),
       ),
-      // Add more routes as needed
     ],
     errorPageBuilder: (context, state) => MaterialPage(
       key: state.pageKey,
