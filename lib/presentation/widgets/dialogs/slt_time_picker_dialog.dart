@@ -1,10 +1,11 @@
-// lib/presentation/widgets/common/dialog/sl_time_picker_dialog.dart
+// lib/presentation/widgets/dialogs/slt_time_picker_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-part 'sl_time_picker_dialog.g.dart';
+import '../../../core/theme/app_dimens.dart';
+
+part 'slt_time_picker_dialog.g.dart';
 
 @riverpod
 class SelectedTime extends _$SelectedTime {
@@ -17,7 +18,7 @@ class SelectedTime extends _$SelectedTime {
 }
 
 /// A time picker dialog with Material 3 design and customizable options.
-class SlTimePickerDialog extends ConsumerWidget {
+class SltTimePickerDialog extends ConsumerWidget {
   final TimeOfDay initialTime;
   final String title;
   final String confirmText;
@@ -28,7 +29,7 @@ class SlTimePickerDialog extends ConsumerWidget {
   final bool use24HourFormat;
   final TimePickerEntryMode initialEntryMode;
 
-  const SlTimePickerDialog({
+  const SltTimePickerDialog({
     super.key,
     required this.initialTime,
     this.title = 'Select Time',
@@ -41,7 +42,7 @@ class SlTimePickerDialog extends ConsumerWidget {
     this.initialEntryMode = TimePickerEntryMode.dial,
   });
 
-  factory SlTimePickerDialog._create({
+  factory SltTimePickerDialog._create({
     // Private factory
     required TimeOfDay initialTime,
     String title = 'Select Time',
@@ -53,7 +54,7 @@ class SlTimePickerDialog extends ConsumerWidget {
     bool use24HourFormat = false,
     TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial,
   }) {
-    return SlTimePickerDialog(
+    return SltTimePickerDialog(
       initialTime: initialTime,
       title: title,
       confirmText: confirmText,
@@ -67,12 +68,12 @@ class SlTimePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking a time
-  factory SlTimePickerDialog.pickTime({
+  factory SltTimePickerDialog.pickTime({
     required TimeOfDay initialTime,
     String title = 'Select Time',
     bool use24HourFormat = false,
   }) {
-    return SlTimePickerDialog._create(
+    return SltTimePickerDialog._create(
       initialTime: initialTime,
       title: title,
       use24HourFormat: use24HourFormat,
@@ -80,11 +81,11 @@ class SlTimePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking a reminder time
-  factory SlTimePickerDialog.pickReminderTime({
+  factory SltTimePickerDialog.pickReminderTime({
     TimeOfDay? initialTime,
     String title = 'Set Reminder Time',
   }) {
-    return SlTimePickerDialog._create(
+    return SltTimePickerDialog._create(
       initialTime: initialTime ?? const TimeOfDay(hour: 9, minute: 0),
       title: title,
       initialEntryMode: TimePickerEntryMode.input,
@@ -92,11 +93,11 @@ class SlTimePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking time in 24-hour format
-  factory SlTimePickerDialog.pick24HourTime({
+  factory SltTimePickerDialog.pick24HourTime({
     required TimeOfDay initialTime,
     String title = 'Select Time (24h)',
   }) {
-    return SlTimePickerDialog._create(
+    return SltTimePickerDialog._create(
       initialTime: initialTime,
       title: title,
       use24HourFormat: true,

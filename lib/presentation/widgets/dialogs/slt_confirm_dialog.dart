@@ -1,14 +1,15 @@
-// lib/presentation/widgets/common/dialog/slt_confirm_dialog.dart
+// lib/presentation/widgets/dialogs/slt_confirm_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
+
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_dialog_button_bar.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
 
 /// A confirmation dialog with customizable title, content, and action buttons,
-/// using SlButtonBase derivatives.
-class SlConfirmDialog extends ConsumerWidget {
+/// using SltButtonBase derivatives.
+class SltConfirmDialog extends ConsumerWidget {
   final String title;
   final String message;
   final String confirmText;
@@ -22,7 +23,7 @@ class SlConfirmDialog extends ConsumerWidget {
   final Color? confirmButtonColor; // Custom color for the confirm button
   final Color? cancelButtonColor; // Custom color for the cancel button text
 
-  const SlConfirmDialog({
+  const SltConfirmDialog({
     super.key,
     required this.title,
     required this.message,
@@ -38,7 +39,7 @@ class SlConfirmDialog extends ConsumerWidget {
     this.cancelButtonColor,
   });
 
-  factory SlConfirmDialog._create({
+  factory SltConfirmDialog._create({
     required String title,
     required String message,
     required String confirmText,
@@ -50,7 +51,7 @@ class SlConfirmDialog extends ConsumerWidget {
     Color? iconColor,
     Color? confirmButtonColor,
   }) {
-    return SlConfirmDialog(
+    return SltConfirmDialog(
       title: title,
       message: message,
       confirmText: confirmText,
@@ -65,7 +66,7 @@ class SlConfirmDialog extends ConsumerWidget {
   }
 
   // Factory constructor for a standard confirmation
-  factory SlConfirmDialog.standard({
+  factory SltConfirmDialog.standard({
     required String title,
     required String message,
     String confirmText = 'Confirm',
@@ -74,7 +75,7 @@ class SlConfirmDialog extends ConsumerWidget {
     VoidCallback? onCancel,
     IconData icon = Icons.help_outline_rounded,
   }) {
-    return SlConfirmDialog._create(
+    return SltConfirmDialog._create(
       title: title,
       message: message,
       confirmText: confirmText,
@@ -87,7 +88,7 @@ class SlConfirmDialog extends ConsumerWidget {
   }
 
   // Factory constructor for a delete confirmation (dangerous action)
-  factory SlConfirmDialog.delete({
+  factory SltConfirmDialog.delete({
     required String title,
     required String message,
     String confirmText = 'Delete',
@@ -95,7 +96,7 @@ class SlConfirmDialog extends ConsumerWidget {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
-    return SlConfirmDialog._create(
+    return SltConfirmDialog._create(
       title: title,
       message: message,
       confirmText: confirmText,
@@ -108,7 +109,7 @@ class SlConfirmDialog extends ConsumerWidget {
   }
 
   // Factory constructor for a warning confirmation
-  factory SlConfirmDialog.warning({
+  factory SltConfirmDialog.warning({
     required String title,
     required String message,
     String confirmText = 'Continue',
@@ -116,7 +117,7 @@ class SlConfirmDialog extends ConsumerWidget {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
-    return SlConfirmDialog._create(
+    return SltConfirmDialog._create(
       title: title,
       message: message,
       confirmText: confirmText,
@@ -221,7 +222,7 @@ class SlConfirmDialog extends ConsumerWidget {
         textAlign: icon != null ? TextAlign.center : TextAlign.start,
       ),
       actions: [
-        SlDialogButtonBar(
+        SltDialogButtonBar(
           cancelButton: cancelAction,
           confirmButton: confirmAction,
         ),
@@ -248,7 +249,7 @@ class SlConfirmDialog extends ConsumerWidget {
     return showDialog<bool>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (context) => SlConfirmDialog(
+      builder: (context) => SltConfirmDialog(
         title: title,
         message: message,
         confirmText: confirmText,

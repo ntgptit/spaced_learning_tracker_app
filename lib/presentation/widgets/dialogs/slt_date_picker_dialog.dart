@@ -1,10 +1,11 @@
-// lib/presentation/widgets/common/dialog/slt_date_picker_dialog.dart
+// lib/presentation/widgets/dialogs/slt_date_picker_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-part 'sl_date_picker_dialog.g.dart';
+import '../../../core/theme/app_dimens.dart';
+
+part 'slt_date_picker_dialog.g.dart';
 
 @riverpod
 class SelectedDate extends _$SelectedDate {
@@ -17,7 +18,7 @@ class SelectedDate extends _$SelectedDate {
 }
 
 /// A date picker dialog with Material 3 design and customizable options.
-class SlDatePickerDialog extends ConsumerWidget {
+class SltDatePickerDialog extends ConsumerWidget {
   final DateTime initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
@@ -31,7 +32,7 @@ class SlDatePickerDialog extends ConsumerWidget {
   final Color? headerForegroundColor;
   final String? helpText;
 
-  const SlDatePickerDialog({
+  const SltDatePickerDialog({
     super.key,
     required this.initialDate,
     required this.firstDate,
@@ -47,7 +48,7 @@ class SlDatePickerDialog extends ConsumerWidget {
     this.helpText,
   });
 
-  factory SlDatePickerDialog._create({
+  factory SltDatePickerDialog._create({
     // Private factory
     required DateTime initialDate,
     required DateTime firstDate,
@@ -62,7 +63,7 @@ class SlDatePickerDialog extends ConsumerWidget {
     Color? headerForegroundColor,
     String? helpText,
   }) {
-    return SlDatePickerDialog(
+    return SltDatePickerDialog(
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
@@ -79,13 +80,13 @@ class SlDatePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking a generic date
-  factory SlDatePickerDialog.pickDate({
+  factory SltDatePickerDialog.pickDate({
     required DateTime initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
     String title = 'Select Date',
   }) {
-    return SlDatePickerDialog._create(
+    return SltDatePickerDialog._create(
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
@@ -94,12 +95,12 @@ class SlDatePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking a birth date (past dates)
-  factory SlDatePickerDialog.pickBirthDate({
+  factory SltDatePickerDialog.pickBirthDate({
     DateTime? initialDate,
     String title = 'Select Date of Birth',
   }) {
     final now = DateTime.now();
-    return SlDatePickerDialog._create(
+    return SltDatePickerDialog._create(
       initialDate: initialDate ?? now.subtract(const Duration(days: 365 * 18)),
       firstDate: DateTime(1900),
       lastDate: now,
@@ -109,14 +110,14 @@ class SlDatePickerDialog extends ConsumerWidget {
   }
 
   /// Factory for picking a future date
-  factory SlDatePickerDialog.pickFutureDate({
+  factory SltDatePickerDialog.pickFutureDate({
     DateTime? initialDate,
     String title = 'Select Future Date',
     DateTime? firstAvailableDate,
     int maxYearsInFuture = 5,
   }) {
     final now = DateTime.now();
-    return SlDatePickerDialog._create(
+    return SltDatePickerDialog._create(
       initialDate: initialDate ?? now.add(const Duration(days: 1)),
       firstDate: firstAvailableDate ?? now,
       lastDate: DateTime(now.year + maxYearsInFuture, now.month, now.day),
@@ -132,7 +133,7 @@ class SlDatePickerDialog extends ConsumerWidget {
     // This build method is for wrapping Flutter's DatePickerDialog
     // The direct styling of buttons inside DatePickerDialog is limited.
     // We rely on the global theme passed to showDatePicker's builder.
-    // For direct use of SlDatePickerDialog as a widget (less common for pickers),
+    // For direct use of SltDatePickerDialog as a widget (less common for pickers),
     // this internal DatePickerDialog will inherit theme.
     return DatePickerDialog(
       initialDate: initialDate,

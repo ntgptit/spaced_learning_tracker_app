@@ -1,14 +1,32 @@
-// lib/presentation/widgets/common/dialog/sl_progress_dialog.dart
+// lib/presentation/widgets/dialogs/slt_progress_dialog.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/loading_indicator.dart'; // SLLoadingIndicator is here
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../core/theme/app_dimens.dart';
+import '../states/slt_loading_state_widget.dart';
+
+part 'slt_progress_dialog.g.dart';
+
+@riverpod
+class ProgressDialogState extends _$ProgressDialogState {
+  @override
+  bool build({String id = 'default'}) => false;
+
+  void show() {
+    state = true;
+  }
+
+  void hide() {
+    state = false;
+  }
+}
 
 /// A dialog that shows a loading indicator with an optional message.
 /// It can be customized with different indicator types, colors, and a timeout.
-class SlProgressDialog extends ConsumerStatefulWidget {
+class SltProgressDialog extends ConsumerStatefulWidget {
   final String message;
   final bool barrierDismissible;
   final Color? progressColor;
@@ -18,8 +36,9 @@ class SlProgressDialog extends ConsumerStatefulWidget {
   final Widget? customProgressWidget;
   final double progressIndicatorSize;
   final LoadingIndicatorType indicatorType;
+  final String dialogId;
 
-  const SlProgressDialog({
+  const SltProgressDialog({
     super.key,
     this.message = 'Loading...',
     this.barrierDismissible = false,
@@ -30,14 +49,17 @@ class SlProgressDialog extends ConsumerStatefulWidget {
     this.customProgressWidget,
     this.progressIndicatorSize = AppDimens.circularProgressSizeL,
     this.indicatorType = LoadingIndicatorType.threeBounce,
+    required this.dialogId,
   });
 
   @override
-  ConsumerState<SlProgressDialog> createState() => _SlProgressDialogState();
+  ConsumerState<SltProgressDialog> createState() => _SltProgressDialogState();
 
   /// Show the progress dialog
   static Future<void> show(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
+    String dialogId = 'default',
     String message = 'Loading...',
     bool barrierDismissible = false,
     Color? progressColor,
@@ -48,10 +70,12 @@ class SlProgressDialog extends ConsumerStatefulWidget {
     double progressIndicatorSize = AppDimens.circularProgressSizeL,
     LoadingIndicatorType indicatorType = LoadingIndicatorType.threeBounce,
   }) {
+    ref.read(progressDialogStateProvider(id: dialogId).notifier).show();
+
     return showDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (BuildContext dialogContext) => SlProgressDialog(
+      builder: (BuildContext dialogContext) => SltProgressDialog(
         message: message,
         barrierDismissible: barrierDismissible,
         progressColor: progressColor,
@@ -61,61 +85,76 @@ class SlProgressDialog extends ConsumerStatefulWidget {
         customProgressWidget: customProgressWidget,
         progressIndicatorSize: progressIndicatorSize,
         indicatorType: indicatorType,
+        dialogId: dialogId,
       ),
-    );
+    ).whenComplete(() {
+      ref.read(progressDialogStateProvider(id: dialogId).notifier).hide();
+    });
   }
 
   /// Hide the currently displayed progress dialog
-  static void hide(BuildContext context) {
+  static void hide(
+    BuildContext context,
+    WidgetRef ref, {
+    String dialogId = 'default',
+  }) {
+    ref.read(progressDialogStateProvider(id: dialogId).notifier).hide();
+
     if (Navigator.of(context, rootNavigator: true).canPop()) {
       Navigator.of(context, rootNavigator: true).pop();
     }
   }
 
   /// Factory for a basic loading dialog
-  factory SlProgressDialog.loading({
+  factory SltProgressDialog.loading({
+    required String dialogId,
     String message = 'Loading...',
     Duration? timeout,
     VoidCallback? onTimeout,
   }) {
-    return SlProgressDialog(
+    return SltProgressDialog(
       message: message,
       timeout: timeout,
       onTimeout: onTimeout,
       indicatorType: LoadingIndicatorType.threeBounce,
+      dialogId: dialogId,
     );
   }
 
   /// Factory for a processing dialog with a longer timeout
-  factory SlProgressDialog.processing({
+  factory SltProgressDialog.processing({
+    required String dialogId,
     String message = 'Processing...',
     Duration timeout = const Duration(seconds: 30),
     VoidCallback? onTimeout,
   }) {
-    return SlProgressDialog(
+    return SltProgressDialog(
       message: message,
       timeout: timeout,
       onTimeout: onTimeout,
       indicatorType: LoadingIndicatorType.fadingCircle,
+      dialogId: dialogId,
     );
   }
 
   /// Factory for a saving dialog
-  factory SlProgressDialog.saving({
+  factory SltProgressDialog.saving({
+    required String dialogId,
     String message = 'Saving changes...',
     Duration? timeout,
     VoidCallback? onTimeout,
   }) {
-    return SlProgressDialog(
+    return SltProgressDialog(
       message: message,
       timeout: timeout,
       onTimeout: onTimeout,
       indicatorType: LoadingIndicatorType.pulse,
+      dialogId: dialogId,
     );
   }
 }
 
-class _SlProgressDialogState extends ConsumerState<SlProgressDialog> {
+class _SltProgressDialogState extends ConsumerState<SltProgressDialog> {
   Timer? _timeoutTimer;
 
   @override
@@ -139,6 +178,18 @@ class _SlProgressDialogState extends ConsumerState<SlProgressDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isVisible = ref.watch(
+      progressDialogStateProvider(id: widget.dialogId),
+    );
+
+    if (!isVisible) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (Navigator.of(context, rootNavigator: true).canPop()) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      });
+    }
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -153,8 +204,7 @@ class _SlProgressDialogState extends ConsumerState<SlProgressDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           widget.customProgressWidget ??
-              SLLoadingIndicator(
-                // Using SLLoadingIndicator from common widgets
+              SltLoadingIndicator(
                 size: widget.progressIndicatorSize,
                 color: widget.progressColor ?? colorScheme.primary,
                 type: widget.indicatorType,

@@ -2,8 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
+import 'package:spaced_learning_app/presentation/widgets/dialogs/slt_dialog_button_bar.dart';
+
+import '../buttons/slt_primary_button.dart';
 
 /// A customizable bottom sheet dialog with Material 3 design principles.
 class SlBottomSheetDialog extends ConsumerWidget {

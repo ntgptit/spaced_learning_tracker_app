@@ -1,244 +1,485 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-/// App dimensions constants aligned with Material 3
-class AppDimens {
-  // Padding and margin (Material 3: multiples of 4 or 8)
-  static const double paddingXXS = 2.0;
-  static const double paddingXS = 4.0;
-  static const double paddingS = 8.0;
-  static const double paddingM = 16.0;
-  static const double paddingL = 24.0;
-  static const double paddingXL = 32.0;
-  static const double paddingXXL = 40.0;
-  static const double paddingXXXL = 48.0;
-  static const double paddingSection = 56.0;
-  static const double paddingPage = 64.0;
+import 'app_colors.dart';
+import 'app_dimens.dart';
+import 'app_typography.dart';
 
-  // Border radius (Material 3: 4, 8, 12, 16, 24)
-  static const double radiusXXS = 2.0;
-  static const double radiusXS = 4.0;
-  static const double radiusS = 8.0;
-  static const double radiusM = 12.0;
-  static const double radiusL = 16.0;
-  static const double radiusXL = 24.0;
-  static const double radiusXXL = 32.0;
-  static const double radiusXXXL = 40.0;
-  static const double radiusCircular = 100.0;
-  static const double dialogBorderRadius = 16.0;
-  static const double bottomSheetBorderRadius = 28.0;
+/// App theme configuration for light and dark modes
+class AppTheme {
+  static ThemeData get lightTheme => _buildTheme(Brightness.light);
 
-  // Icon sizes (Material 3: 18, 24, 36, 48)
-  static const double iconXXS = 10.0;
-  static const double iconXS = 12.0;
-  static const double iconS = 18.0;
-  static const double iconM = 24.0;
-  static const double iconL = 36.0;
-  static const double iconXL = 48.0;
-  static const double iconXXL = 64.0;
+  static ThemeData get darkTheme => _buildTheme(Brightness.dark);
 
-  // Button heights (Material 3: 40, 48, 56)
-  static const double buttonHeightXS = 24.0;
-  static const double buttonHeightS = 40.0;
-  static const double buttonHeightM = 48.0;
-  static const double buttonHeightL = 56.0;
-  static const double buttonHeightXL = 64.0;
+  static ThemeData _buildTheme(Brightness brightness) {
+    final isLight = brightness == Brightness.light;
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      colorScheme: _buildColorScheme(isLight),
+      scaffoldBackgroundColor: isLight
+          ? AppColors.backgroundLight
+          : AppColors.backgroundDark,
+      appBarTheme: _buildAppBarTheme(isLight),
+      cardTheme: _buildCardTheme(isLight),
+      listTileTheme: _buildListTileTheme(isLight),
+      dialogTheme: _buildDialogTheme(isLight),
+      bottomSheetTheme: _buildBottomSheetTheme(isLight),
+      textTheme: _buildTextTheme(isLight),
+      inputDecorationTheme: _buildInputDecorationTheme(isLight),
+      elevatedButtonTheme: _buildElevatedButtonTheme(isLight),
+      textButtonTheme: _buildTextButtonTheme(isLight),
+      outlinedButtonTheme: _buildOutlinedButtonTheme(isLight),
+      iconButtonTheme: _buildIconButtonTheme(isLight),
+      tabBarTheme: _buildTabBarTheme(isLight),
+      checkboxTheme: _buildCheckboxTheme(isLight),
+      radioTheme: _buildRadioTheme(isLight),
+      switchTheme: _buildSwitchTheme(isLight),
+      dividerTheme: _buildDividerTheme(isLight),
+      chipTheme: _buildChipTheme(isLight),
+      bottomNavigationBarTheme: _buildBottomNavigationBarTheme(isLight),
+      snackBarTheme: _buildSnackBarTheme(isLight),
+      progressIndicatorTheme: _buildProgressIndicatorTheme(isLight),
+      tooltipTheme: _buildTooltipTheme(isLight),
+    );
+  }
 
-  // Input field heights (Material 3: 56 for filled, 48 for outlined)
-  static const double textFieldHeightS = 36.0;
-  static const double textFieldHeight = 56.0;
-  static const double textFieldHeightL = 64.0;
+  static ColorScheme _buildColorScheme(bool isLight) {
+    if (isLight) {
+      return const ColorScheme(
+        brightness: Brightness.light,
+        primary: AppColors.primary,
+        onPrimary: Colors.white,
+        primaryContainer: AppColors.primaryLight,
+        onPrimaryContainer: AppColors.primaryDark,
+        secondary: AppColors.secondary,
+        onSecondary: Colors.white,
+        secondaryContainer: AppColors.secondaryLight,
+        onSecondaryContainer: AppColors.secondaryDark,
+        error: AppColors.error,
+        onError: Colors.white,
+        surface: AppColors.surface,
+        onSurface: AppColors.textPrimary,
+        surfaceContainerHighest: AppColors.backgroundLight,
+        onSurfaceVariant: AppColors.textSecondary,
+        outline: AppColors.divider,
+        shadow: AppColors.shadow,
+      );
+    }
 
-  // Other heights
-  static const double appBarHeight = 64.0;
-  static const double tabBarHeight = 48.0;
-  static const double bottomNavBarHeight = 80.0;
-  static const double listTileHeightS = 48.0;
-  static const double listTileHeight = 56.0;
-  static const double listTileHeightL = 72.0;
-  static const double bottomSheetMinHeight = 120.0;
-  static const double bottomSheetHeaderHeight = 56.0;
-  static const double badgeHeight = 24.0;
-  static const double chipHeight = 32.0;
-  static const double snackbarHeight = 48.0;
-  static const double fabSize = 56.0;
-  static const double fabSizeSmall = 40.0;
-  static const double dividerThickness = 1.0;
-  static const double thickDividerHeight = 4.0;
+    return const ColorScheme(
+      brightness: Brightness.dark,
+      primary: AppColors.primaryLight,
+      onPrimary: Colors.black,
+      primaryContainer: AppColors.primary,
+      onPrimaryContainer: Colors.white,
+      secondary: AppColors.secondaryLight,
+      onSecondary: Colors.black,
+      secondaryContainer: AppColors.secondary,
+      onSecondaryContainer: Colors.white,
+      error: AppColors.errorDark,
+      onError: Colors.black,
+      surface: AppColors.surfaceDark,
+      onSurface: AppColors.textPrimaryDark,
+      surfaceContainerHighest: AppColors.backgroundDark,
+      onSurfaceVariant: AppColors.textSecondaryDark,
+      outline: AppColors.dividerDark,
+      shadow: AppColors.shadowDark,
+    );
+  }
 
-  // Widths and thickness
-  static const double buttonMinWidth = 64.0;
-  static const double dialogMinWidth = 280.0;
-  static const double dialogMaxWidth = 400.0;
-  static const double menuMaxWidth = 320.0;
-  static const double tooltipMinWidth = 40.0;
-  static const double outlineButtonBorderWidth = 1.5;
-  static const double tabIndicatorThickness = 3.0;
-  static const double borderWidthFocused = 2.0;
+  static AppBarTheme _buildAppBarTheme(bool isLight) {
+    if (isLight) {
+      return AppBarTheme(
+        elevation: AppDimens.elevationNone,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
+        toolbarHeight: AppDimens.appBarHeight,
+        centerTitle: false,
+      );
+    }
 
-  // Elevation (Material 3: 0, 1, 3, 6, 8)
-  static const double elevationNone = 0.0;
-  static const double elevationXS = 1.0;
-  static const double elevationS = 3.0;
-  static const double elevationM = 6.0;
-  static const double elevationL = 8.0;
-  static const double elevationXL = 16.0;
-  static const double elevationXXL = 24.0;
+    return AppBarTheme(
+      elevation: AppDimens.elevationNone,
+      backgroundColor: AppColors.surfaceDark,
+      foregroundColor: AppColors.textPrimaryDark,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      titleTextStyle: AppTypography.titleLargeDark,
+      toolbarHeight: AppDimens.appBarHeight,
+      centerTitle: false,
+    );
+  }
 
-  // Shadows
-  static const double shadowRadiusS = 2.0;
-  static const double shadowRadiusM = 4.0;
-  static const double shadowRadiusL = 8.0;
-  static const double shadowOffsetS = 1.0;
-  static const double shadowOffsetM = 2.0;
+  static CardThemeData _buildCardTheme(bool isLight) {
+    return CardThemeData(
+      elevation: AppDimens.elevationS,
+      color: isLight ? AppColors.cardLight : AppColors.cardDark,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+      ),
+    );
+  }
 
-  // Font sizes (Material 3 type scale)
-  static const double fontDisplayL = 57.0;
-  static const double fontDisplayM = 45.0;
-  static const double fontDisplayS = 36.0;
-  static const double fontHeadlineL = 32.0;
-  static const double fontHeadlineM = 28.0;
-  static const double fontHeadlineS = 24.0;
-  static const double fontTitleL = 22.0;
-  static const double fontTitleM = 16.0;
-  static const double fontTitleS = 14.0;
-  static const double fontLabelL = 14.0;
-  static const double fontLabelM = 12.0;
-  static const double fontLabelS = 11.0;
-  static const double fontBodyL = 16.0;
-  static const double fontBodyM = 14.0;
-  static const double fontBodyS = 12.0;
-  static const double fontXXS = 8.0;
-  static const double fontXS = 10.0;
-  static const double fontS = 11.0;
-  static const double fontM = 12.0;
-  static const double fontL = 14.0;
-  static const double fontXL = 16.0;
-  static const double fontXXL = 18.0;
-  static const double fontXXXL = 20.0;
-  static const double fontMicro = 11.0;
+  static ListTileThemeData _buildListTileTheme(bool isLight) {
+    return ListTileThemeData(
+      contentPadding: AppDimens.listTilePadding,
+      dense: false,
+      horizontalTitleGap: AppDimens.gapS,
+      minLeadingWidth: 24,
+      tileColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+    );
+  }
 
-  // Spacing and gaps (Material 3: multiples of 4 or 8)
-  static const double gapXXS = 2.0;
-  static const double gapXS = 4.0;
-  static const double gapS = 8.0;
-  static const double gapM = 16.0;
-  static const double gapL = 24.0;
-  static const double gapXL = 32.0;
-  static const double gapXXL = 40.0;
-  static const double gapXXXL = 48.0;
-  static const double gapSection = 56.0;
-  static const double gapPage = 64.0;
+  static DialogThemeData _buildDialogTheme(bool isLight) {
+    return DialogThemeData(
+      elevation: AppDimens.elevationM,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.dialogBorderRadius),
+      ),
+      backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+      titleTextStyle: isLight
+          ? AppTypography.titleLarge
+          : AppTypography.titleLargeDark,
+      contentTextStyle: isLight
+          ? AppTypography.bodyMedium
+          : AppTypography.bodyMediumDark,
+    );
+  }
 
-  // Gap widgets
-  static const SizedBox hGapXXS = SizedBox(width: gapXXS);
-  static const SizedBox hGapXS = SizedBox(width: gapXS);
-  static const SizedBox hGapS = SizedBox(width: gapS);
-  static const SizedBox hGapM = SizedBox(width: gapM);
-  static const SizedBox hGapL = SizedBox(width: gapL);
-  static const SizedBox hGapXL = SizedBox(width: gapXL);
-  static const SizedBox hGapXXL = SizedBox(width: gapXXL);
-  static const SizedBox vGapXXS = SizedBox(height: gapXXS);
-  static const SizedBox vGapXS = SizedBox(height: gapXS);
-  static const SizedBox vGapS = SizedBox(height: gapS);
-  static const SizedBox vGapM = SizedBox(height: gapM);
-  static const SizedBox vGapL = SizedBox(height: gapL);
-  static const SizedBox vGapXL = SizedBox(height: gapXL);
-  static const SizedBox vGapXXL = SizedBox(height: gapXXL);
+  static BottomSheetThemeData _buildBottomSheetTheme(bool isLight) {
+    return BottomSheetThemeData(
+      elevation: AppDimens.elevationM,
+      backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppDimens.bottomSheetBorderRadius),
+          topRight: Radius.circular(AppDimens.bottomSheetBorderRadius),
+        ),
+      ),
+    );
+  }
 
-  // Grid
-  static const double gridSpacingXS = 2.0;
-  static const double gridSpacingS = 4.0;
-  static const double gridSpacingM = 8.0;
-  static const double gridSpacingL = 16.0;
-  static const double gridItemMinWidth = 120.0;
-  static const double gridItemMaxWidth = 180.0;
-  static const double gridGutter = 16.0;
+  static TextTheme _buildTextTheme(bool isLight) {
+    if (isLight) {
+      return TextTheme(
+        displayLarge: AppTypography.displayLarge,
+        displayMedium: AppTypography.displayMedium,
+        displaySmall: AppTypography.displaySmall,
+        headlineLarge: AppTypography.headlineLarge,
+        headlineMedium: AppTypography.headlineMedium,
+        headlineSmall: AppTypography.headlineSmall,
+        titleLarge: AppTypography.titleLarge,
+        titleMedium: AppTypography.titleMedium,
+        titleSmall: AppTypography.titleSmall,
+        bodyLarge: AppTypography.bodyLarge,
+        bodyMedium: AppTypography.bodyMedium,
+        bodySmall: AppTypography.bodySmall,
+        labelLarge: AppTypography.labelLarge,
+        labelMedium: AppTypography.labelMedium,
+        labelSmall: AppTypography.labelSmall,
+      );
+    }
 
-  // Avatar and thumbnail
-  static const double avatarSizeXS = 24.0;
-  static const double avatarSizeS = 32.0;
-  static const double avatarSizeM = 40.0;
-  static const double avatarSizeL = 56.0;
-  static const double avatarSizeXL = 64.0;
-  static const double avatarSizeXXL = 96.0;
-  static const double thumbnailSizeS = 80.0;
-  static const double thumbnailSizeM = 120.0;
-  static const double thumbnailSizeL = 160.0;
+    return TextTheme(
+      displayLarge: AppTypography.displayLargeDark,
+      displayMedium: AppTypography.displayMediumDark,
+      displaySmall: AppTypography.displaySmallDark,
+      headlineLarge: AppTypography.headlineLargeDark,
+      headlineMedium: AppTypography.headlineMediumDark,
+      headlineSmall: AppTypography.headlineSmall,
+      titleLarge: AppTypography.titleLargeDark,
+      titleMedium: AppTypography.titleMediumDark,
+      titleSmall: AppTypography.titleSmallDark,
+      bodyLarge: AppTypography.bodyLargeDark,
+      bodyMedium: AppTypography.bodyMediumDark,
+      bodySmall: AppTypography.bodySmallDark,
+      labelLarge: AppTypography.labelLargeDark,
+      labelMedium: AppTypography.labelMediumDark,
+      labelSmall: AppTypography.labelSmallDark,
+    );
+  }
 
-  // Durations (Material 3: 100, 200, 300, 500)
-  static const int durationXXS = 50;
-  static const int durationXS = 100;
-  static const int durationS = 200;
-  static const int durationM = 300;
-  static const int durationL = 500;
-  static const int durationXL = 800;
-  static const int durationFade = 250;
-  static const int durationSlide = 400;
+  static InputDecorationTheme _buildInputDecorationTheme(bool isLight) {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+      contentPadding: AppDimens.inputPadding,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        borderSide: BorderSide(
+          color: isLight ? AppColors.divider : AppColors.dividerDark,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        borderSide: BorderSide(
+          color: isLight ? AppColors.divider : AppColors.dividerDark,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        borderSide: BorderSide(
+          color: isLight ? AppColors.primary : AppColors.primaryLight,
+          width: 2,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        borderSide: BorderSide(
+          color: isLight ? AppColors.error : AppColors.errorDark,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        borderSide: BorderSide(
+          color: isLight ? AppColors.error : AppColors.errorDark,
+          width: 2,
+        ),
+      ),
+      labelStyle:
+          (isLight ? AppTypography.bodyMedium : AppTypography.bodyMediumDark)
+              .copyWith(
+                color: isLight
+                    ? AppColors.textSecondary
+                    : AppColors.textSecondaryDark,
+              ),
+      floatingLabelStyle:
+          (isLight ? AppTypography.bodyMedium : AppTypography.bodyMediumDark)
+              .copyWith(
+                color: isLight ? AppColors.primary : AppColors.primaryLight,
+              ),
+      hintStyle:
+          (isLight ? AppTypography.bodyMedium : AppTypography.bodyMediumDark)
+              .copyWith(color: AppColors.opacityHintText),
+      errorStyle:
+          (isLight ? AppTypography.bodySmall : AppTypography.bodySmallDark)
+              .copyWith(color: isLight ? AppColors.error : AppColors.errorDark),
+    );
+  }
 
-  // Miscellaneous UI elements
-  static const double moduleIndicatorSize = 36.0;
-  static const double circularProgressSize = 24.0;
-  static const double circularProgressSizeL = 48.0;
-  static const double lineProgressHeight = 4.0;
-  static const double lineProgressHeightL = 8.0;
-  static const double badgeIconPadding = 2.0;
-  static const double shimmerHeight = 16.0;
-  static const double touchTargetMinSize = 48.0;
+  static ElevatedButtonThemeData _buildElevatedButtonTheme(bool isLight) {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: AppDimens.elevationS,
+        padding: AppDimens.buttonPadding,
+        foregroundColor: isLight ? Colors.white : Colors.black,
+        backgroundColor: isLight ? AppColors.primary : AppColors.primaryLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        ),
+        minimumSize: const Size(88, AppDimens.buttonHeightM),
+        textStyle: AppTypography.labelLarge.copyWith(
+          color: isLight ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
 
-  // Layout
-  static const double maxContentWidthSeveral = 1200.0;
-  static const double sideMenuWidth = 280.0;
-  static const double compactSideMenuWidth = 80.0;
-  static const double bannerHeight = 200.0;
-  static const double cardMinHeight = 80.0;
+  static TextButtonThemeData _buildTextButtonTheme(bool isLight) {
+    return TextButtonThemeData(
+      style: TextButton.styleFrom(
+        padding: AppDimens.buttonPadding,
+        foregroundColor: isLight ? AppColors.primary : AppColors.primaryLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        ),
+        textStyle: isLight
+            ? AppTypography.labelLarge
+            : AppTypography.labelLargeDark,
+      ),
+    );
+  }
 
-  // Breakpoints (Material 3: 360, 600, 840, 1200)
-  static const double breakpointXS = 360.0;
-  static const double breakpointS = 600.0;
-  static const double breakpointM = 840.0;
-  static const double breakpointL = 1200.0;
-  static const double breakpointXL = 1440.0;
+  static OutlinedButtonThemeData _buildOutlinedButtonTheme(bool isLight) {
+    return OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        padding: AppDimens.buttonPadding,
+        foregroundColor: isLight ? AppColors.primary : AppColors.primaryLight,
+        side: BorderSide(
+          color: isLight ? AppColors.primary : AppColors.primaryLight,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        ),
+        minimumSize: const Size(88, AppDimens.buttonHeightM),
+        textStyle: isLight
+            ? AppTypography.labelLarge
+            : AppTypography.labelLargeDark,
+      ),
+    );
+  }
 
-  // Safe area and insets
-  static const double keyboardInset = 80.0;
-  static const double safeAreaTop = 44.0;
-  static const double safeAreaBottom = 34.0;
+  static IconButtonThemeData _buildIconButtonTheme(bool isLight) {
+    return IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: isLight
+            ? AppColors.textPrimary
+            : AppColors.textPrimaryDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimens.radiusS),
+        ),
+      ),
+    );
+  }
 
-  // Opacities (Material 3)
-  static const double opacityFull = 1.0;
-  static const double opacityTextSubtle = 0.9;
-  static const double opacityVeryHigh = 0.8;
-  static const double opacityHigh = 0.7;
-  static const double opacityUnselected = 0.6;
-  static const double opacityMediumHigh = 0.5;
-  static const double opacitySemi = 0.2;
-  static const double opacityMedium = 0.12;
-  static const double opacityLight = 0.04;
-  static const double opacityDisabled = 0.38;
-  static const double opacityNone = 0.0;
-  static const double opacityDisabledText = opacityDisabled;
-  static const double opacityHintText = opacityHigh;
-  static const double opacityDisabledOutline = opacityMedium;
+  static TabBarThemeData _buildTabBarTheme(bool isLight) {
+    return TabBarThemeData(
+      labelColor: isLight ? AppColors.primary : AppColors.primaryLight,
+      unselectedLabelColor: isLight
+          ? AppColors.textSecondary
+          : AppColors.textSecondaryDark,
+      indicatorColor: isLight ? AppColors.primary : AppColors.primaryLight,
+      labelStyle: isLight
+          ? AppTypography.labelLarge
+          : AppTypography.labelLargeDark,
+      unselectedLabelStyle: isLight
+          ? AppTypography.labelLarge
+          : AppTypography.labelLargeDark,
+      indicatorSize: TabBarIndicatorSize.tab,
+    );
+  }
 
-  // Responsive scaling
-  static const double scaleFactorSmall = 0.85;
-  static const double scaleFactorLarge = 1.15;
+  static CheckboxThemeData _buildCheckboxTheme(bool isLight) {
+    return CheckboxThemeData(
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return isLight ? AppColors.primary : AppColors.primaryLight;
+        }
+        return Colors.transparent;
+      }),
+      checkColor: WidgetStateProperty.all(
+        isLight ? Colors.white : Colors.black,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusXS),
+      ),
+      side: BorderSide(
+        color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+      ),
+    );
+  }
 
-  // Padding presets
-  static const EdgeInsets screenPadding = EdgeInsets.all(paddingM);
-  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-    horizontal: paddingM,
-    vertical: paddingS,
-  );
-  static const EdgeInsets inputPadding = EdgeInsets.symmetric(
-    horizontal: paddingM,
-    vertical: paddingS,
-  );
-  static const EdgeInsets dialogPadding = EdgeInsets.all(paddingL);
-  static const EdgeInsets listTilePadding = EdgeInsets.symmetric(
-    horizontal: paddingM,
-    vertical: paddingS,
-  );
+  static RadioThemeData _buildRadioTheme(bool isLight) {
+    return RadioThemeData(
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return isLight ? AppColors.primary : AppColors.primaryLight;
+        }
+        return isLight ? AppColors.textSecondary : AppColors.textSecondaryDark;
+      }),
+    );
+  }
 
-  AppDimens._();
+  static SwitchThemeData _buildSwitchTheme(bool isLight) {
+    return SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return isLight ? AppColors.primary : AppColors.primaryLight;
+        }
+        return isLight ? Colors.white : Colors.grey.shade400;
+      }),
+      trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return (isLight ? AppColors.primary : AppColors.primaryLight)
+              .withOpacity(AppDimens.opacityMediumHigh);
+        }
+        return Colors.grey.withOpacity(AppDimens.opacityMedium);
+      }),
+    );
+  }
+
+  static DividerThemeData _buildDividerTheme(bool isLight) {
+    return DividerThemeData(
+      color: isLight ? AppColors.divider : AppColors.dividerDark,
+      space: AppDimens.dividerThickness,
+      thickness: AppDimens.dividerThickness,
+    );
+  }
+
+  static ChipThemeData _buildChipTheme(bool isLight) {
+    return ChipThemeData(
+      backgroundColor: (isLight ? AppColors.primary : AppColors.primaryLight)
+          .withOpacity(AppDimens.opacityLight),
+      deleteIconColor: isLight ? AppColors.primary : AppColors.primaryLight,
+      labelStyle:
+          (isLight ? AppTypography.labelMedium : AppTypography.labelMediumDark)
+              .copyWith(
+                color: isLight ? AppColors.primary : AppColors.primaryLight,
+              ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingS,
+        vertical: AppDimens.paddingXS,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusS),
+      ),
+    );
+  }
+
+  static BottomNavigationBarThemeData _buildBottomNavigationBarTheme(
+    bool isLight,
+  ) {
+    return BottomNavigationBarThemeData(
+      backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+      selectedItemColor: isLight ? AppColors.primary : AppColors.primaryLight,
+      unselectedItemColor: isLight
+          ? AppColors.textSecondary
+          : AppColors.textSecondaryDark,
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+      type: BottomNavigationBarType.fixed,
+      selectedLabelStyle: isLight
+          ? AppTypography.labelSmall
+          : AppTypography.labelSmallDark,
+      unselectedLabelStyle: isLight
+          ? AppTypography.labelSmall
+          : AppTypography.labelSmallDark,
+      elevation: AppDimens.elevationM,
+    );
+  }
+
+  static SnackBarThemeData _buildSnackBarTheme(bool isLight) {
+    return SnackBarThemeData(
+      backgroundColor: isLight
+          ? AppColors.textPrimary
+          : AppColors.textPrimaryDark,
+      contentTextStyle:
+          (isLight ? AppTypography.bodyMedium : AppTypography.bodyMediumDark)
+              .copyWith(color: isLight ? Colors.white : Colors.black),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+      ),
+    );
+  }
+
+  static ProgressIndicatorThemeData _buildProgressIndicatorTheme(bool isLight) {
+    return ProgressIndicatorThemeData(
+      color: isLight ? AppColors.primary : AppColors.primaryLight,
+      circularTrackColor: (isLight ? AppColors.primaryLight : AppColors.primary)
+          .withOpacity(AppDimens.opacityLight),
+      linearTrackColor: (isLight ? AppColors.primaryLight : AppColors.primary)
+          .withOpacity(AppDimens.opacityLight),
+    );
+  }
+
+  static TooltipThemeData _buildTooltipTheme(bool isLight) {
+    return TooltipThemeData(
+      decoration: BoxDecoration(
+        color: (isLight ? AppColors.textPrimary : AppColors.textPrimaryDark)
+            .withOpacity(AppDimens.opacityVeryHigh),
+        borderRadius: BorderRadius.circular(AppDimens.radiusS),
+      ),
+      textStyle:
+          (isLight ? AppTypography.bodySmall : AppTypography.bodySmallDark)
+              .copyWith(color: isLight ? Colors.white : Colors.black),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingS,
+        vertical: AppDimens.paddingXS,
+      ),
+    );
+  }
 }

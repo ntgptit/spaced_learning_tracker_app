@@ -1,14 +1,15 @@
-// lib/presentation/widgets/common/dialog/sl_score_input_dialog_content.dart
+// lib/presentation/widgets/dialogs/slt_score_input_dialog_content.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:spaced_learning_app/core/extensions/color_extensions.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
 
-part 'sl_score_input_dialog_content.g.dart';
+import '../../../core/extensions/color_extensions.dart';
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_dialog_button_bar.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
+
+part 'slt_score_input_dialog_content.g.dart';
 
 /// Provider for managing score value in the dialog
 @riverpod
@@ -22,7 +23,7 @@ class ScoreValue extends _$ScoreValue {
 }
 
 /// Content widget for the score input dialog.
-class SlScoreInputDialogContent extends ConsumerWidget {
+class SltScoreInputDialogContent extends ConsumerWidget {
   final String dialogId;
   final double initialValue;
   final double minValue;
@@ -34,7 +35,7 @@ class SlScoreInputDialogContent extends ConsumerWidget {
   final String cancelText;
   final IconData? titleIcon;
 
-  const SlScoreInputDialogContent({
+  const SltScoreInputDialogContent({
     super.key,
     required this.dialogId,
     this.initialValue = 70.0,
@@ -48,7 +49,7 @@ class SlScoreInputDialogContent extends ConsumerWidget {
     this.titleIcon = Icons.leaderboard_outlined,
   });
 
-  factory SlScoreInputDialogContent._create({
+  factory SltScoreInputDialogContent._create({
     // Private factory
     required String dialogId,
     double initialValue = 70.0,
@@ -61,7 +62,7 @@ class SlScoreInputDialogContent extends ConsumerWidget {
     String cancelText = 'Cancel',
     IconData? titleIcon = Icons.leaderboard_outlined,
   }) {
-    return SlScoreInputDialogContent(
+    return SltScoreInputDialogContent(
       dialogId: dialogId,
       initialValue: initialValue,
       minValue: minValue,
@@ -76,14 +77,14 @@ class SlScoreInputDialogContent extends ConsumerWidget {
   }
 
   /// Factory for a standard score input dialog
-  factory SlScoreInputDialogContent.standard({
+  factory SltScoreInputDialogContent.standard({
     required String dialogId,
     double initialValue = 70.0,
     String title = 'Rate Your Experience',
     String? subtitle = 'Drag the slider to rate',
     IconData titleIcon = Icons.star_outline_rounded,
   }) {
-    return SlScoreInputDialogContent._create(
+    return SltScoreInputDialogContent._create(
       dialogId: dialogId,
       initialValue: initialValue,
       title: title,
@@ -93,13 +94,13 @@ class SlScoreInputDialogContent extends ConsumerWidget {
   }
 
   /// Factory for a feedback score dialog
-  factory SlScoreInputDialogContent.feedback({
+  factory SltScoreInputDialogContent.feedback({
     required String dialogId,
     double initialValue = 50.0,
     String title = 'Provide Feedback',
     String? subtitle = 'How would you rate this content?',
   }) {
-    return SlScoreInputDialogContent._create(
+    return SltScoreInputDialogContent._create(
       dialogId: dialogId,
       initialValue: initialValue,
       title: title,
@@ -110,14 +111,14 @@ class SlScoreInputDialogContent extends ConsumerWidget {
   }
 
   /// Factory for a quiz/test score input
-  factory SlScoreInputDialogContent.assessment({
+  factory SltScoreInputDialogContent.assessment({
     required String dialogId,
     double initialValue = 0.0,
     double maxValue = 100.0,
     String title = 'Input Test Score',
     String? subtitle = 'Move the slider to set the score',
   }) {
-    return SlScoreInputDialogContent._create(
+    return SltScoreInputDialogContent._create(
       dialogId: dialogId,
       initialValue: initialValue,
       maxValue: maxValue,
@@ -209,8 +210,8 @@ class SlScoreInputDialogContent extends ConsumerWidget {
         ],
         const SizedBox(height: AppDimens.spaceXL),
         Container(
-          width: AppDimens.iconXXXL * 1.8,
-          height: AppDimens.iconXXXL * 1.8,
+          width: AppDimens.iconXXL * 1.8,
+          height: AppDimens.iconXXL * 1.8,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: scoreDisplayBackgroundColor,
@@ -292,7 +293,7 @@ class SlScoreInputDialogContent extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppDimens.spaceXL),
-        SlDialogButtonBar(
+        SltDialogButtonBar(
           cancelButton: SltTextButton(
             text: cancelText,
             onPressed: () => Navigator.of(context).pop(),
@@ -336,7 +337,7 @@ class SlScoreInputDialogContent extends ConsumerWidget {
           ),
           backgroundColor: Theme.of(dialogContext).colorScheme.surface,
           surfaceTintColor: Theme.of(dialogContext).colorScheme.surfaceTint,
-          content: SlScoreInputDialogContent._create(
+          content: SltScoreInputDialogContent._create(
             // Using private factory
             dialogId: dialogId,
             initialValue: initialValue,
@@ -353,5 +354,18 @@ class SlScoreInputDialogContent extends ConsumerWidget {
         );
       },
     );
+  }
+}
+
+/// Extension method for ThemeData to get score color
+/// This extension should exist or be created in 'color_extensions.dart'
+extension ScoreColorExtension on ThemeData {
+  Color getScoreColor(double score) {
+    final colorScheme = this.colorScheme;
+    if (score >= 90) return colorScheme.primary;
+    if (score >= 70) return colorScheme.tertiary;
+    if (score >= 50) return colorScheme.secondary;
+    if (score >= 30) return Colors.orange.shade700;
+    return colorScheme.error;
   }
 }

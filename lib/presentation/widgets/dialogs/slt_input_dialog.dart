@@ -1,14 +1,10 @@
-// lib/presentation/widgets/common/dialog/sl_input_dialog.dart
+// lib/presentation/widgets/dialogs/slt_input_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/input/sl_text_field.dart';
 
+import '../../../core/theme/app_dimens.dart';
 import '../buttons/slt_dialog_button_bar.dart';
 import '../buttons/slt_primary_button.dart';
 import '../buttons/slt_text_button.dart';
@@ -31,7 +27,7 @@ class DialogInputValue extends _$DialogInputValue {
 }
 
 /// A dialog that allows the user to input text with various customization options.
-class SlInputDialog extends ConsumerStatefulWidget {
+class SltInputDialog extends ConsumerStatefulWidget {
   final String dialogId;
   final String title;
   final String? message;
@@ -52,7 +48,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
   final TextCapitalization textCapitalization;
   final AutovalidateMode autovalidateMode;
 
-  const SlInputDialog({
+  const SltInputDialog({
     super.key,
     required this.dialogId,
     required this.title,
@@ -75,7 +71,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
 
-  factory SlInputDialog._create({
+  factory SltInputDialog._create({
     required String dialogId,
     required String title,
     String? message,
@@ -96,7 +92,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     TextCapitalization textCapitalization = TextCapitalization.none,
     AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
   }) {
-    return SlInputDialog(
+    return SltInputDialog(
       dialogId: dialogId,
       title: title,
       message: message,
@@ -120,7 +116,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
   }
 
   /// Factory for generic text input
-  factory SlInputDialog.text({
+  factory SltInputDialog.text({
     required String dialogId,
     required String title,
     String? message,
@@ -129,7 +125,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     String confirmText = 'OK',
     String? Function(String?)? validator,
   }) {
-    return SlInputDialog._create(
+    return SltInputDialog._create(
       dialogId: dialogId,
       title: title,
       message: message,
@@ -141,7 +137,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
   }
 
   /// Factory for number input
-  factory SlInputDialog.number({
+  factory SltInputDialog.number({
     required String dialogId,
     required String title,
     String? message,
@@ -151,7 +147,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     int? maxLength,
     String? Function(String?)? validator,
   }) {
-    return SlInputDialog._create(
+    return SltInputDialog._create(
       dialogId: dialogId,
       title: title,
       message: message,
@@ -161,7 +157,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       maxLength: maxLength,
-      prefixIcon: Icons.looks_one_outlined,
+      prefixIcon: Icons.numbers,
       validator:
           validator ??
           (value) {
@@ -175,7 +171,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
   }
 
   /// Factory for password input
-  factory SlInputDialog.password({
+  factory SltInputDialog.password({
     required String dialogId,
     required String title,
     String? message,
@@ -183,7 +179,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     String confirmText = 'Confirm',
     String? Function(String?)? validator,
   }) {
-    return SlInputDialog._create(
+    return SltInputDialog._create(
       dialogId: dialogId,
       title: title,
       message: message,
@@ -205,8 +201,65 @@ class SlInputDialog extends ConsumerStatefulWidget {
     );
   }
 
+  /// Factory for multiline text input
+  factory SltInputDialog.multiline({
+    required String dialogId,
+    required String title,
+    String? message,
+    String? initialValue,
+    String? hintText = 'Enter text',
+    String confirmText = 'Submit',
+    int maxLines = 5,
+    String? Function(String?)? validator,
+  }) {
+    return SltInputDialog._create(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      hintText: hintText,
+      confirmText: confirmText,
+      maxLines: maxLines,
+      validator: validator,
+    );
+  }
+
+  /// Factory for email input
+  factory SltInputDialog.email({
+    required String dialogId,
+    required String title,
+    String? message,
+    String? initialValue,
+    String hintText = 'Enter email address',
+    String confirmText = 'Submit',
+    String? Function(String?)? validator,
+  }) {
+    return SltInputDialog._create(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      hintText: hintText,
+      confirmText: confirmText,
+      keyboardType: TextInputType.emailAddress,
+      prefixIcon: Icons.email_outlined,
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Email cannot be empty.';
+            }
+            final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+            if (!emailRegExp.hasMatch(value)) {
+              return 'Please enter a valid email address.';
+            }
+            return null;
+          },
+    );
+  }
+
   @override
-  ConsumerState<SlInputDialog> createState() => _SlInputDialogState();
+  ConsumerState<SltInputDialog> createState() => _SltInputDialogState();
 
   /// Show the input dialog with the given parameters
   static Future<String?> show(
@@ -243,7 +296,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
     return showDialog<String>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (context) => SlInputDialog._create(
+      builder: (context) => SltInputDialog._create(
         // Using private factory
         dialogId: dialogId,
         title: title,
@@ -269,7 +322,7 @@ class SlInputDialog extends ConsumerStatefulWidget {
   }
 }
 
-class _SlInputDialogState extends ConsumerState<SlInputDialog> {
+class _SltInputDialogState extends ConsumerState<SltInputDialog> {
   late final TextEditingController _controller;
   final _formKey = GlobalKey<FormState>();
 

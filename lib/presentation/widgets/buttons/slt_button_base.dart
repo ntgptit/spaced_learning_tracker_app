@@ -1,15 +1,16 @@
-// lib/presentation/widgets/common/button/slt_button_base.dart
+// lib/presentation/widgets/buttons/slt_button_base.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+
+import '../../../core/theme/app_dimens.dart';
 
 part 'slt_button_base.g.dart';
 
-enum SlttButtonVariant { filled, tonal, outlined, text }
+enum SltButtonVariant { filled, tonal, outlined, text }
 
-enum SlttButtonSize { small, medium, large }
+enum SltButtonSize { small, medium, large }
 
 @riverpod
 class ButtonState extends _$ButtonState {
@@ -21,15 +22,15 @@ class ButtonState extends _$ButtonState {
   }
 }
 
-class SlttButtonBase extends ConsumerWidget {
+class SltButtonBase extends ConsumerWidget {
   final String text;
   final VoidCallback? onPressed;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final String? loadingId;
   final bool isFullWidth;
-  final SlttButtonSize size;
-  final SlttButtonVariant variant;
+  final SltButtonSize size;
+  final SltButtonVariant variant;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double? borderRadius;
@@ -37,7 +38,7 @@ class SlttButtonBase extends ConsumerWidget {
   final double? elevation;
   final BorderSide? borderSide;
 
-  const SlttButtonBase({
+  const SltButtonBase({
     super.key,
     required this.text,
     this.onPressed,
@@ -45,8 +46,8 @@ class SlttButtonBase extends ConsumerWidget {
     this.suffixIcon,
     this.loadingId,
     this.isFullWidth = false,
-    this.size = SlttButtonSize.medium,
-    this.variant = SlttButtonVariant.filled,
+    this.size = SltButtonSize.medium,
+    this.variant = SltButtonVariant.filled,
     this.backgroundColor,
     this.foregroundColor,
     this.borderRadius,
@@ -124,15 +125,15 @@ class SlttButtonBase extends ConsumerWidget {
     final effectiveBorderRadius = borderRadius ?? _getDefaultBorderRadius();
 
     // Xác định màu chữ mặc định dựa trên loại button
-    final defaultForegroundColor = variant == SlttButtonVariant.filled
+    final defaultForegroundColor = variant == SltButtonVariant.filled
         ? Colors
               .white // Luôn sử dụng màu trắng cho filled button
-        : (variant == SlttButtonVariant.tonal
+        : (variant == SltButtonVariant.tonal
               ? colorScheme.onSecondaryContainer
               : colorScheme.primary);
 
     switch (variant) {
-      case SlttButtonVariant.filled:
+      case SltButtonVariant.filled:
         return ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? colorScheme.primary,
           foregroundColor: foregroundColor ?? defaultForegroundColor,
@@ -145,7 +146,7 @@ class SlttButtonBase extends ConsumerWidget {
           disabledForegroundColor: Colors.white.withOpacity(0.38),
         );
 
-      case SlttButtonVariant.tonal:
+      case SltButtonVariant.tonal:
         return ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? colorScheme.secondaryContainer,
           foregroundColor: foregroundColor ?? colorScheme.onSecondaryContainer,
@@ -156,7 +157,7 @@ class SlttButtonBase extends ConsumerWidget {
           padding: EdgeInsets.zero,
         );
 
-      case SlttButtonVariant.outlined:
+      case SltButtonVariant.outlined:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           foregroundColor: foregroundColor ?? colorScheme.primary,
@@ -174,7 +175,7 @@ class SlttButtonBase extends ConsumerWidget {
           shadowColor: Colors.transparent,
         );
 
-      case SlttButtonVariant.text:
+      case SltButtonVariant.text:
         return ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           foregroundColor: foregroundColor ?? colorScheme.primary,
@@ -190,28 +191,28 @@ class SlttButtonBase extends ConsumerWidget {
 
   (double, double) _getSizeParameters() {
     switch (size) {
-      case SlttButtonSize.small:
+      case SltButtonSize.small:
         return (AppDimens.buttonHeightS, AppDimens.iconS);
-      case SlttButtonSize.medium:
+      case SltButtonSize.medium:
         return (AppDimens.buttonHeightM, AppDimens.iconM);
-      case SlttButtonSize.large:
+      case SltButtonSize.large:
         return (AppDimens.buttonHeightL, AppDimens.iconL);
     }
   }
 
   EdgeInsetsGeometry _getDefaultPadding() {
     switch (size) {
-      case SlttButtonSize.small:
+      case SltButtonSize.small:
         return const EdgeInsets.symmetric(
           horizontal: AppDimens.paddingM,
           vertical: AppDimens.paddingXS,
         );
-      case SlttButtonSize.medium:
+      case SltButtonSize.medium:
         return const EdgeInsets.symmetric(
           horizontal: AppDimens.paddingL,
           vertical: AppDimens.paddingS,
         );
-      case SlttButtonSize.large:
+      case SltButtonSize.large:
         return const EdgeInsets.symmetric(
           horizontal: AppDimens.paddingXL,
           vertical: AppDimens.paddingM,
@@ -221,12 +222,12 @@ class SlttButtonBase extends ConsumerWidget {
 
   double _getDefaultElevation() {
     switch (variant) {
-      case SlttButtonVariant.filled:
+      case SltButtonVariant.filled:
         return AppDimens.elevationS;
-      case SlttButtonVariant.tonal:
+      case SltButtonVariant.tonal:
         return AppDimens.elevationXS;
-      case SlttButtonVariant.outlined:
-      case SlttButtonVariant.text:
+      case SltButtonVariant.outlined:
+      case SltButtonVariant.text:
         return 0;
     }
   }
@@ -235,13 +236,13 @@ class SlttButtonBase extends ConsumerWidget {
 
   TextStyle? _getTextStyle(ThemeData theme) {
     final baseStyle = switch (size) {
-      SlttButtonSize.small => theme.textTheme.labelMedium,
-      SlttButtonSize.medium => theme.textTheme.labelLarge,
-      SlttButtonSize.large => theme.textTheme.titleMedium,
+      SltButtonSize.small => theme.textTheme.labelMedium,
+      SltButtonSize.medium => theme.textTheme.labelLarge,
+      SltButtonSize.large => theme.textTheme.titleMedium,
     };
 
     // Nếu là button filled, đảm bảo chữ luôn là trắng
-    if (variant == SlttButtonVariant.filled) {
+    if (variant == SltButtonVariant.filled) {
       return baseStyle?.copyWith(
         color: foregroundColor ?? Colors.white,
         fontWeight: FontWeight.w500,
@@ -253,12 +254,12 @@ class SlttButtonBase extends ConsumerWidget {
 
   Color _getProgressColor(ColorScheme colorScheme) {
     switch (variant) {
-      case SlttButtonVariant.filled:
+      case SltButtonVariant.filled:
         return Colors.white; // Luôn dùng màu trắng cho loading indicator
-      case SlttButtonVariant.tonal:
+      case SltButtonVariant.tonal:
         return colorScheme.onSecondaryContainer;
-      case SlttButtonVariant.outlined:
-      case SlttButtonVariant.text:
+      case SltButtonVariant.outlined:
+      case SltButtonVariant.text:
         return colorScheme.primary;
     }
   }

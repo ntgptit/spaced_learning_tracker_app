@@ -1,8 +1,9 @@
-// lib/presentation/widgets/common/state/sl_loading_state_widget.dart
+// lib/presentation/widgets/states/slt_loading_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+
+import '../../../core/theme/app_dimens.dart';
 
 /// Types of loading animations available
 enum LoadingIndicatorType {
@@ -15,12 +16,12 @@ enum LoadingIndicatorType {
 }
 
 /// Size options for loading indicators
-enum SlLoadingSize { small, medium, large }
+enum SltLoadingSize { small, medium, large }
 
 /// A widget that displays different types of loading indicators with optional message
 /// and fullscreen overlay capabilities. Can be used both as a standalone loading indicator
 /// or as a full loading state widget.
-class SlLoadingStateWidget extends ConsumerWidget {
+class SltLoadingStateWidget extends ConsumerWidget {
   /// Optional message to display below the loading indicator
   final String? message;
 
@@ -28,7 +29,7 @@ class SlLoadingStateWidget extends ConsumerWidget {
   final LoadingIndicatorType type;
 
   /// Size of the loading indicator
-  final SlLoadingSize size;
+  final SltLoadingSize size;
 
   /// Custom color for the loading indicator
   final Color? color;
@@ -45,11 +46,11 @@ class SlLoadingStateWidget extends ConsumerWidget {
   /// Callback when dismissed (only used if dismissible is true)
   final VoidCallback? onDismiss;
 
-  const SlLoadingStateWidget({
+  const SltLoadingStateWidget({
     super.key,
     this.message,
     this.type = LoadingIndicatorType.threeBounce,
-    this.size = SlLoadingSize.medium,
+    this.size = SltLoadingSize.medium,
     this.color,
     this.fullScreen = false,
     this.backgroundWidget,
@@ -58,7 +59,7 @@ class SlLoadingStateWidget extends ConsumerWidget {
   });
 
   /// Factory constructor for full-screen loading overlay
-  factory SlLoadingStateWidget.fullScreen({
+  factory SltLoadingStateWidget.fullScreen({
     String? message,
     Color? color,
     LoadingIndicatorType type = LoadingIndicatorType.fadingCircle,
@@ -66,10 +67,10 @@ class SlLoadingStateWidget extends ConsumerWidget {
     bool dismissible = false,
     VoidCallback? onDismiss,
   }) {
-    return SlLoadingStateWidget(
+    return SltLoadingStateWidget(
       message: message,
       type: type,
-      size: SlLoadingSize.large,
+      size: SltLoadingSize.large,
       color: color,
       fullScreen: true,
       backgroundWidget: background,
@@ -79,34 +80,34 @@ class SlLoadingStateWidget extends ConsumerWidget {
   }
 
   /// Factory constructor for small loading indicator
-  factory SlLoadingStateWidget.small({
+  factory SltLoadingStateWidget.small({
     Color? color,
     LoadingIndicatorType type = LoadingIndicatorType.threeBounce,
   }) {
-    return SlLoadingStateWidget(
-      size: SlLoadingSize.small,
+    return SltLoadingStateWidget(
+      size: SltLoadingSize.small,
       type: type,
       color: color,
     );
   }
 
   /// Factory constructor for loading indicator with a message
-  factory SlLoadingStateWidget.withMessage(
+  factory SltLoadingStateWidget.withMessage(
     String message, {
     LoadingIndicatorType type = LoadingIndicatorType.threeBounce,
     Color? color,
   }) {
-    return SlLoadingStateWidget(message: message, type: type, color: color);
+    return SltLoadingStateWidget(message: message, type: type, color: color);
   }
 
   /// Get the size value based on the selected size enum
   double _getSizeValue() {
     switch (size) {
-      case SlLoadingSize.small:
+      case SltLoadingSize.small:
         return AppDimens.circularProgressSize;
-      case SlLoadingSize.medium:
+      case SltLoadingSize.medium:
         return AppDimens.circularProgressSizeL;
-      case SlLoadingSize.large:
+      case SltLoadingSize.large:
         return AppDimens.iconXXL;
     }
   }
@@ -204,5 +205,50 @@ class SlLoadingStateWidget extends ConsumerWidget {
           ),
       ],
     );
+  }
+}
+
+/// Helper widget to simplify using SltLoadingStateWidget in various scenarios
+class SltLoadingIndicator extends ConsumerWidget {
+  final double size;
+  final Color? color;
+  final LoadingIndicatorType type;
+
+  const SltLoadingIndicator({
+    super.key,
+    this.size = AppDimens.circularProgressSizeL,
+    this.color,
+    this.type = LoadingIndicatorType.threeBounce,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final indicatorColor = color ?? colorScheme.primary;
+
+    switch (type) {
+      case LoadingIndicatorType.circular:
+        return SpinKitCircle(color: indicatorColor, size: size);
+      case LoadingIndicatorType.pulse:
+        return SpinKitPulse(color: indicatorColor, size: size);
+      case LoadingIndicatorType.threeBounce:
+        return FittedBox(
+          child: SpinKitThreeBounce(color: indicatorColor, size: size * 0.7),
+        );
+      case LoadingIndicatorType.wave:
+        return SpinKitWave(color: indicatorColor, size: size * 0.8);
+      case LoadingIndicatorType.fadingCircle:
+        return SpinKitFadingCircle(color: indicatorColor, size: size);
+      case LoadingIndicatorType.circularProgress:
+        return SizedBox(
+          width: size,
+          height: size,
+          child: CircularProgressIndicator(
+            strokeWidth: size / 10,
+            valueColor: AlwaysStoppedAnimation<Color>(indicatorColor),
+          ),
+        );
+    }
   }
 }
