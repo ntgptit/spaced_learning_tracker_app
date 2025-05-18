@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
-import 'package:slt_app/presentation/widgets/states/slt_empty_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_error_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
+import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_dimens.dart';
+import '../states/slt_empty_state_widget.dart';
+import '../states/slt_error_state_widget.dart';
+import '../states/slt_loading_state_widget.dart';
 
 /// Paginated list view widget
 /// A list view that supports pagination with loading, error, and empty states
@@ -85,7 +85,7 @@ class SltPaginatedListView<T> extends StatefulWidget {
     this.loadMoreThreshold = 3,
     this.padding,
     this.shrinkWrap = false,
-    this.emptyStateMessage = AppStrings.emptyStateDescription,
+    this.emptyStateMessage = '',
     this.primary = true,
   }) : super(key: key);
 
@@ -158,23 +158,20 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
     if (widget.items.isEmpty) {
       if (widget.isLoading) {
         return widget.loadingWidget ??
-            const SltLoadingStateWidget(
-              message: AppStrings.loadingStateTitle,
-            );
+            const SltLoadingStateWidget(message: AppStrings.loading);
       }
 
       if (widget.errorMessage != null) {
         return widget.errorWidget ??
             SltErrorStateWidget(
-              message: widget.errorMessage!,
+              message: widget.errorMessage,
               onRetry: widget.onRetry,
+              title: '',
             );
       }
 
       return widget.emptyWidget ??
-          SltEmptyStateWidget(
-            message: widget.emptyStateMessage,
-          );
+          SltEmptyStateWidget(message: widget.emptyStateMessage, title: '');
     }
 
     return Column(
@@ -189,11 +186,8 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
                   primary: widget.primary,
                   itemCount: widget.items.length,
                   separatorBuilder: (context, index) => widget.separatorWidget!,
-                  itemBuilder: (context, index) => widget.itemBuilder(
-                    context,
-                    widget.items[index],
-                    index,
-                  ),
+                  itemBuilder: (context, index) =>
+                      widget.itemBuilder(context, widget.items[index], index),
                 )
               : ListView.builder(
                   controller: _scrollController,
@@ -202,11 +196,8 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
                   shrinkWrap: widget.shrinkWrap,
                   primary: widget.primary,
                   itemCount: widget.items.length,
-                  itemBuilder: (context, index) => widget.itemBuilder(
-                    context,
-                    widget.items[index],
-                    index,
-                  ),
+                  itemBuilder: (context, index) =>
+                      widget.itemBuilder(context, widget.items[index], index),
                 ),
         ),
 

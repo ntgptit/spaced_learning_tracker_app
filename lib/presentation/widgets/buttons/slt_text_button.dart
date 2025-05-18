@@ -10,7 +10,7 @@ class SltTextButton extends ConsumerWidget {
   final IconData? suffixIcon;
   final String? loadingId;
   final bool isFullWidth;
-  final SlttButtonSize size;
+  final SltButtonSize size;
   final Color? foregroundColor;
   final double? borderRadius;
 
@@ -22,14 +22,14 @@ class SltTextButton extends ConsumerWidget {
     this.suffixIcon,
     this.loadingId,
     this.isFullWidth = false,
-    this.size = SlttButtonSize.medium,
+    this.size = SltButtonSize.medium,
     this.foregroundColor,
     this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SlttButtonBase(
+    return SltButtonBase(
       text: text,
       onPressed: onPressed,
       prefixIcon: prefixIcon,
@@ -37,7 +37,7 @@ class SltTextButton extends ConsumerWidget {
       loadingId: loadingId,
       isFullWidth: isFullWidth,
       size: size,
-      variant: SlttButtonVariant.text,
+      variant: SltButtonVariant.text,
       foregroundColor: foregroundColor,
       borderRadius: borderRadius,
     );

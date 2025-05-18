@@ -1,389 +1,267 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
-import 'package:slt_app/core/di/dependency_injection.dart';
-import 'package:slt_app/presentation/widgets/dialogs/slt_confirm_dialog.dart';
-import 'package:slt_app/presentation/widgets/dialogs/slt_input_dialog.dart';
-import 'package:slt_app/presentation/widgets/dialogs/slt_score_input_dialog_content.dart';
-import 'package:slt_app/presentation/widgets/states/slt_empty_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_error_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_loading_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_offline_state_widget.dart';
-import 'package:slt_app/presentation/widgets/states/slt_unauthorized_state_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:spaced_learning_app/core/router/app_routes.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/home_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/learning_stats_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/theme_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/widgets/buttons/slt_icon_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/slt_scaffold.dart';
+import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_widget.dart';
+import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
+import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
-import '../../../core/services/slt_ui_notifier_service.dart';
-import '../../../core/theme/app_dimens.dart';
-import '../../viewmodels/home/home_viewmodel.dart';
-import '../../widgets/common/slt_app_bar.dart';
+import '../../viewmodels/progress_viewmodel.dart';
 
-/// Home screen
-/// The main screen of the app
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeViewModelProvider);
-    final uiNotifier = DependencyInjection.locator<UiNotifierService>();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
 
-    return Scaffold(
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Load initial data when the screen is created
+    Future.microtask(() {
+      ref.read(homeViewModelProvider.notifier).loadInitialData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Get theme data
+    Theme.of(context);
+    final isDark = ref.watch(isDarkModeProvider);
+
+    // Get current user
+    final user = ref.watch(currentUserProvider);
+
+    // Watch home view model state
+    final homeState = ref.watch(homeViewModelProvider);
+
+    // Watch learning stats
+    final learningStats = ref.watch(learningStatsStateProvider);
+
+    // Watch due progress
+    final dueProgress = ref.watch(todayDueTasksProvider);
+
+    // Build welcome message
+    final welcomeMessage = user != null
+        ? 'Welcome back, ${user.displayName ?? user.firstName ?? user.username}!'
+        : 'Welcome to Spaced Learning!';
+
+    return SltScaffold(
       appBar: SltAppBar(
-        title: AppStrings.appName,
+        title: 'Spaced Learning',
+        centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+          SltIconButton(
+            icon: isDark ? Icons.light_mode : Icons.dark_mode,
             onPressed: () {
-              uiNotifier.showSnackBar(
-                context,
-                'Notifications tapped',
-              );
+              ref.read(themeStateProvider.notifier).toggleTheme();
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              uiNotifier.showSnackBar(
-                context,
-                'Settings tapped',
-              );
-            },
-          ),
+          SltIconButton(icon: Icons.logout, onPressed: _handleLogout),
+          const SizedBox(width: AppDimens.paddingS),
         ],
       ),
-      body: homeState.when(
-        loading: () => const SltLoadingStateWidget(
-          message: 'Loading demo page...',
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(homeViewModelProvider.notifier).refreshData(),
+        child: _buildHomeContent(
+          context,
+          homeState,
+          welcomeMessage,
+          learningStats,
+          dueProgress,
         ),
-        error: (error, stackTrace) => SltErrorStateWidget(
-          message: error.toString(),
-          onRetry: () => ref.refresh(homeViewModelProvider),
-        ),
-        data: (data) => _buildHomeContent(context, ref),
       ),
     );
   }
 
-  Widget _buildHomeContent(BuildContext context, WidgetRef ref) {
-    final homeViewModel = ref.read(homeViewModelProvider.notifier);
+  Widget _buildHomeContent(
+    BuildContext context,
+    HomeState homeState,
+    String welcomeMessage,
+    AsyncValue<dynamic> learningStats,
+    List<dynamic> dueProgress,
+  ) {
+    // Handle loading state
+    if (homeState.isFirstLoading) {
+      return const SltLoadingStateWidget(message: 'Loading your dashboard...');
+    }
+
+    // Handle error state
+    if (homeState.hasError) {
+      return SltErrorStateWidget(
+        title: 'Error Loading Dashboard',
+        message: homeState.errorMessage ?? 'An unknown error occurred',
+        onRetry: () =>
+            ref.read(homeViewModelProvider.notifier).loadInitialData(),
+      );
+    }
 
     return SingleChildScrollView(
-      padding: AppDimens.screenPadding,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'State Widgets Demo',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+          // Welcome section
+          Text(
+            welcomeMessage,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
-          AppDimens.vGapL,
+          const SizedBox(height: AppDimens.spaceL),
 
-          // State widgets
-          Wrap(
-            spacing: AppDimens.gapM,
-            runSpacing: AppDimens.gapM,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const Dialog(
-                      child: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: SltLoadingStateWidget(
-                          message: 'Loading...',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Loading State'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const Dialog(
-                      child: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: SltErrorStateWidget(
-                          message: 'Something went wrong',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Error State'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const Dialog(
-                      child: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: SltEmptyStateWidget(
-                          message: 'No data available',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Empty State'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const Dialog(
-                      child: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: SltOfflineStateWidget(
-                          message: 'No internet connection',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Offline State'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const Dialog(
-                      child: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: SltUnauthorizedStateWidget(
-                          message:
-                              'You are not authorized to access this resource',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Unauthorized State'),
-              ),
-            ],
-          ),
+          // Stats section
+          _buildStatsSection(context, learningStats),
+          const SizedBox(height: AppDimens.spaceXL),
 
-          AppDimens.vGapXL,
-          const Text(
-            'Dialog Widgets Demo',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          AppDimens.vGapL,
-
-          // Dialog widgets
-          Wrap(
-            spacing: AppDimens.gapM,
-            runSpacing: AppDimens.gapM,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final result = await SltConfirmDialog.show(
-                    context: context,
-                    title: 'Confirm Action',
-                    message: 'Are you sure you want to perform this action?',
-                    confirmText: 'Yes, I\'m sure',
-                    cancelText: 'No, cancel',
-                    icon: Icons.warning_amber_rounded,
-                  );
-
-                  if (result == true) {
-                    final uiNotifier =
-                        DependencyInjection.locator<UiNotifierService>();
-                    uiNotifier.showSnackBar(
-                      context,
-                      'Action confirmed!',
-                      isSuccess: true,
-                    );
-                  }
-                },
-                child: const Text('Confirm Dialog'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final result = await SltInputDialog.show(
-                    context: context,
-                    title: 'Enter your name',
-                    hintText: 'John Doe',
-                    labelText: 'Full Name',
-                    icon: Icons.person,
-                  );
-
-                  if (result != null && result.isNotEmpty) {
-                    final uiNotifier =
-                        DependencyInjection.locator<UiNotifierService>();
-                    uiNotifier.showSnackBar(
-                      context,
-                      'Hello, $result!',
-                      isSuccess: true,
-                    );
-                  }
-                },
-                child: const Text('Input Dialog'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final result = await SltScoreInputDialogContent.show(
-                    context: context,
-                    title: 'Rate this app',
-                    maxScore: 5,
-                    initialScore: 4,
-                    commentsHint: 'Your feedback',
-                  );
-
-                  if (result != null) {
-                    final uiNotifier =
-                        DependencyInjection.locator<UiNotifierService>();
-                    final score = result['score'] as double;
-                    final comments = result['comments'] as String?;
-
-                    uiNotifier.showSnackBar(
-                      context,
-                      'Rating: ${score.toInt()}/5${comments != null && comments.isNotEmpty ? '\nFeedback: $comments' : ''}',
-                      isSuccess: true,
-                    );
-                  }
-                },
-                child: const Text('Score Input Dialog'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final result = await SltConfirmDialog.show(
-                    context: context,
-                    title: 'Delete Item',
-                    message:
-                        'Are you sure you want to delete this item? This action cannot be undone.',
-                    confirmText: 'Delete',
-                    cancelText: 'Cancel',
-                    isDestructive: true,
-                    icon: Icons.delete_outline,
-                  );
-
-                  if (result == true) {
-                    final uiNotifier =
-                        DependencyInjection.locator<UiNotifierService>();
-                    uiNotifier.showSnackBar(
-                      context,
-                      'Item deleted successfully',
-                      isSuccess: true,
-                    );
-                  }
-                },
-                child: const Text('Destructive Confirm Dialog'),
-              ),
-            ],
-          ),
-
-          AppDimens.vGapXL,
-          const Text(
-            'UI Notification Demo',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          AppDimens.vGapL,
-
-          // UI Notification Demo
-          Wrap(
-            spacing: AppDimens.gapM,
-            runSpacing: AppDimens.gapM,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showSnackBar(
-                    context,
-                    'This is a normal snackbar',
-                  );
-                },
-                child: const Text('Show Snackbar'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showSuccessSnackBar(
-                    context,
-                    'Operation completed successfully!',
-                  );
-                },
-                child: const Text('Success Snackbar'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showErrorSnackBar(
-                    context,
-                    'Something went wrong!',
-                  );
-                },
-                child: const Text('Error Snackbar'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showWarningSnackBar(
-                    context,
-                    'Warning: This action might have consequences',
-                  );
-                },
-                child: const Text('Warning Snackbar'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showToast(
-                    context,
-                    'This is a toast message',
-                  );
-                },
-                child: const Text('Show Toast'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  final uiNotifier =
-                      DependencyInjection.locator<UiNotifierService>();
-                  uiNotifier.showLoadingDialog(
-                    context: context,
-                    message: 'Processing...',
-                  );
-
-                  // Simulate a delay then close the dialog
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.of(context).pop();
-                    uiNotifier.showSuccessSnackBar(
-                      context,
-                      'Processing completed!',
-                    );
-                  });
-                },
-                child: const Text('Show Loading Dialog'),
-              ),
-            ],
-          ),
-
-          // Add more sections as needed...
-          AppDimens.vGapXL,
+          // Due tasks section
+          _buildDueTasksSection(context, dueProgress),
         ],
       ),
     );
+  }
+
+  Widget _buildStatsSection(
+    BuildContext context,
+    AsyncValue<dynamic> learningStats,
+  ) {
+    return learningStats.when(
+      data: (data) {
+        if (data == null) {
+          return const SltEmptyStateWidget(
+            title: 'No Stats Available',
+            message: 'Start learning to see your statistics here.',
+          );
+        }
+
+        // Build stats grid with actual data
+        return GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: AppDimens.spaceM,
+          mainAxisSpacing: AppDimens.spaceM,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            SltStatCard(
+              title: 'Streak',
+              value: '${data.streakDays}',
+              subtitle: 'days',
+              icon: Icons.local_fire_department,
+            ),
+            SltStatCard(
+              title: 'Vocabulary',
+              value: '${data.vocabularyCompletionRate.toStringAsFixed(1)}%',
+              subtitle: '${data.learnedWords}/${data.totalWords} words',
+              icon: Icons.menu_book,
+            ),
+            SltStatCard(
+              title: 'Due Today',
+              value: '${data.dueToday}',
+              subtitle: 'modules',
+              icon: Icons.today,
+            ),
+            SltStatCard(
+              title: 'Completed',
+              value: '${data.totalCompletedModules}',
+              subtitle: 'modules',
+              icon: Icons.check_circle_outline,
+            ),
+          ],
+        );
+      },
+      loading: () =>
+          const SltLoadingStateWidget(message: 'Loading statistics...'),
+      error: (error, stack) => SltErrorStateWidget(
+        title: 'Could Not Load Stats',
+        message: error.toString(),
+        onRetry: () => ref.refresh(learningStatsStateProvider),
+        compact: true,
+      ),
+    );
+  }
+
+  Widget _buildDueTasksSection(
+    BuildContext context,
+    List<dynamic> dueProgress,
+  ) {
+    final theme = Theme.of(context);
+
+    // Display section header
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Due Today', style: theme.textTheme.titleLarge),
+        const SizedBox(height: AppDimens.spaceM),
+
+        // Check if there are any due tasks
+        dueProgress.isEmpty
+            ? SltEmptyStateWidget.noData(
+                title: 'No Tasks Due Today',
+                message:
+                    'You\'re all caught up! Start a new module or check back later.',
+                buttonText: 'Browse Modules',
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: dueProgress.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: AppDimens.spaceM),
+                itemBuilder: (context, index) {
+                  final progress = dueProgress[index];
+                  return SltProgressCard(
+                    title: progress.moduleTitle ?? 'Module',
+                    subtitle: 'Book: ${progress.moduleTitle ?? 'Unknown'}',
+                    progress: progress.percentComplete / 100,
+                    onTap: () => _navigateToModule(progress.id),
+                  );
+                },
+              ),
+      ],
+    );
+  }
+
+  void _navigateToModule(String progressId) {
+    // TODO: Implement navigation to module details
+  }
+
+  Future<void> _handleLogout() async {
+    // Show a confirmation dialog
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout Confirmation'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    // Proceed with logout if confirmed
+    if (shouldLogout == true) {
+      await ref.read(authStateProvider.notifier).logout();
+
+      if (context.mounted) {
+        context.go(AppRoutes.login);
+      }
+    }
   }
 }

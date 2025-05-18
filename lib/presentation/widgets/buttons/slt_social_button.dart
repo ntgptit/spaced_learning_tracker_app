@@ -36,13 +36,13 @@ class SltSocialButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return SlttButtonBase(
+    return SltButtonBase(
       text: text,
       onPressed: onPressed,
       prefixIcon: _getIcon(),
       loadingId: loadingId,
       isFullWidth: isFullWidth,
-      variant: SlttButtonVariant.outlined,
+      variant: SltButtonVariant.outlined,
       backgroundColor: backgroundColor ?? Colors.transparent,
       foregroundColor: foregroundColor ?? colorScheme.onSurface,
     );

@@ -4,7 +4,7 @@ import '../../../core/theme/app_dimens.dart';
 
 /// Icon button widget
 /// A button that displays only an icon
-class SlttIconButton extends StatelessWidget {
+class SltIconButton extends StatelessWidget {
   /// Icon data to display
   final IconData icon;
 
@@ -38,7 +38,7 @@ class SlttIconButton extends StatelessWidget {
   /// Visual density of the button
   final VisualDensity visualDensity;
 
-  const SlttIconButton({
+  const SltIconButton({
     super.key,
     required this.icon,
     this.onPressed,

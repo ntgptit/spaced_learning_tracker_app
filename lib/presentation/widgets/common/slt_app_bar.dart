@@ -1,3 +1,4 @@
+// lib/presentation/widgets/common/slt_app_bar.dart
 import 'package:flutter/material.dart';
 
 /// App bar widget
@@ -66,7 +67,8 @@ class SltAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (leadingWidget == null && showBackButton) {
       leadingWidget = IconButton(
         icon: const Icon(Icons.arrow_back_ios),
-        onPressed: onBackPressed ??
+        onPressed:
+            onBackPressed ??
             () {
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
@@ -76,10 +78,7 @@ class SltAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     final appBar = AppBar(
-      title: Text(
-        title,
-        style: titleStyle,
-      ),
+      title: Text(title, style: titleStyle),
       leading: leadingWidget,
       actions: actions,
       centerTitle: centerTitle,
@@ -109,9 +108,9 @@ class SltAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(
-        height ??
-            (bottom != null
-                ? kToolbarHeight + bottom!.preferredSize.height
-                : kToolbarHeight),
-      );
+    height ??
+        (bottom != null
+            ? kToolbarHeight + bottom!.preferredSize.height
+            : kToolbarHeight),
+  );
 }

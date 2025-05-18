@@ -25,6 +25,10 @@ class AppDimens {
   static const double radiusXXXL = 40.0;
   static const double radiusCircular = 100.0;
 
+  // Theme specific radius
+  static const double dialogBorderRadius = radiusL;
+  static const double bottomSheetBorderRadius = radiusXL;
+
   // Icon sizes (Material 3: 18, 24, 36, 48)
   static const double iconXXS = 10.0;
   static const double iconXS = 12.0;
@@ -152,6 +156,12 @@ class AppDimens {
   static const double gridItemMaxWidth = 180.0;
   static const double gridGutter = 16.0;
 
+  // Grid column counts for different screen sizes
+  static const int gridColumnCountSmall = 2;
+  static const int gridColumnCountMedium = 4;
+  static const int gridColumnCountLarge = 6;
+  static const int gridColumnCountXLarge = 8;
+
   // Avatar and thumbnail
   static const double avatarSizeXS = 24.0;
   static const double avatarSizeS = 32.0;
@@ -238,6 +248,17 @@ class AppDimens {
     vertical: paddingS,
   );
 
+  // Content insets presets
+  static const EdgeInsets contentInsetRegular = EdgeInsets.symmetric(
+    horizontal: paddingL,
+    vertical: paddingM,
+  );
+  static const EdgeInsets contentInsetCompact = EdgeInsets.symmetric(
+    horizontal: paddingM,
+    vertical: paddingS,
+  );
+  static const EdgeInsets contentInsetTight = EdgeInsets.all(paddingS);
+
   // SPACING & GAPS
   static const double spaceXXS = 2.0;
   static const double spaceXS = 4.0;
@@ -250,5 +271,159 @@ class AppDimens {
   static const double spaceSectionGap = 40.0;
   static const double spacePageGap = 64.0;
 
+  // Aspect ratios
+  static const double aspectRatio21x9 = 21 / 9;
+  static const double aspectRatio16x9 = 16 / 9;
+  static const double aspectRatio4x3 = 4 / 3;
+  static const double aspectRatio1x1 = 1 / 1;
+  static const double aspectRatio3x4 = 3 / 4;
+  static const double aspectRatio9x16 = 9 / 16;
+
+  // Private constructor to prevent instantiation
   AppDimens._();
+}
+
+/// Extension methods for easily using responsive dimensions with BuildContext
+extension BuildContextDimensExtension on BuildContext {
+  // Responsive dimensions based on screen size
+  double get responsiveSpacing {
+    final width = MediaQuery.of(this).size.width;
+    if (width < AppDimens.breakpointS) return AppDimens.spaceS;
+    if (width < AppDimens.breakpointM) return AppDimens.spaceM;
+    return AppDimens.spaceL;
+  }
+
+  // Responsive padding based on screen size
+  EdgeInsets get responsivePadding {
+    final width = MediaQuery.of(this).size.width;
+    if (width < AppDimens.breakpointS) {
+      return const EdgeInsets.all(AppDimens.paddingS);
+    }
+    if (width < AppDimens.breakpointM) {
+      return const EdgeInsets.all(AppDimens.paddingM);
+    }
+    return const EdgeInsets.all(AppDimens.paddingL);
+  }
+
+  // Get dimensions scaled by device pixel ratio for pixel-perfect UI
+  double dp(double size) => size * MediaQuery.of(this).devicePixelRatio;
+
+  // Get screen width as double
+  double get screenWidth => MediaQuery.of(this).size.width;
+
+  // Get screen height as double
+  double get screenHeight => MediaQuery.of(this).size.height;
+
+  // Get screen density
+  double get density => MediaQuery.of(this).devicePixelRatio;
+
+  // Check if screen is at different breakpoints
+  bool get isSmallScreen => screenWidth < AppDimens.breakpointS;
+
+  bool get isMediumScreen =>
+      screenWidth >= AppDimens.breakpointS &&
+      screenWidth < AppDimens.breakpointM;
+
+  bool get isLargeScreen =>
+      screenWidth >= AppDimens.breakpointM &&
+      screenWidth < AppDimens.breakpointL;
+
+  bool get isXLargeScreen => screenWidth >= AppDimens.breakpointL;
+
+  // Get grid column count based on screen size
+  int get gridColumnCount {
+    if (isSmallScreen) return AppDimens.gridColumnCountSmall;
+    if (isMediumScreen) return AppDimens.gridColumnCountMedium;
+    if (isLargeScreen) return AppDimens.gridColumnCountLarge;
+    return AppDimens.gridColumnCountXLarge;
+  }
+}
+
+/// Extension for creating responsive dimensions as percentage of screen size
+extension ResponsiveSizeExtension on num {
+  // Get % of screen width
+  double sw(BuildContext context) =>
+      this * MediaQuery.of(context).size.width / 100;
+
+  // Get % of screen height
+  double sh(BuildContext context) =>
+      this * MediaQuery.of(context).size.height / 100;
+
+  // Responsive value based on design width (default 375.0)
+  double w(BuildContext context, {double designWidth = 375.0}) =>
+      this * MediaQuery.of(context).size.width / designWidth;
+
+  // Responsive value based on design height (default 812.0)
+  double h(BuildContext context, {double designHeight = 812.0}) =>
+      this * MediaQuery.of(context).size.height / designHeight;
+}
+
+/// Helper class for creating responsive dimensions
+class ResponsiveDimensions {
+  // Scale dimensions based on screen size
+  static double scale(double size, BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < AppDimens.breakpointS) {
+      return size * AppDimens.scaleFactorSmall;
+    } else if (width > AppDimens.breakpointL) {
+      return size * AppDimens.scaleFactorLarge;
+    }
+    return size;
+  }
+
+  // Get screen-size appropriate padding
+  static EdgeInsets getPadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < AppDimens.breakpointS) {
+      return const EdgeInsets.all(AppDimens.paddingS);
+    } else if (width < AppDimens.breakpointM) {
+      return const EdgeInsets.all(AppDimens.paddingM);
+    }
+    return const EdgeInsets.all(AppDimens.paddingL);
+  }
+
+  // Convert design dimensions to current screen dimensions
+  static double fromDesign(
+    double value,
+    BuildContext context, {
+    double designWidth = 375.0,
+  }) {
+    final currentWidth = MediaQuery.of(context).size.width;
+    return value * currentWidth / designWidth;
+  }
+
+  // Get appropriate icon size for screen size
+  static double getAdaptiveIconSize(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < AppDimens.breakpointS) {
+      return AppDimens.iconS;
+    } else if (width < AppDimens.breakpointM) {
+      return AppDimens.iconM;
+    }
+    return AppDimens.iconL;
+  }
+
+  // Get appropriate avatar size for screen size
+  static double getAdaptiveAvatarSize(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < AppDimens.breakpointS) {
+      return AppDimens.avatarSizeS;
+    } else if (width < AppDimens.breakpointM) {
+      return AppDimens.avatarSizeM;
+    }
+    return AppDimens.avatarSizeL;
+  }
+
+  // Get appropriate text size scale factor for screen size
+  static double getTextScaleFactor(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < AppDimens.breakpointS) {
+      return 0.9;
+    } else if (width < AppDimens.breakpointM) {
+      return 1.0;
+    } else if (width < AppDimens.breakpointL) {
+      return 1.1;
+    }
+    return 1.2;
+  }
 }

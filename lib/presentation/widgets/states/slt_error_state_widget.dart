@@ -1,7 +1,11 @@
-// lib/presentation/widgets/common/state/sl_error_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
+import '../common/slt_app_bar.dart';
 
 class SltErrorStateWidget extends ConsumerWidget {
   final String title;
@@ -14,8 +18,7 @@ class SltErrorStateWidget extends ConsumerWidget {
   final Widget? customAction;
   final bool showAppBar;
   final String? appBarTitle;
-  final VoidCallback?
-  onNavigateBack; // For a potential secondary back/home action
+  final VoidCallback? onNavigateBack;
 
   const SltErrorStateWidget({
     super.key,
@@ -173,7 +176,7 @@ class SltErrorStateWidget extends ConsumerWidget {
             !showAppBar) ...[
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
-            text: 'Go Back', // Or make this customizable
+            text: 'Go Back',
             onPressed: onNavigateBack!,
             foregroundColor: colorScheme.primary,
           ),
@@ -265,9 +268,18 @@ class SltErrorStateWidget extends ConsumerWidget {
 
     if (showAppBar) {
       return Scaffold(
-        appBar: AppBarWithBack(
+        appBar: SltAppBar(
           title: appBarTitle ?? title,
-          onBackPressed: onNavigateBack ?? () => Navigator.maybePop(context),
+          showBackButton: true,
+          onBackPressed: () {
+            if (onNavigateBack != null) {
+              onNavigateBack!();
+              return;
+            }
+
+            context.pop();
+          },
+          centerTitle: false,
         ),
         body: Center(
           child: Padding(
@@ -282,7 +294,6 @@ class SltErrorStateWidget extends ConsumerWidget {
 
     return Material(
       color: theme.scaffoldBackgroundColor,
-      // Ensure background color for non-Scaffold use
       child: Center(
         child: Padding(
           padding: compact

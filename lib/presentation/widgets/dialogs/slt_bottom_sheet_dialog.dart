@@ -7,7 +7,7 @@ import 'package:spaced_learning_app/presentation/widgets/dialogs/slt_dialog_butt
 import '../buttons/slt_primary_button.dart';
 
 /// A customizable bottom sheet dialog with Material 3 design principles.
-class SlBottomSheetDialog extends ConsumerWidget {
+class SltBottomSheetDialog extends ConsumerWidget {
   final String? title;
   final String? message;
   final Widget? content;
@@ -28,7 +28,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
   final bool expandToFullScreen;
   final VoidCallback? onClose; // Called when sheet is closed by any means
 
-  const SlBottomSheetDialog({
+  const SltBottomSheetDialog({
     super.key,
     this.title,
     this.message,
@@ -56,7 +56,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
     this.onClose,
   });
 
-  factory SlBottomSheetDialog._create({
+  factory SltBottomSheetDialog._create({
     // Private factory
     String? title,
     String? message,
@@ -83,7 +83,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
     bool expandToFullScreen = false,
     VoidCallback? onClose,
   }) {
-    return SlBottomSheetDialog(
+    return SltBottomSheetDialog(
       title: title,
       message: message,
       content: content,
@@ -115,7 +115,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
     VoidCallback? onClose,
     Widget? icon,
   }) {
-    SlBottomSheetDialog.show(
+    SltBottomSheetDialog.show(
       context,
       title: title,
       message: message,
@@ -144,7 +144,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
     Widget? cancelButton, // This should be an SlButtonBase derivative
     VoidCallback? onClose,
   }) {
-    SlBottomSheetDialog.show(
+    SltBottomSheetDialog.show(
       context,
       title: title,
       content: ListView(
@@ -168,7 +168,7 @@ class SlBottomSheetDialog extends ConsumerWidget {
     ScrollController? scrollController,
     VoidCallback? onClose,
   }) {
-    SlBottomSheetDialog.show(
+    SltBottomSheetDialog.show(
       context,
       title: title,
       content: ListView.separated(
@@ -374,14 +374,14 @@ class SlBottomSheetDialog extends ConsumerWidget {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       useSafeArea: false,
-      // Let the SlBottomSheetDialog handle its own safe area for content
+      // Let the SltBottomSheetDialog handle its own safe area for content
       backgroundColor: Colors.transparent,
       // Make background transparent
       isScrollControlled: isScrollControlled,
       elevation: 0,
-      // Use custom shadow in SlBottomSheetDialog
+      // Use custom shadow in SltBottomSheetDialog
       builder: (BuildContext builderContext) {
-        return SlBottomSheetDialog._create(
+        return SltBottomSheetDialog._create(
           // Using private factory
           title: title,
           message: message,

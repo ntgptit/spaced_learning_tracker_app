@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/presentation/widgets/inputs/slt_text_field.dart';
 
-class SLPasswordField extends StatefulWidget {
+class SltPasswordField extends StatefulWidget {
   final String? label;
   final String? hint;
   final String? errorText;
@@ -20,9 +20,9 @@ class SLPasswordField extends StatefulWidget {
   final Color? borderColor;
   final Color? focusedBorderColor;
   final Color? backgroundColor;
-  final SltTextField size;
+  final SltTextFieldSize size;
 
-  const SLPasswordField({
+  const SltPasswordField({
     super.key,
     this.label,
     this.hint,
@@ -46,10 +46,10 @@ class SLPasswordField extends StatefulWidget {
   });
 
   @override
-  State<SLPasswordField> createState() => _SLPasswordFieldState();
+  State<SltPasswordField> createState() => _SltPasswordFieldState();
 }
 
-class _SLPasswordFieldState extends State<SLPasswordField> {
+class _SltPasswordFieldState extends State<SltPasswordField> {
   @override
   Widget build(BuildContext context) {
     // Sửa lỗi - Không dùng dynamic mà xử lý đúng theo kiểu

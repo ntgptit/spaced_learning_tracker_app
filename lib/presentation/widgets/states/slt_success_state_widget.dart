@@ -1,62 +1,28 @@
-// lib/presentation/widgets/common/state/sl_success_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/app_bar_with_back.dart';
-// Import specific buttons
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:go_router/go_router.dart';
 
-/// A widget to display a success message or confirmation.
-///
-/// Offers factory constructors for common success scenarios like action completion,
-/// data saving, or notifications. Supports different display modes (full, compact)
-/// and action buttons. The `autoHideDuration` parameter is a suggestion for the
-/// calling widget to implement auto-dismissal.
-class SlSuccessStateWidget extends ConsumerWidget {
-  /// The main title of the success message (e.g., "Action Complete!").
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
+import '../common/slt_app_bar.dart';
+
+class SltSuccessStateWidget extends ConsumerWidget {
   final String title;
-
-  /// An optional detailed message.
   final String? message;
-
-  /// Text for the primary action button (e.g., "Continue", "OK").
   final String primaryButtonText;
-
-  /// Callback for the primary action button.
   final VoidCallback onPrimaryButtonPressed;
-
-  /// Text for an optional secondary action button.
   final String? secondaryButtonText;
-
-  /// Callback for the optional secondary action button.
   final VoidCallback? onSecondaryButtonPressed;
-
-  /// Whether to display the success icon.
   final bool showIcon;
-
-  /// If true, displays a compact version of the widget.
   final bool compactMode;
-
-  /// Suggested duration after which the success state might be automatically hidden
-  /// by the calling widget/logic by invoking `onPrimaryButtonPressed` or navigating.
   final Duration? autoHideDuration;
-
-  /// The icon to display. Defaults to a checkmark circle.
   final IconData icon;
-
-  /// Overrides the default success color (usually theme's primary color).
   final Color? accentColor;
-
-  // New properties for AppBar integration
   final bool showAppBar;
   final String? appBarTitle;
 
-  // onNavigateBack is not typically needed for a success screen that auto-dismisses or has explicit actions.
-  // If a specific back navigation is needed when showAppBar is true, onPrimaryButtonPressed or onSecondaryButtonPressed
-  // should handle that navigation. The AppBarWithBack will provide a default pop.
-
-  const SlSuccessStateWidget({
+  const SltSuccessStateWidget({
     super.key,
     required this.title,
     this.message,
@@ -66,25 +32,24 @@ class SlSuccessStateWidget extends ConsumerWidget {
     this.onSecondaryButtonPressed,
     this.showIcon = true,
     this.compactMode = false,
-    this.autoHideDuration, // This widget will not self-dismiss. Parent should handle.
-    this.icon = Icons.check_circle_outline_rounded, // Default M3 icon
+    this.autoHideDuration,
+    this.icon = Icons.check_circle_outline_rounded,
     this.accentColor,
     this.showAppBar = false,
     this.appBarTitle,
   });
 
-  /// Factory constructor for generic action completion.
-  factory SlSuccessStateWidget.actionComplete({
+  factory SltSuccessStateWidget.actionComplete({
     Key? key,
     required String actionName,
     required VoidCallback onContinue,
     String? continueButtonText = 'Continue',
     String? successMessage,
-    Duration? autoHideDuration, // Suggestion for parent
+    Duration? autoHideDuration,
     bool showAppBar = false,
     String? appBarTitle,
   }) {
-    return SlSuccessStateWidget(
+    return SltSuccessStateWidget(
       key: key,
       title: '$actionName Successful!',
       message:
@@ -94,67 +59,59 @@ class SlSuccessStateWidget extends ConsumerWidget {
       onPrimaryButtonPressed: onContinue,
       autoHideDuration: autoHideDuration,
       icon: Icons.task_alt_rounded,
-      // M3 icon for task completion
       showAppBar: showAppBar,
       appBarTitle: appBarTitle ?? '$actionName Successful!',
     );
   }
 
-  /// Factory constructor for data saved successfully.
-  factory SlSuccessStateWidget.saved({
+  factory SltSuccessStateWidget.saved({
     Key? key,
-    required VoidCallback onContinue, // Typically to close dialog or navigate
+    required VoidCallback onContinue,
     String title = 'Saved Successfully',
     String? message,
     String continueButtonText = 'OK',
-    Color? accentColor, // Allow custom accent, defaults to green in original
+    Color? accentColor,
     bool showAppBar = false,
     String? appBarTitle,
   }) {
-    return SlSuccessStateWidget(
+    return SltSuccessStateWidget(
       key: key,
       title: title,
       message: message ?? 'Your changes have been saved.',
       primaryButtonText: continueButtonText,
       onPrimaryButtonPressed: onContinue,
       icon: Icons.save_alt_rounded,
-      // M3 icon for save
       accentColor: accentColor,
-      // Example: Colors.green.shade700
       showAppBar: showAppBar,
       appBarTitle: appBarTitle ?? title,
     );
   }
 
-  /// Factory constructor for a compact notification-style success message.
-  factory SlSuccessStateWidget.notification({
+  factory SltSuccessStateWidget.notification({
     Key? key,
     required String title,
     String? message,
-    required VoidCallback onDismiss, // Primary action is to dismiss
-    Duration? autoDismissDuration, // Suggestion for parent
-    IconData icon = Icons.notifications_active_outlined, // M3 icon
+    required VoidCallback onDismiss,
+    Duration? autoDismissDuration,
+    IconData icon = Icons.notifications_active_outlined,
   }) {
-    return SlSuccessStateWidget(
+    return SltSuccessStateWidget(
       key: key,
       title: title,
       message: message,
       primaryButtonText: 'Dismiss',
-      // Or an empty string if no button text is desired
       onPrimaryButtonPressed: onDismiss,
       compactMode: true,
       autoHideDuration: autoDismissDuration,
       icon: icon,
-      showIcon: true, // Typically show icon for notifications
+      showIcon: true,
     );
   }
 
-  // This helper might not be strictly necessary if SltPrimaryButton handles its own contrast.
   Color _getContrastColor(Color backgroundColor, ColorScheme colorScheme) {
     return backgroundColor.computeLuminance() > 0.5
-        ? colorScheme
-              .onSurface // Or a specific dark color like Colors.black
-        : colorScheme.surface; // Or a specific light color like Colors.white
+        ? colorScheme.onSurface
+        : colorScheme.surface;
   }
 
   Widget _buildFullSuccess(
@@ -189,7 +146,7 @@ class SlSuccessStateWidget extends ConsumerWidget {
           title,
           style: textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: effectiveSuccessColor, // Emphasize title with success color
+            color: effectiveSuccessColor,
           ),
           textAlign: TextAlign.center,
         ),
@@ -204,24 +161,22 @@ class SlSuccessStateWidget extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: AppDimens.spaceXXL),
-        // More space before primary button
         SltPrimaryButton(
-          // Replaced SlButton with SltPrimaryButton
           text: primaryButtonText,
           onPressed: onPrimaryButtonPressed,
           backgroundColor: effectiveSuccessColor,
-          // SltPrimaryButton should ideally handle its foreground color.
-          // If explicit control is needed:
-          // foregroundColor: _getContrastColor(effectiveSuccessColor, colorScheme),
+          foregroundColor: _getContrastColor(
+            effectiveSuccessColor,
+            colorScheme,
+          ),
         ),
         if (secondaryButtonText != null &&
             onSecondaryButtonPressed != null) ...[
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
-            // Replaced SlButton with SltTextButton
             text: secondaryButtonText!,
             onPressed: onSecondaryButtonPressed!,
-            foregroundColor: effectiveSuccessColor, // Align with success color
+            foregroundColor: effectiveSuccessColor,
           ),
         ],
       ],
@@ -237,7 +192,6 @@ class SlSuccessStateWidget extends ConsumerWidget {
   ) {
     return Card(
       color: effectiveSuccessColor.withOpacity(0.08),
-      // Subtle background tint
       elevation: 0,
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingL,
@@ -245,9 +199,7 @@ class SlSuccessStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        side: BorderSide(
-          color: effectiveSuccessColor.withOpacity(0.4),
-        ), // Subtle border
+        side: BorderSide(color: effectiveSuccessColor.withOpacity(0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -283,12 +235,9 @@ class SlSuccessStateWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            // "Dismiss" button for notification style
-            // Only show if primaryButtonText is not empty, allowing for icon-only notifications
             if (primaryButtonText.isNotEmpty) ...[
               const SizedBox(width: AppDimens.spaceS),
               SltTextButton(
-                // Replaced TextButton with SltTextButton
                 text: primaryButtonText,
                 onPressed: onPrimaryButtonPressed,
                 foregroundColor: effectiveSuccessColor,
@@ -304,18 +253,21 @@ class SlSuccessStateWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    // Use context.typography if available from your theme_extensions.dart
     final textTheme = theme.textTheme;
-    final effectiveSuccessColor =
-        accentColor ??
-        colorScheme.primary; // Use primary color for success by default
+    final effectiveSuccessColor = accentColor ?? colorScheme.primary;
 
-    // The `autoHideDuration` logic has been removed from this widget.
-    // The parent widget or ViewModel is responsible for handling auto-dismissal if needed.
+    // Handle auto-dismiss if needed
+    if (autoHideDuration != null && context.mounted) {
+      Future.delayed(autoHideDuration!, () {
+        if (context.mounted) {
+          onPrimaryButtonPressed();
+        }
+      });
+    }
 
-    Widget successContent;
+    Widget content;
     if (compactMode) {
-      successContent = _buildCompactSuccess(
+      content = _buildCompactSuccess(
         context,
         theme,
         textTheme,
@@ -323,7 +275,7 @@ class SlSuccessStateWidget extends ConsumerWidget {
         effectiveSuccessColor,
       );
     } else {
-      successContent = _buildFullSuccess(
+      content = _buildFullSuccess(
         context,
         theme,
         textTheme,
@@ -334,18 +286,18 @@ class SlSuccessStateWidget extends ConsumerWidget {
 
     if (showAppBar) {
       return Scaffold(
-        appBar: AppBarWithBack(
+        appBar: SltAppBar(
           title: appBarTitle ?? title,
-          // For success screens, back navigation might be handled by primary/secondary actions
-          // or simply pop the current screen.
-          onBackPressed: () => Navigator.maybePop(context),
+          showBackButton: true,
+          onBackPressed: () => context.pop(),
+          centerTitle: false,
         ),
         body: Center(
           child: Padding(
             padding: compactMode
                 ? EdgeInsets.zero
                 : const EdgeInsets.all(AppDimens.paddingL),
-            child: successContent,
+            child: content,
           ),
         ),
       );
@@ -355,11 +307,10 @@ class SlSuccessStateWidget extends ConsumerWidget {
       color: compactMode ? Colors.transparent : theme.scaffoldBackgroundColor,
       child: Center(
         child: Padding(
-          // No padding for compact mode if it's meant to be like a toast/snackbar
           padding: compactMode
               ? EdgeInsets.zero
               : const EdgeInsets.all(AppDimens.paddingL),
-          child: successContent,
+          child: content,
         ),
       ),
     );

@@ -10,7 +10,7 @@ class SltPrimaryButton extends ConsumerWidget {
   final IconData? suffixIcon;
   final String? loadingId;
   final bool isFullWidth;
-  final SlttButtonSize size;
+  final SltButtonSize size;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double? elevation;
@@ -24,7 +24,7 @@ class SltPrimaryButton extends ConsumerWidget {
     this.suffixIcon,
     this.loadingId,
     this.isFullWidth = false,
-    this.size = SlttButtonSize.medium,
+    this.size = SltButtonSize.medium,
     this.backgroundColor,
     this.foregroundColor = Colors.white, // Mặc định màu chữ là trắng
     this.elevation,
@@ -45,7 +45,7 @@ class SltPrimaryButton extends ConsumerWidget {
     final effectiveBackgroundColor =
         backgroundColor ?? theme.colorScheme.primary;
 
-    return SlttButtonBase(
+    return SltButtonBase(
       text: text,
       onPressed: onPressed,
       prefixIcon: prefixIcon,
@@ -53,7 +53,7 @@ class SltPrimaryButton extends ConsumerWidget {
       loadingId: loadingId,
       isFullWidth: isFullWidth,
       size: size,
-      variant: SlttButtonVariant.filled,
+      variant: SltButtonVariant.filled,
       backgroundColor: effectiveBackgroundColor,
       foregroundColor: effectiveForegroundColor,
       elevation: elevation,

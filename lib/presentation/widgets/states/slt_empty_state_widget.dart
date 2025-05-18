@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_dimens.dart';
 import '../buttons/slt_primary_button.dart';
 import '../buttons/slt_text_button.dart';
+import '../common/slt_app_bar.dart';
 
-enum SlEmptyStateType { general, noResults, noData, firstUse }
+enum SltEmptyStateType { general, noResults, noData, firstUse }
 
-class SlEmptyStateWidget extends ConsumerWidget {
+class SltEmptyStateWidget extends ConsumerWidget {
   final String title;
   final String? message;
   final IconData? icon;
@@ -17,9 +19,12 @@ class SlEmptyStateWidget extends ConsumerWidget {
   final Widget? customImage;
   final Color? iconColor;
   final bool showGradientBackground;
-  final SlEmptyStateType type;
+  final SltEmptyStateType type;
+  final bool showAppBar;
+  final String? appBarTitle;
+  final VoidCallback? onNavigateBack;
 
-  const SlEmptyStateWidget({
+  const SltEmptyStateWidget({
     super.key,
     required this.title,
     this.message,
@@ -30,14 +35,20 @@ class SlEmptyStateWidget extends ConsumerWidget {
     this.customImage,
     this.iconColor,
     this.showGradientBackground = false,
-    this.type = SlEmptyStateType.general,
+    this.type = SltEmptyStateType.general,
+    this.showAppBar = false,
+    this.appBarTitle,
+    this.onNavigateBack,
   });
 
-  factory SlEmptyStateWidget.noResults({
+  factory SltEmptyStateWidget.noResults({
     Key? key,
     String? message,
     VoidCallback? onResetFilters,
-  }) => SlEmptyStateWidget(
+    bool showAppBar = false,
+    String? appBarTitle,
+    VoidCallback? onNavigateBack,
+  }) => SltEmptyStateWidget(
     key: key,
     title: 'No Results Found',
     message:
@@ -46,10 +57,13 @@ class SlEmptyStateWidget extends ConsumerWidget {
     buttonText: onResetFilters != null ? 'Reset Filters' : null,
     onButtonPressed: onResetFilters,
     buttonIcon: onResetFilters != null ? Icons.filter_alt_off_outlined : null,
-    type: SlEmptyStateType.noResults,
+    type: SltEmptyStateType.noResults,
+    showAppBar: showAppBar,
+    appBarTitle: appBarTitle,
+    onNavigateBack: onNavigateBack,
   );
 
-  factory SlEmptyStateWidget.noData({
+  factory SltEmptyStateWidget.noData({
     Key? key,
     String title = 'No Data Available',
     String? message,
@@ -57,7 +71,10 @@ class SlEmptyStateWidget extends ConsumerWidget {
     VoidCallback? onButtonPressed,
     IconData icon = Icons.dataset_outlined,
     IconData? buttonIcon,
-  }) => SlEmptyStateWidget(
+    bool showAppBar = false,
+    String? appBarTitle,
+    VoidCallback? onNavigateBack,
+  }) => SltEmptyStateWidget(
     key: key,
     title: title,
     message:
@@ -69,10 +86,13 @@ class SlEmptyStateWidget extends ConsumerWidget {
     buttonIcon: buttonText != null
         ? (buttonIcon ?? Icons.add_circle_outline_rounded)
         : null,
-    type: SlEmptyStateType.noData,
+    type: SltEmptyStateType.noData,
+    showAppBar: showAppBar,
+    appBarTitle: appBarTitle,
+    onNavigateBack: onNavigateBack,
   );
 
-  factory SlEmptyStateWidget.firstUse({
+  factory SltEmptyStateWidget.firstUse({
     Key? key,
     required String title,
     required String message,
@@ -82,7 +102,10 @@ class SlEmptyStateWidget extends ConsumerWidget {
     IconData buttonIcon = Icons.arrow_forward_rounded,
     Color? iconColor,
     bool showGradientBackground = true,
-  }) => SlEmptyStateWidget(
+    bool showAppBar = false,
+    String? appBarTitle,
+    VoidCallback? onNavigateBack,
+  }) => SltEmptyStateWidget(
     key: key,
     title: title,
     message: message,
@@ -92,7 +115,10 @@ class SlEmptyStateWidget extends ConsumerWidget {
     buttonIcon: buttonIcon,
     showGradientBackground: showGradientBackground,
     iconColor: iconColor,
-    type: SlEmptyStateType.firstUse,
+    type: SltEmptyStateType.firstUse,
+    showAppBar: showAppBar,
+    appBarTitle: appBarTitle,
+    onNavigateBack: onNavigateBack,
   );
 
   @override
@@ -102,7 +128,7 @@ class SlEmptyStateWidget extends ConsumerWidget {
     final textTheme = theme.textTheme;
     final effectiveIconColor = iconColor ?? colorScheme.primary;
 
-    return Center(
+    final Widget mainContent = Center(
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingXL),
         child: Column(
@@ -126,6 +152,27 @@ class SlEmptyStateWidget extends ConsumerWidget {
         ),
       ),
     );
+
+    if (showAppBar) {
+      return Scaffold(
+        appBar: SltAppBar(
+          title: appBarTitle ?? title,
+          showBackButton: true,
+          onBackPressed: () {
+            if (onNavigateBack != null) {
+              onNavigateBack!();
+              return;
+            }
+
+            context.pop();
+          },
+          centerTitle: false,
+        ),
+        body: mainContent,
+      );
+    }
+
+    return Material(color: theme.scaffoldBackgroundColor, child: mainContent);
   }
 
   Widget _buildImageOrIcon(Color effectiveIconColor) {
@@ -201,7 +248,7 @@ class SlEmptyStateWidget extends ConsumerWidget {
   }
 
   Widget _buildButtonWidget(ColorScheme colorScheme) {
-    if (type == SlEmptyStateType.noResults) {
+    if (type == SltEmptyStateType.noResults) {
       return SltTextButton(
         text: buttonText!,
         onPressed: onButtonPressed,

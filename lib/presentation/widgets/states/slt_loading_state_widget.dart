@@ -1,11 +1,11 @@
-// lib/presentation/widgets/states/slt_loading_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_dimens.dart';
+import '../common/slt_app_bar.dart';
 
-/// Types of loading animations available
 enum LoadingIndicatorType {
   circular,
   pulse,
@@ -15,36 +15,19 @@ enum LoadingIndicatorType {
   circularProgress,
 }
 
-/// Size options for loading indicators
 enum SltLoadingSize { small, medium, large }
 
-/// A widget that displays different types of loading indicators with optional message
-/// and fullscreen overlay capabilities. Can be used both as a standalone loading indicator
-/// or as a full loading state widget.
 class SltLoadingStateWidget extends ConsumerWidget {
-  /// Optional message to display below the loading indicator
   final String? message;
-
-  /// Type of loading animation to display
   final LoadingIndicatorType type;
-
-  /// Size of the loading indicator
   final SltLoadingSize size;
-
-  /// Custom color for the loading indicator
   final Color? color;
-
-  /// Whether to display as a fullscreen overlay
   final bool fullScreen;
-
-  /// Optional background widget for fullscreen mode
   final Widget? backgroundWidget;
-
-  /// Whether the loading state can be dismissed
   final bool dismissible;
-
-  /// Callback when dismissed (only used if dismissible is true)
   final VoidCallback? onDismiss;
+  final bool showAppBar;
+  final String? appBarTitle;
 
   const SltLoadingStateWidget({
     super.key,
@@ -56,9 +39,10 @@ class SltLoadingStateWidget extends ConsumerWidget {
     this.backgroundWidget,
     this.dismissible = false,
     this.onDismiss,
+    this.showAppBar = false,
+    this.appBarTitle,
   });
 
-  /// Factory constructor for full-screen loading overlay
   factory SltLoadingStateWidget.fullScreen({
     String? message,
     Color? color,
@@ -66,6 +50,8 @@ class SltLoadingStateWidget extends ConsumerWidget {
     Widget? background,
     bool dismissible = false,
     VoidCallback? onDismiss,
+    bool showAppBar = false,
+    String? appBarTitle,
   }) {
     return SltLoadingStateWidget(
       message: message,
@@ -76,10 +62,11 @@ class SltLoadingStateWidget extends ConsumerWidget {
       backgroundWidget: background,
       dismissible: dismissible,
       onDismiss: onDismiss,
+      showAppBar: showAppBar,
+      appBarTitle: appBarTitle,
     );
   }
 
-  /// Factory constructor for small loading indicator
   factory SltLoadingStateWidget.small({
     Color? color,
     LoadingIndicatorType type = LoadingIndicatorType.threeBounce,
@@ -91,16 +78,22 @@ class SltLoadingStateWidget extends ConsumerWidget {
     );
   }
 
-  /// Factory constructor for loading indicator with a message
   factory SltLoadingStateWidget.withMessage(
     String message, {
     LoadingIndicatorType type = LoadingIndicatorType.threeBounce,
     Color? color,
+    bool showAppBar = false,
+    String? appBarTitle,
   }) {
-    return SltLoadingStateWidget(message: message, type: type, color: color);
+    return SltLoadingStateWidget(
+      message: message,
+      type: type,
+      color: color,
+      showAppBar: showAppBar,
+      appBarTitle: appBarTitle,
+    );
   }
 
-  /// Get the size value based on the selected size enum
   double _getSizeValue() {
     switch (size) {
       case SltLoadingSize.small:
@@ -112,7 +105,6 @@ class SltLoadingStateWidget extends ConsumerWidget {
     }
   }
 
-  /// Build the appropriate loading indicator based on the type
   Widget _buildLoadingIndicator(double indicatorSize, Color indicatorColor) {
     switch (type) {
       case LoadingIndicatorType.circular:
@@ -149,13 +141,11 @@ class SltLoadingStateWidget extends ConsumerWidget {
     final indicatorColor = color ?? colorScheme.primary;
     final double actualIndicatorSize = _getSizeValue();
 
-    // Create the loading indicator
     final Widget loadingIndicator = _buildLoadingIndicator(
       actualIndicatorSize,
       indicatorColor,
     );
 
-    // Create the main content with loading indicator and optional message
     final Widget content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -177,22 +167,50 @@ class SltLoadingStateWidget extends ConsumerWidget {
       ],
     );
 
-    // Return centered content if not fullscreen
-    if (!fullScreen) {
-      return Center(child: content);
+    final Widget centeredContent = Center(child: content);
+
+    if (showAppBar) {
+      return Scaffold(
+        appBar: SltAppBar(
+          title: appBarTitle ?? 'Loading',
+          showBackButton: dismissible,
+          onBackPressed: () {
+            if (onDismiss != null) {
+              onDismiss!();
+              return;
+            }
+
+            context.pop();
+          },
+          centerTitle: false,
+        ),
+        body: fullScreen
+            ? Stack(
+                children: [
+                  backgroundWidget ??
+                      Container(
+                        color: colorScheme.surface.withOpacity(
+                          AppDimens.opacityHigh,
+                        ),
+                      ),
+                  centeredContent,
+                ],
+              )
+            : centeredContent,
+      );
     }
 
-    // Return fullscreen overlay with content and optional dismiss button
+    if (!fullScreen) {
+      return centeredContent;
+    }
+
     return Stack(
       children: [
-        // Background
         backgroundWidget ??
             Container(
               color: colorScheme.surface.withOpacity(AppDimens.opacityHigh),
             ),
-        // Centered loading content
-        Center(child: content),
-        // Optional dismiss button
+        centeredContent,
         if (dismissible && onDismiss != null)
           Positioned(
             top: AppDimens.paddingXL,
@@ -208,7 +226,6 @@ class SltLoadingStateWidget extends ConsumerWidget {
   }
 }
 
-/// Helper widget to simplify using SltLoadingStateWidget in various scenarios
 class SltLoadingIndicator extends ConsumerWidget {
   final double size;
   final Color? color;

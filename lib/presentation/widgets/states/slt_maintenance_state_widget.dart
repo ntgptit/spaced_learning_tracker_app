@@ -1,65 +1,33 @@
-// lib/presentation/widgets/common/state/sl_maintenance_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart'; // For improved date formatting
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/app_bar_with_back.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_outlined_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
-/// A widget to display when the application or a feature is undergoing maintenance.
-///
-/// This widget is designed to be flexible, offering several factory constructors
-/// for common maintenance scenarios like generic messages, specific reasons,
-/// or scheduled downtimes. It supports displaying estimated completion times
-/// and provides an optional action button (e.g., "Check Again").
-///
-/// It can be displayed as a full screen with an AppBar or as an embedded component.
-class SlMaintenanceStateWidget extends ConsumerWidget {
-  /// The main title of the maintenance message (e.g., "Under Maintenance").
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_outlined_button.dart';
+import '../buttons/slt_text_button.dart';
+import '../common/slt_app_bar.dart';
+
+class SltMaintenanceStateWidget extends ConsumerWidget {
   final String title;
-
-  /// The detailed message explaining the maintenance.
   final String message;
-
-  /// A pre-formatted string for the estimated time. If null, it might be calculated.
   final String? estimatedTimeMessageText;
-
-  /// Callback for the action button (e.g., to check if maintenance is complete).
   final VoidCallback? onRetryPressed;
-
-  /// Text for the action button. Defaults to "Check Again".
   final String? retryButtonText;
-
-  /// Whether to show the main maintenance icon/image.
   final bool showImage;
-
-  /// A custom widget to display instead of the default icon.
   final Widget? customImage;
-
-  /// Whether to display the estimated time information.
   final bool showEstimatedTime;
-
-  /// The specific date and time when maintenance is expected to complete.
   final DateTime? estimatedCompletionTime;
-
-  /// The icon to display if `customImage` is null and `showImage` is true.
   final IconData icon;
-
-  /// If true, wraps the content in a Scaffold with an AppBar.
   final bool showAppBar;
-
-  /// The title for the AppBar if `showAppBar` is true. Defaults to `title`.
   final String? appBarTitle;
-
-  /// Callback for the back button in the AppBar or a standalone "Go Back" button.
   final VoidCallback? onNavigateBack;
 
-  const SlMaintenanceStateWidget({
+  const SltMaintenanceStateWidget({
     super.key,
     this.title = 'Under Maintenance',
     this.message =
-    'We\'re currently making some improvements. Please check back shortly.',
+        'We\'re currently making some improvements. Please check back shortly.',
     this.estimatedTimeMessageText,
     this.onRetryPressed,
     this.retryButtonText = 'Check Again',
@@ -67,24 +35,23 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
     this.customImage,
     this.showEstimatedTime = true,
     this.estimatedCompletionTime,
-    this.icon = Icons.build_rounded, // Default Material 3 icon
+    this.icon = Icons.build_rounded,
     this.showAppBar = false,
     this.appBarTitle,
     this.onNavigateBack,
   });
 
-  /// Factory constructor for a generic maintenance message.
-  factory SlMaintenanceStateWidget.generic({
+  factory SltMaintenanceStateWidget.generic({
     Key? key,
     String title = 'System Maintenance',
     String message =
-    'Our services are temporarily unavailable as we perform scheduled maintenance. We apologize for any inconvenience.',
+        'Our services are temporarily unavailable as we perform scheduled maintenance. We apologize for any inconvenience.',
     VoidCallback? onRetry,
     bool showAppBar = false,
     String? appBarTitle,
     VoidCallback? onNavigateBack,
   }) {
-    return SlMaintenanceStateWidget(
+    return SltMaintenanceStateWidget(
       key: key,
       title: title,
       message: message,
@@ -96,8 +63,7 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
     );
   }
 
-  /// Factory constructor for maintenance with a specific reason provided.
-  factory SlMaintenanceStateWidget.withReason({
+  factory SltMaintenanceStateWidget.withReason({
     Key? key,
     required String reason,
     String title = 'System Maintenance',
@@ -108,11 +74,11 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
     String? appBarTitle,
     VoidCallback? onNavigateBack,
   }) {
-    return SlMaintenanceStateWidget(
+    return SltMaintenanceStateWidget(
       key: key,
       title: title,
       message:
-      'We\'re temporarily down for maintenance: $reason. We expect to be back soon.',
+          'We\'re temporarily down for maintenance: $reason. We expect to be back soon.',
       estimatedCompletionTime: estimatedEndTime,
       onRetryPressed: onRetry,
       retryButtonText: retryText,
@@ -124,11 +90,7 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
     );
   }
 
-  /// Factory constructor for scheduled maintenance periods.
-  ///
-  /// Automatically determines the message and icon based on whether the maintenance
-  /// is upcoming, active, or completed.
-  factory SlMaintenanceStateWidget.scheduled({
+  factory SltMaintenanceStateWidget.scheduled({
     Key? key,
     required DateTime startTime,
     required DateTime endTime,
@@ -145,20 +107,19 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
 
     final DateFormat timeFormatter = DateFormat.jm(); // Example: 5:08 PM
     final DateFormat dateFormatter =
-    DateFormat.yMMMd(); // Example: May 17, 2025
+        DateFormat.yMMMd(); // Example: May 17, 2025
 
     if (isActive) {
       effectiveMessage =
-      'Scheduled maintenance is currently in progress. We appreciate your patience.';
+          'Scheduled maintenance is currently in progress. We appreciate your patience.';
     } else if (now.isBefore(startTime)) {
       effectiveMessage =
-      'We will be undergoing scheduled maintenance starting at ${timeFormatter
-          .format(startTime)} on ${dateFormatter.format(startTime)}.';
+          'We will be undergoing scheduled maintenance starting at ${timeFormatter.format(startTime)} on ${dateFormatter.format(startTime)}.';
     } else {
       effectiveMessage = 'Scheduled maintenance has been completed.';
     }
 
-    return SlMaintenanceStateWidget(
+    return SltMaintenanceStateWidget(
       key: key,
       title: title,
       message: details != null
@@ -181,7 +142,6 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    // Use context.typography if defined for custom typography sets
     final textTheme = theme.textTheme;
 
     String displayTimeMessage = estimatedTimeMessageText ?? '';
@@ -196,18 +156,14 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
       } else if (difference.inDays > 0) {
         final hours = difference.inHours % 24;
         displayTimeMessage =
-        'Estimated completion: In ${difference.inDays} day(s)${hours > 0
-            ? ' and $hours hour(s)'
-            : ''}.';
+            'Estimated completion: In ${difference.inDays} day(s)${hours > 0 ? ' and $hours hour(s)' : ''}.';
       } else if (difference.inHours > 0) {
         final minutes = difference.inMinutes % 60;
         displayTimeMessage =
-        'Estimated time remaining: ~${difference.inHours} hour(s)${minutes > 0
-            ? ' and $minutes minute(s)'
-            : ''}.';
+            'Estimated time remaining: ~${difference.inHours} hour(s)${minutes > 0 ? ' and $minutes minute(s)' : ''}.';
       } else if (difference.inMinutes > 0) {
         displayTimeMessage =
-        'Estimated time remaining: ~${difference.inMinutes} minute(s).';
+            'Estimated time remaining: ~${difference.inMinutes} minute(s).';
       } else {
         // This case handles remaining time less than a minute or very close to completion
         displayTimeMessage = 'Maintenance should be complete very soon.';
@@ -215,7 +171,7 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
     }
 
     // The main content of the maintenance screen
-    Widget maintenanceContent = Column(
+    final Widget maintenanceContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -276,7 +232,7 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
         ],
         if (onRetryPressed != null && retryButtonText != null) ...[
           const SizedBox(height: AppDimens.spaceXL),
-          SlOutlinedButton(
+          SltOutlinedButton(
             text: retryButtonText!,
             onPressed: onRetryPressed!,
             prefixIcon: Icons.refresh_rounded,
@@ -297,9 +253,18 @@ class SlMaintenanceStateWidget extends ConsumerWidget {
 
     if (showAppBar) {
       return Scaffold(
-        appBar: AppBarWithBack(
+        appBar: SltAppBar(
           title: appBarTitle ?? title,
-          onBackPressed: onNavigateBack ?? () => Navigator.maybePop(context),
+          showBackButton: true,
+          onBackPressed: () {
+            if (onNavigateBack != null) {
+              onNavigateBack!();
+              return;
+            }
+
+            context.pop();
+          },
+          centerTitle: false,
         ),
         body: Center(
           child: Padding(

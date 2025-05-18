@@ -128,7 +128,6 @@ class SltDatePickerDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     // This build method is for wrapping Flutter's DatePickerDialog
     // The direct styling of buttons inside DatePickerDialog is limited.

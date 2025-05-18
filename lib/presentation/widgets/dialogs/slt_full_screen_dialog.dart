@@ -7,7 +7,7 @@ import '../buttons/slt_dialog_button_bar.dart';
 import '../buttons/slt_primary_button.dart';
 
 /// A full-screen dialog with Material 3 design and customizable options.
-class SlFullScreenDialog extends ConsumerWidget {
+class SltFullScreenDialog extends ConsumerWidget {
   final String title;
   final Widget body;
   final List<Widget>? actions;
@@ -25,7 +25,7 @@ class SlFullScreenDialog extends ConsumerWidget {
   final EdgeInsetsGeometry bodyPadding; // Renamed for clarity
   final PreferredSizeWidget? customAppBar; // Allow custom AppBar
 
-  const SlFullScreenDialog({
+  const SltFullScreenDialog({
     super.key,
     required this.title,
     required this.body,
@@ -46,13 +46,13 @@ class SlFullScreenDialog extends ConsumerWidget {
   });
 
   // Factory for a simple informational full-screen dialog
-  factory SlFullScreenDialog.info({
+  factory SltFullScreenDialog.info({
     required String title,
     required Widget contentBody,
     String closeButtonText = 'Done',
     VoidCallback? onCloseAction,
   }) {
-    return SlFullScreenDialog(
+    return SltFullScreenDialog(
       title: title,
       body: contentBody,
       actions: [
@@ -66,14 +66,14 @@ class SlFullScreenDialog extends ConsumerWidget {
   }
 
   // Factory for a form editing full-screen dialog
-  factory SlFullScreenDialog.form({
+  factory SltFullScreenDialog.form({
     required String title,
     required Widget formBody,
     required List<Widget> formActions, // e.g., Save, Cancel buttons
     bool resizeToAvoidBottomInset = true,
     IconData leadingIcon = Icons.arrow_back_rounded, // Back arrow for forms
   }) {
-    return SlFullScreenDialog(
+    return SltFullScreenDialog(
       title: title,
       body: SingleChildScrollView(
         // Ensure form is scrollable
@@ -89,13 +89,13 @@ class SlFullScreenDialog extends ConsumerWidget {
   }
 
   // Factory for a detailed view full-screen dialog
-  factory SlFullScreenDialog.detail({
+  factory SltFullScreenDialog.detail({
     required String title,
     required Widget detailBody,
     List<Widget>? appBarActions, // Actions specific to the detail view
     IconData leadingIcon = Icons.arrow_back_rounded,
   }) {
-    return SlFullScreenDialog(
+    return SltFullScreenDialog(
       title: title,
       body: detailBody,
       // Body might be complex, let user handle scrolling
@@ -237,7 +237,7 @@ class SlFullScreenDialog extends ConsumerWidget {
     return Navigator.of(context).push<T>(
       MaterialPageRoute<T>(
         fullscreenDialog: true, // This makes it a full-screen dialog route
-        builder: (BuildContext context) => SlFullScreenDialog(
+        builder: (BuildContext context) => SltFullScreenDialog(
           title: title,
           body: body,
           actions: actions,

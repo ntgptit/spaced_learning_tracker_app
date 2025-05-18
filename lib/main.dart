@@ -1,44 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:spaced_learning_app/core/router/app_routes.dart';
+import 'package:spaced_learning_app/core/theme/app_theme.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/theme_viewmodel.dart';
 
-import 'core/di/providers.dart';
-
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize daily task checker if needed
-  final prefs = await SharedPreferences.getInstance();
-  final isCheckerActive = prefs.getBool('daily_task_checker_active') ?? false;
-
-  final container = ProviderContainer();
-
-  // Khởi tạo trạng thái xác thực ngay khi ứng dụng khởi động
-  await container.read(authStateProvider.future);
-
-  // if (isCheckerActive) {
-  //   // Initialize the daily task checker
-  //   await container.read(dailyTaskCheckerProvider.future);
-  // }
-
-  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
+  runApp(const ProviderScope(child: SpacedLearningApp()));
 }
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class SpacedLearningApp extends ConsumerWidget {
+  const SpacedLearningApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeStateProvider);
-    final router = ref.watch(routerProvider);
+    // Watch theme mode changes
+    final themeMode = ref.watch(themeStateProvider);
 
     return MaterialApp.router(
-      title: 'Spaced Learning App',
-      theme: ref.watch(lightThemeProvider),
-      darkTheme: ref.watch(darkThemeProvider),
+      title: 'Spaced Learning',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      routerConfig: router,
+      routerConfig: AppRoutes.router,
     );
   }
 }

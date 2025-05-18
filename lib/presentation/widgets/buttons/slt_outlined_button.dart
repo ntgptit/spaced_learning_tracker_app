@@ -10,7 +10,7 @@ class SltOutlinedButton extends ConsumerWidget {
   final IconData? suffixIcon;
   final String? loadingId;
   final bool isFullWidth;
-  final SlttButtonSize size;
+  final SltButtonSize size;
   final Color? foregroundColor;
   final BorderSide? borderSide;
   final double? borderRadius;
@@ -23,7 +23,7 @@ class SltOutlinedButton extends ConsumerWidget {
     this.suffixIcon,
     this.loadingId,
     this.isFullWidth = false,
-    this.size = SlttButtonSize.medium,
+    this.size = SltButtonSize.medium,
     this.foregroundColor,
     this.borderSide,
     this.borderRadius,
@@ -31,7 +31,7 @@ class SltOutlinedButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SlttButtonBase(
+    return SltButtonBase(
       text: text,
       onPressed: onPressed,
       prefixIcon: prefixIcon,
@@ -39,7 +39,7 @@ class SltOutlinedButton extends ConsumerWidget {
       loadingId: loadingId,
       isFullWidth: isFullWidth,
       size: size,
-      variant: SlttButtonVariant.outlined,
+      variant: SltButtonVariant.outlined,
       foregroundColor: foregroundColor,
       borderSide: borderSide,
       borderRadius: borderRadius,

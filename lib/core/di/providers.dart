@@ -1,12 +1,10 @@
 import 'package:event_bus/event_bus.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/core/network/api_client.dart';
 import 'package:spaced_learning_app/core/services/storage_service.dart';
 import 'package:spaced_learning_app/data/repositories/auth_repository_impl.dart';
 import 'package:spaced_learning_app/data/repositories/book_repository_impl.dart';
-import 'package:spaced_learning_app/data/repositories/learning_progress_repository_impl.dart';
 import 'package:spaced_learning_app/data/repositories/learning_stats_repository_impl.dart';
 import 'package:spaced_learning_app/data/repositories/module_repository_impl.dart';
 import 'package:spaced_learning_app/data/repositories/progress_repository_impl.dart';
@@ -14,7 +12,6 @@ import 'package:spaced_learning_app/data/repositories/repetition_repository_impl
 import 'package:spaced_learning_app/data/repositories/user_repository_impl.dart';
 import 'package:spaced_learning_app/domain/repositories/auth_repository.dart';
 import 'package:spaced_learning_app/domain/repositories/book_repository.dart';
-import 'package:spaced_learning_app/domain/repositories/learning_progress_repository.dart';
 import 'package:spaced_learning_app/domain/repositories/learning_stats_repository.dart';
 import 'package:spaced_learning_app/domain/repositories/module_repository.dart';
 import 'package:spaced_learning_app/domain/repositories/progress_repository.dart';
@@ -22,9 +19,7 @@ import 'package:spaced_learning_app/domain/repositories/repetition_repository.da
 import 'package:spaced_learning_app/domain/repositories/user_repository.dart';
 
 import '../../data/repositories/learning_repository_impl.dart';
-import '../../data/repositories/progress_repository_impl.dart';
 import '../../domain/repositories/learning_repository.dart';
-import '../network/api_client.dart';
 
 part 'providers.g.dart';
 

@@ -6,15 +6,13 @@ import 'package:spaced_learning_app/core/constants/api_endpoints.dart';
 import 'package:spaced_learning_app/core/di/providers.dart';
 import 'package:spaced_learning_app/core/services/storage_service.dart';
 
-import '../../services/storage_service.dart';
-
 class AuthInterceptor extends Interceptor {
   final StorageService _storageService;
   final Dio _dio = Dio();
   bool _isRefreshing = false;
 
   AuthInterceptor()
-      : _storageService = ProviderContainer().read(storageServiceProvider);
+    : _storageService = ProviderContainer().read(storageServiceProvider);
 
   @override
   void onRequest(

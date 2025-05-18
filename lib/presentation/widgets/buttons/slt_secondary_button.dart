@@ -10,7 +10,7 @@ class SltSecondaryButton extends ConsumerWidget {
   final IconData? suffixIcon;
   final String? loadingId;
   final bool isFullWidth;
-  final SlttButtonSize size;
+  final SltButtonSize size;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double? elevation;
@@ -24,7 +24,7 @@ class SltSecondaryButton extends ConsumerWidget {
     this.suffixIcon,
     this.loadingId,
     this.isFullWidth = false,
-    this.size = SlttButtonSize.medium,
+    this.size = SltButtonSize.medium,
     this.backgroundColor,
     this.foregroundColor,
     this.elevation,
@@ -33,7 +33,7 @@ class SltSecondaryButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SlttButtonBase(
+    return SltButtonBase(
       text: text,
       onPressed: onPressed,
       prefixIcon: prefixIcon,
@@ -41,7 +41,7 @@ class SltSecondaryButton extends ConsumerWidget {
       loadingId: loadingId,
       isFullWidth: isFullWidth,
       size: size,
-      variant: SlttButtonVariant.tonal,
+      variant: SltButtonVariant.tonal,
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       elevation: elevation,

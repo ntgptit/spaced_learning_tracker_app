@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/extensions/color_extensions.dart';
 import '../../../core/theme/app_dimens.dart';
+import '../../../core/theme/app_theme.dart';
 import '../buttons/slt_dialog_button_bar.dart';
 import '../buttons/slt_primary_button.dart';
 import '../buttons/slt_text_button.dart';

@@ -1,408 +1,359 @@
-// lib/core/extensions/color_extensions.dart
 import 'package:flutter/material.dart';
 
-/// Extension for semantic colors in the app theme
-class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
-  // Score and rating colors
-  final Color excellentColor;
-  final Color goodColor;
-  final Color averageColor;
-  final Color belowAverageColor;
-  final Color poorColor;
+import '../theme/app_colors.dart';
 
-  // Status colors
-  final Color successColor;
-  final Color warningColor;
-  final Color errorColor;
-  final Color infoColor;
-  final Color neutralColor;
-
-  // Functional colors
-  final Color disabledColor;
-  final Color highlightColor;
-  final Color selectedColor;
-  final Color unselectedColor;
-
-  // Custom semantic colors
-  final Color newItemColor;
-  final Color updatedItemColor;
-  final Color deletedItemColor;
-  final Color archivedColor;
-
-  // Learning specific colors
-  final Color masteringColor; // For fully mastered content
-  final Color learningColor; // For in-progress learning
-  final Color needsReviewColor; // For content that needs review
-  final Color notStartedColor; // For content not yet started
-
-  const SemanticColorExtension({
-    required this.excellentColor,
-    required this.goodColor,
-    required this.averageColor,
-    required this.belowAverageColor,
-    required this.poorColor,
-    required this.successColor,
-    required this.warningColor,
-    required this.errorColor,
-    required this.infoColor,
-    required this.neutralColor,
-    required this.disabledColor,
-    required this.highlightColor,
-    required this.selectedColor,
-    required this.unselectedColor,
-    required this.newItemColor,
-    required this.updatedItemColor,
-    required this.deletedItemColor,
-    required this.archivedColor,
-    required this.masteringColor,
-    required this.learningColor,
-    required this.needsReviewColor,
-    required this.notStartedColor,
-  });
-
-  /// Default light theme semantic colors
-  factory SemanticColorExtension.light() {
-    return const SemanticColorExtension(
-      // Score colors
-      excellentColor: Color(0xFF1E8E3E),
-      // Green
-      goodColor: Color(0xFF188038),
-      // Light green
-      averageColor: Color(0xFFFABC05),
-      // Amber
-      belowAverageColor: Color(0xFFF59E0B),
-      // Orange
-      poorColor: Color(0xFFD93025),
-      // Red
-
-      // Status colors
-      successColor: Color(0xFF1E8E3E),
-      // Green
-      warningColor: Color(0xFFFFA000),
-      // Orange
-      errorColor: Color(0xFFD93025),
-      // Red
-      infoColor: Color(0xFF1A73E8),
-      // Blue
-      neutralColor: Color(0xFF5F6368),
-      // Grey
-
-      // Functional colors
-      disabledColor: Color(0xFFDADCE0),
-      // Light grey
-      highlightColor: Color(0xFFE8F0FE),
-      // Light blue highlight
-      selectedColor: Color(0xFF1A73E8),
-      // Blue for selected items
-      unselectedColor: Color(0xFF5F6368),
-      // Grey for unselected items
-
-      // Custom semantic colors
-      newItemColor: Color(0xFF1A73E8),
-      // Blue
-      updatedItemColor: Color(0xFF188038),
-      // Green
-      deletedItemColor: Color(0xFFEA4335),
-      // Red
-      archivedColor: Color(0xFF5F6368),
-      // Grey
-
-      // Learning specific colors
-      masteringColor: Color(0xFF1E8E3E),
-      // Mastering (Green)
-      learningColor: Color(0xFF1A73E8),
-      // Learning (Blue)
-      needsReviewColor: Color(0xFFFA8C16),
-      // Needs review (Orange)
-      notStartedColor: Color(0xFF5F6368), // Not started (Grey)
+/// Extension to manipulate colors
+extension ColorExtension on Color {
+  /// Create a new color with modified values
+  Color withValues({int? red, int? green, int? blue, double? alpha}) {
+    return Color.fromARGB(
+      alpha != null ? (alpha * 255).round() : this.alpha,
+      red ?? this.red,
+      green ?? this.green,
+      blue ?? this.blue,
     );
   }
 
-  /// Default dark theme semantic colors
-  factory SemanticColorExtension.dark() {
-    return const SemanticColorExtension(
-      // Score colors
-      excellentColor: Color(0xFF81C995),
-      // Lighter green
-      goodColor: Color(0xFF7CB342),
-      // Lighter green
-      averageColor: Color(0xFFFDD663),
-      // Lighter amber
-      belowAverageColor: Color(0xFFFBBD06),
-      // Lighter orange
-      poorColor: Color(0xFFF28B82),
-      // Lighter red
-
-      // Status colors
-      successColor: Color(0xFF81C995),
-      // Lighter green
-      warningColor: Color(0xFFFFCA64),
-      // Lighter orange
-      errorColor: Color(0xFFF28B82),
-      // Lighter red
-      infoColor: Color(0xFF8AB4F8),
-      // Lighter blue
-      neutralColor: Color(0xFFBDC1C6),
-      // Lighter grey
-
-      // Functional colors
-      disabledColor: Color(0xFF5F6368),
-      // Dark grey
-      highlightColor: Color(0xFF1F2532),
-      // Dark blue highlight
-      selectedColor: Color(0xFF8AB4F8),
-      // Lighter blue
-      unselectedColor: Color(0xFFBDC1C6),
-      // Light grey
-
-      // Custom semantic colors
-      newItemColor: Color(0xFF8AB4F8),
-      // Lighter blue
-      updatedItemColor: Color(0xFF81C995),
-      // Lighter green
-      deletedItemColor: Color(0xFFF28B82),
-      // Lighter red
-      archivedColor: Color(0xFFBDC1C6),
-      // Light grey
-
-      // Learning specific colors
-      masteringColor: Color(0xFF81C995),
-      // Lighter green
-      learningColor: Color(0xFF8AB4F8),
-      // Lighter blue
-      needsReviewColor: Color(0xFFFFC06A),
-      // Lighter orange
-      notStartedColor: Color(0xFFBDC1C6), // Light grey
+  /// Create a new color with modified brightness
+  Color withBrightness(double factor) {
+    assert(
+      factor >= -1.0 && factor <= 1.0,
+      'Factor must be between -1.0 and 1.0',
     );
-  }
 
-  /// Helper method to get appropriate color for score value
-  Color getScoreColor(double score, {double maxScore = 100}) {
-    final percentage = score / maxScore;
+    int r = red;
+    int g = green;
+    int b = blue;
 
-    if (percentage >= 0.9) return excellentColor;
-    if (percentage >= 0.7) return goodColor;
-    if (percentage >= 0.5) return averageColor;
-    if (percentage >= 0.3) return belowAverageColor;
-    return poorColor;
-  }
-
-  /// Helper method to get color based on learning status
-  Color getLearningStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'mastered':
-      case 'mastering':
-      case 'completed':
-        return masteringColor;
-      case 'learning':
-      case 'in progress':
-        return learningColor;
-      case 'needs review':
-      case 'review':
-        return needsReviewColor;
-      case 'not started':
-      default:
-        return notStartedColor;
-    }
-  }
-
-  /// Helper method to get appropriate color for content status
-  Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'success':
-      case 'succeeded':
-      case 'completed':
-        return successColor;
-      case 'warning':
-      case 'pending':
-        return warningColor;
-      case 'error':
-      case 'failed':
-        return errorColor;
-      case 'info':
-      case 'information':
-        return infoColor;
-      default:
-        return neutralColor;
-    }
-  }
-
-  @override
-  ThemeExtension<SemanticColorExtension> copyWith({
-    Color? excellentColor,
-    Color? goodColor,
-    Color? averageColor,
-    Color? belowAverageColor,
-    Color? poorColor,
-    Color? successColor,
-    Color? warningColor,
-    Color? errorColor,
-    Color? infoColor,
-    Color? neutralColor,
-    Color? disabledColor,
-    Color? highlightColor,
-    Color? selectedColor,
-    Color? unselectedColor,
-    Color? newItemColor,
-    Color? updatedItemColor,
-    Color? deletedItemColor,
-    Color? archivedColor,
-    Color? masteringColor,
-    Color? learningColor,
-    Color? needsReviewColor,
-    Color? notStartedColor,
-  }) {
-    return SemanticColorExtension(
-      excellentColor: excellentColor ?? this.excellentColor,
-      goodColor: goodColor ?? this.goodColor,
-      averageColor: averageColor ?? this.averageColor,
-      belowAverageColor: belowAverageColor ?? this.belowAverageColor,
-      poorColor: poorColor ?? this.poorColor,
-      successColor: successColor ?? this.successColor,
-      warningColor: warningColor ?? this.warningColor,
-      errorColor: errorColor ?? this.errorColor,
-      infoColor: infoColor ?? this.infoColor,
-      neutralColor: neutralColor ?? this.neutralColor,
-      disabledColor: disabledColor ?? this.disabledColor,
-      highlightColor: highlightColor ?? this.highlightColor,
-      selectedColor: selectedColor ?? this.selectedColor,
-      unselectedColor: unselectedColor ?? this.unselectedColor,
-      newItemColor: newItemColor ?? this.newItemColor,
-      updatedItemColor: updatedItemColor ?? this.updatedItemColor,
-      deletedItemColor: deletedItemColor ?? this.deletedItemColor,
-      archivedColor: archivedColor ?? this.archivedColor,
-      masteringColor: masteringColor ?? this.masteringColor,
-      learningColor: learningColor ?? this.learningColor,
-      needsReviewColor: needsReviewColor ?? this.needsReviewColor,
-      notStartedColor: notStartedColor ?? this.notStartedColor,
-    );
-  }
-
-  @override
-  ThemeExtension<SemanticColorExtension> lerp(
-    ThemeExtension<SemanticColorExtension>? other,
-    double t,
-  ) {
-    if (other is! SemanticColorExtension) {
-      return this;
+    if (factor < 0) {
+      // Darken
+      r = (r * (1 + factor)).round().clamp(0, 255);
+      g = (g * (1 + factor)).round().clamp(0, 255);
+      b = (b * (1 + factor)).round().clamp(0, 255);
+    } else if (factor > 0) {
+      // Lighten
+      r = (r + (255 - r) * factor).round().clamp(0, 255);
+      g = (g + (255 - g) * factor).round().clamp(0, 255);
+      b = (b + (255 - b) * factor).round().clamp(0, 255);
     }
 
-    return SemanticColorExtension(
-      excellentColor: Color.lerp(excellentColor, other.excellentColor, t)!,
-      goodColor: Color.lerp(goodColor, other.goodColor, t)!,
-      averageColor: Color.lerp(averageColor, other.averageColor, t)!,
-      belowAverageColor: Color.lerp(
-        belowAverageColor,
-        other.belowAverageColor,
-        t,
-      )!,
-      poorColor: Color.lerp(poorColor, other.poorColor, t)!,
-      successColor: Color.lerp(successColor, other.successColor, t)!,
-      warningColor: Color.lerp(warningColor, other.warningColor, t)!,
-      errorColor: Color.lerp(errorColor, other.errorColor, t)!,
-      infoColor: Color.lerp(infoColor, other.infoColor, t)!,
-      neutralColor: Color.lerp(neutralColor, other.neutralColor, t)!,
-      disabledColor: Color.lerp(disabledColor, other.disabledColor, t)!,
-      highlightColor: Color.lerp(highlightColor, other.highlightColor, t)!,
-      selectedColor: Color.lerp(selectedColor, other.selectedColor, t)!,
-      unselectedColor: Color.lerp(unselectedColor, other.unselectedColor, t)!,
-      newItemColor: Color.lerp(newItemColor, other.newItemColor, t)!,
-      updatedItemColor: Color.lerp(
-        updatedItemColor,
-        other.updatedItemColor,
-        t,
-      )!,
-      deletedItemColor: Color.lerp(
-        deletedItemColor,
-        other.deletedItemColor,
-        t,
-      )!,
-      archivedColor: Color.lerp(archivedColor, other.archivedColor, t)!,
-      masteringColor: Color.lerp(masteringColor, other.masteringColor, t)!,
-      learningColor: Color.lerp(learningColor, other.learningColor, t)!,
-      needsReviewColor: Color.lerp(
-        needsReviewColor,
-        other.needsReviewColor,
-        t,
-      )!,
-      notStartedColor: Color.lerp(notStartedColor, other.notStartedColor, t)!,
+    return Color.fromARGB(alpha, r, g, b);
+  }
+
+  /// Darken a color
+  Color darken([double amount = 0.1]) {
+    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
+    return withBrightness(-amount);
+  }
+
+  /// Lighten a color
+  Color lighten([double amount = 0.1]) {
+    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
+    return withBrightness(amount);
+  }
+
+  /// Mix with another color
+  Color mix(Color other, [double amount = 0.5]) {
+    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
+
+    final r = (red * (1 - amount) + other.red * amount).round().clamp(0, 255);
+    final g = (green * (1 - amount) + other.green * amount).round().clamp(
+      0,
+      255,
     );
+    final b = (blue * (1 - amount) + other.blue * amount).round().clamp(0, 255);
+    final a = (alpha * (1 - amount) + other.alpha * amount).round().clamp(
+      0,
+      255,
+    );
+
+    return Color.fromARGB(a, r, g, b);
+  }
+
+  /// Convert color to a hex string
+  String toHex({bool includeAlpha = false, bool includeHash = true}) {
+    String hex = includeHash ? '#' : '';
+
+    if (includeAlpha) {
+      hex += alpha.toRadixString(16).padLeft(2, '0');
+    }
+
+    hex += red.toRadixString(16).padLeft(2, '0');
+    hex += green.toRadixString(16).padLeft(2, '0');
+    hex += blue.toRadixString(16).padLeft(2, '0');
+
+    return hex.toUpperCase();
+  }
+
+  /// Get a MaterialStateColor for use in Material buttons, inputs, etc.
+  MaterialStateColor toMaterialStateColor() {
+    return MaterialStateColor.resolveWith((states) => this);
+  }
+
+  /// Check if a color is light
+  bool get isLight => computeLuminance() > 0.5;
+
+  /// Check if a color is dark
+  bool get isDark => !isLight;
+
+  /// Get contrasting foreground color (white or black)
+  Color get contrastText =>
+      isLight ? AppColors.textPrimary : AppColors.textPrimaryDark;
+}
+
+/// Extension to get MaterialColor tonal palette from a base Color
+extension MaterialColorExtension on Color {
+  /// Create a MaterialColor from a base color
+  MaterialColor toMaterialColor() {
+    final int r = red;
+    final int g = green;
+    final int b = blue;
+
+    // Create shades by adjusting the brightness up and down
+    return MaterialColor(value, {
+      50: Color.fromRGBO(r, g, b, 0.1),
+      100: Color.fromRGBO(r, g, b, 0.2),
+      200: Color.fromRGBO(r, g, b, 0.3),
+      300: Color.fromRGBO(r, g, b, 0.4),
+      400: Color.fromRGBO(r, g, b, 0.5),
+      500: Color.fromRGBO(r, g, b, 0.6),
+      600: Color.fromRGBO(r, g, b, 0.7),
+      700: Color.fromRGBO(r, g, b, 0.8),
+      800: Color.fromRGBO(r, g, b, 0.9),
+      900: Color.fromRGBO(r, g, b, 1.0),
+    });
+  }
+
+  /// Create a custom MaterialColor with proper tonal steps
+  /// Create a custom MaterialColor with proper tonal steps
+  MaterialColor toCustomMaterialColor() {
+    // Định nghĩa hàm helper _colorFromHSL trước khi sử dụng
+    Color _colorFromHSL(HSLColor hslColor, double lightness) {
+      final newLightness = (lightness.clamp(0.0, 1.0));
+      return hslColor.withLightness(newLightness).toColor();
+    }
+
+    // Sau đó mới sử dụng nó trong _getSwatch
+    Map<int, Color> _getSwatch(Color color) {
+      final hslColor = HSLColor.fromColor(color);
+      final lightness = hslColor.lightness;
+
+      // Create a map of tonal variations
+      return {
+        050: _colorFromHSL(hslColor, lightness + 0.35),
+        100: _colorFromHSL(hslColor, lightness + 0.30),
+        200: _colorFromHSL(hslColor, lightness + 0.25),
+        300: _colorFromHSL(hslColor, lightness + 0.15),
+        400: _colorFromHSL(hslColor, lightness + 0.05),
+        500: _colorFromHSL(hslColor, lightness),
+        600: _colorFromHSL(hslColor, lightness - 0.05),
+        700: _colorFromHSL(hslColor, lightness - 0.10),
+        800: _colorFromHSL(hslColor, lightness - 0.15),
+        900: _colorFromHSL(hslColor, lightness - 0.20),
+      };
+    }
+
+    final swatch = _getSwatch(this);
+    return MaterialColor(this.value, {
+      50: swatch[050]!,
+      100: swatch[100]!,
+      200: swatch[200]!,
+      300: swatch[300]!,
+      400: swatch[400]!,
+      500: swatch[500]!,
+      600: swatch[600]!,
+      700: swatch[700]!,
+      800: swatch[800]!,
+      900: swatch[900]!,
+    });
   }
 }
 
-/// Extension methods for ThemeData to easily access semantic colors
-extension ThemeDataExtension on ThemeData {
-  /// Get semantic colors from theme
-  SemanticColorExtension get semanticColors =>
-      extension<SemanticColorExtension>() ?? SemanticColorExtension.light();
+/// Extension for creating colors from hex strings
+extension StringColorExtension on String {
+  /// Parse a hex color string to a Color object
+  Color toColor() {
+    // Handle color strings in various formats
+    String colorString = this.trim();
 
-  /// Get score color based on value
-  Color getScoreColor(double score, {double maxScore = 100}) {
-    // If the theme has SemanticColorExtension, use it
-    final semanticExtension = extension<SemanticColorExtension>();
-    if (semanticExtension != null) {
-      return semanticExtension.getScoreColor(score, maxScore: maxScore);
+    if (colorString.isEmpty) {
+      return Colors.transparent;
     }
 
-    // Fallback implementation using ColorScheme
-    final percentage = score / maxScore;
+    // Remove hash if present
+    if (colorString.startsWith('#')) {
+      colorString = colorString.substring(1);
+    }
 
-    if (percentage >= 0.9) return colorScheme.primary;
-    if (percentage >= 0.7) return colorScheme.tertiary;
-    if (percentage >= 0.5) return colorScheme.secondary;
-    if (percentage >= 0.3) return Colors.orange.shade700;
-    return colorScheme.error;
+    // Add alpha value if needed
+    if (colorString.length == 6) {
+      colorString = 'FF$colorString';
+    } else if (colorString.length == 3) {
+      // Handle shorthand hex format (e.g. #F00)
+      final r = colorString[0];
+      final g = colorString[1];
+      final b = colorString[2];
+      colorString = 'FF$r$r$g$g$b$b';
+    }
+
+    // Parse the hex value to int
+    int? value = int.tryParse(colorString, radix: 16);
+    return value != null ? Color(value) : Colors.transparent;
+  }
+}
+
+/// Utility class for color manipulation
+class ColorUtils {
+  // Private constructor to prevent instantiation
+  ColorUtils._();
+
+  /// Return appropriate text color (black or white) for a given background color
+  static Color getContrastingTextColor(Color backgroundColor) {
+    return backgroundColor.computeLuminance() > 0.5
+        ? AppColors.textPrimary
+        : AppColors.textPrimaryDark;
   }
 
-  /// Get learning status color
-  Color getLearningStatusColor(String status) {
-    final semanticExtension = extension<SemanticColorExtension>();
-    if (semanticExtension != null) {
-      return semanticExtension.getLearningStatusColor(status);
-    }
+  /// Generate a color scheme from a seed color
+  static ColorScheme generateColorScheme(
+    Color seedColor, {
+    Brightness brightness = Brightness.light,
+  }) {
+    return ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
+  }
 
-    // Fallback implementation
-    switch (status.toLowerCase()) {
-      case 'mastered':
-      case 'mastering':
-      case 'completed':
-        return colorScheme.primary;
-      case 'learning':
-      case 'in progress':
-        return colorScheme.tertiary;
-      case 'needs review':
-      case 'review':
-        return Colors.orange;
-      case 'not started':
-      default:
-        return Colors.grey;
+  /// Generate a random color
+  static Color getRandomColor({int alpha = 255}) {
+    final random = DateTime.now().millisecondsSinceEpoch;
+    return Color((random & 0xFFFFFF) | (alpha << 24));
+  }
+
+  /// Convert RGB to HSL
+  static HSLColor rgbToHsl(int r, int g, int b) {
+    return HSLColor.fromColor(Color.fromARGB(255, r, g, b));
+  }
+
+  /// Convert HSL to RGB
+  static Color hslToRgb(double h, double s, double l) {
+    return HSLColor.fromAHSL(1.0, h, s, l).toColor();
+  }
+
+  /// Create a color palette (5 colors) from a base color
+  static List<Color> createPalette(Color baseColor, {bool harmonious = true}) {
+    final hslColor = HSLColor.fromColor(baseColor);
+    final hue = hslColor.hue;
+
+    if (harmonious) {
+      // Create harmonious palette (analogous)
+      return [
+        HSLColor.fromAHSL(
+          1.0,
+          (hue - 40) % 360,
+          hslColor.saturation,
+          hslColor.lightness,
+        ).toColor(),
+        HSLColor.fromAHSL(
+          1.0,
+          (hue - 20) % 360,
+          hslColor.saturation,
+          hslColor.lightness,
+        ).toColor(),
+        baseColor,
+        HSLColor.fromAHSL(
+          1.0,
+          (hue + 20) % 360,
+          hslColor.saturation,
+          hslColor.lightness,
+        ).toColor(),
+        HSLColor.fromAHSL(
+          1.0,
+          (hue + 40) % 360,
+          hslColor.saturation,
+          hslColor.lightness,
+        ).toColor(),
+      ];
+    } else {
+      // Create tonal palette (different lightness)
+      return [
+        HSLColor.fromAHSL(
+          1.0,
+          hue,
+          hslColor.saturation,
+          (hslColor.lightness + 0.3).clamp(0.0, 1.0),
+        ).toColor(),
+        HSLColor.fromAHSL(
+          1.0,
+          hue,
+          hslColor.saturation,
+          (hslColor.lightness + 0.15).clamp(0.0, 1.0),
+        ).toColor(),
+        baseColor,
+        HSLColor.fromAHSL(
+          1.0,
+          hue,
+          hslColor.saturation,
+          (hslColor.lightness - 0.15).clamp(0.0, 1.0),
+        ).toColor(),
+        HSLColor.fromAHSL(
+          1.0,
+          hue,
+          hslColor.saturation,
+          (hslColor.lightness - 0.3).clamp(0.0, 1.0),
+        ).toColor(),
+      ];
     }
   }
 
-  /// Get status color (success, warning, error, etc.)
-  Color getStatusColor(String status) {
-    final semanticExtension = extension<SemanticColorExtension>();
-    if (semanticExtension != null) {
-      return semanticExtension.getStatusColor(status);
-    }
-
-    // Fallback implementation
-    switch (status.toLowerCase()) {
-      case 'success':
-      case 'succeeded':
-      case 'completed':
-        return Colors.green;
-      case 'warning':
-      case 'pending':
-        return Colors.orange;
-      case 'error':
-      case 'failed':
-        return colorScheme.error;
-      case 'info':
-      case 'information':
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
+  /// Create complementary color
+  static Color getComplementary(Color color) {
+    final hslColor = HSLColor.fromColor(color);
+    return HSLColor.fromAHSL(
+      1.0,
+      (hslColor.hue + 180) % 360,
+      hslColor.saturation,
+      hslColor.lightness,
+    ).toColor();
   }
+
+  /// Create a linear gradient from colors
+  static LinearGradient createLinearGradient(
+    List<Color> colors, {
+    AlignmentGeometry begin = Alignment.topLeft,
+    AlignmentGeometry end = Alignment.bottomRight,
+  }) {
+    return LinearGradient(colors: colors, begin: begin, end: end);
+  }
+
+  /// Create a radial gradient from colors
+  static RadialGradient createRadialGradient(
+    List<Color> colors, {
+    AlignmentGeometry center = Alignment.center,
+    double radius = 0.5,
+  }) {
+    return RadialGradient(colors: colors, center: center, radius: radius);
+  }
+}
+
+/// Extension to add semantic color extensions to ThemeData
+extension ThemeDataColorExtension on ThemeData {
+  /// Get appropriate color based on the current theme brightness
+  Color colorByBrightness(Color lightColor, Color darkColor) {
+    return brightness == Brightness.light ? lightColor : darkColor;
+  }
+
+  /// Get appropriate background color based on theme brightness
+  Color get backgroundColor =>
+      colorByBrightness(AppColors.backgroundLight, AppColors.backgroundDark);
+
+  /// Get appropriate surface color based on theme brightness
+  Color get surfaceColor =>
+      colorByBrightness(AppColors.surface, AppColors.surfaceDark);
+
+  /// Get appropriate text color based on theme brightness
+  Color get textColor =>
+      colorByBrightness(AppColors.textPrimary, AppColors.textPrimaryDark);
+
+  /// Get appropriate secondary text color based on theme brightness
+  Color get textSecondaryColor =>
+      colorByBrightness(AppColors.textSecondary, AppColors.textSecondaryDark);
 }

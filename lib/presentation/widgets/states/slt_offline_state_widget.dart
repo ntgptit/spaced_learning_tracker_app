@@ -1,55 +1,27 @@
-// lib/presentation/widgets/common/state/sl_offline_state_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/app_bar_with_back.dart';
-// Import specific buttons
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:go_router/go_router.dart';
 
-// Consider SlOutlinedButton for secondary actions if they are more prominent than text buttons
-// import 'package:spaced_learning_app/presentation/widgets/common/button/sl_outlined_button.dart';
+import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
+import '../common/slt_app_bar.dart';
 
-/// A widget to display when the device is offline or content requires an internet connection.
-///
-/// Offers factory constructors for common offline scenarios and supports
-/// both a full and a compact display mode. Action buttons for retrying
-/// or performing secondary actions (like opening settings) can be included.
-class SlOfflineStateWidget extends ConsumerWidget {
-  /// The main title of the offline message (e.g., "No Internet Connection").
+class SltOfflineStateWidget extends ConsumerWidget {
   final String title;
-
-  /// The detailed message explaining the offline state.
   final String? message;
-
-  /// Text for the primary action button (e.g., "Try Again").
   final String? retryButtonText;
-
-  /// Text for the secondary action button (e.g., "Open Settings").
   final String? secondaryButtonText;
-
-  /// Callback for the primary action button.
   final VoidCallback? onRetry;
-
-  /// Callback for the secondary action button.
   final VoidCallback? onSecondaryAction;
-
-  /// If true, displays a compact version of the widget, suitable for inline use.
   final bool compact;
-
-  /// Whether to show the main offline icon/image.
   final bool showOfflineImage;
-
-  /// The icon to display. Defaults to a Wi-Fi off icon.
   final IconData icon;
-
-  // New properties for AppBar integration
   final bool showAppBar;
   final String? appBarTitle;
-  final VoidCallback?
-  onNavigateBack; // For back button on app bar or a standalone back button
+  final VoidCallback? onNavigateBack;
 
-  const SlOfflineStateWidget({
+  const SltOfflineStateWidget({
     super.key,
     this.title = 'No Internet Connection',
     this.message,
@@ -59,28 +31,26 @@ class SlOfflineStateWidget extends ConsumerWidget {
     this.onSecondaryAction,
     this.compact = false,
     this.showOfflineImage = true,
-    this.icon = Icons.wifi_off_rounded, // Default Material 3 icon
+    this.icon = Icons.wifi_off_rounded,
     this.showAppBar = false,
     this.appBarTitle,
     this.onNavigateBack,
   });
 
-  /// Factory constructor for a generic offline message.
-  factory SlOfflineStateWidget.generic({
+  factory SltOfflineStateWidget.generic({
     Key? key,
     String title = 'You Are Offline',
     String? message = 'Please check your internet connection and try again.',
     VoidCallback? onRetry,
     String? retryText = 'Retry',
-    VoidCallback?
-    onOpenSettings, // Specific secondary action for generic offline
+    VoidCallback? onOpenSettings,
     String? openSettingsText = 'Network Settings',
     bool compact = false,
     bool showAppBar = false,
     String? appBarTitle,
     VoidCallback? onNavigateBack,
   }) {
-    return SlOfflineStateWidget(
+    return SltOfflineStateWidget(
       key: key,
       title: title,
       message: message,
@@ -90,15 +60,13 @@ class SlOfflineStateWidget extends ConsumerWidget {
       secondaryButtonText: onOpenSettings != null ? openSettingsText : null,
       compact: compact,
       icon: Icons.signal_wifi_off_outlined,
-      // M3 icon
       showAppBar: showAppBar,
       appBarTitle: appBarTitle ?? title,
       onNavigateBack: onNavigateBack,
     );
   }
 
-  /// Factory constructor for when content cannot be loaded due to being offline.
-  factory SlOfflineStateWidget.contentUnavailable({
+  factory SltOfflineStateWidget.contentUnavailable({
     Key? key,
     String title = 'Content Unavailable Offline',
     String? message =
@@ -110,7 +78,7 @@ class SlOfflineStateWidget extends ConsumerWidget {
     String? appBarTitle,
     VoidCallback? onNavigateBack,
   }) {
-    return SlOfflineStateWidget(
+    return SltOfflineStateWidget(
       key: key,
       title: title,
       message: message,
@@ -118,7 +86,6 @@ class SlOfflineStateWidget extends ConsumerWidget {
       retryButtonText: retryText,
       compact: compact,
       icon: Icons.cloud_off_outlined,
-      // M3 icon indicating cloud/content issue
       showAppBar: showAppBar,
       appBarTitle: appBarTitle ?? title,
       onNavigateBack: onNavigateBack,
@@ -141,15 +108,13 @@ class SlOfflineStateWidget extends ConsumerWidget {
             width: AppDimens.iconXXL,
             height: AppDimens.iconXXL,
             decoration: BoxDecoration(
-              // Using a less alarming container color for offline, or errorContainer if preferred
               color: colorScheme.surfaceVariant.withOpacity(0.7),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: AppDimens.iconXL,
-              color: colorScheme
-                  .onSurfaceVariant, // Color that contrasts with surfaceVariant
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: AppDimens.spaceXL),
@@ -175,13 +140,9 @@ class SlOfflineStateWidget extends ConsumerWidget {
         if (onRetry != null) ...[
           const SizedBox(height: AppDimens.spaceXL),
           SltPrimaryButton(
-            // Replaced SlButton with SltPrimaryButton
             text: retryButtonText ?? 'Try Again',
             onPressed: onRetry!,
-            prefixIcon: Icons.refresh_rounded, // Material 3 refresh icon
-            // Consider styling based on context, e.g., error color for offline state
-            // backgroundColor: colorScheme.error,
-            // textColor: colorScheme.onError,
+            prefixIcon: Icons.refresh_rounded,
           ),
         ],
         if (secondaryButtonText != null && onSecondaryAction != null) ...[
@@ -189,15 +150,11 @@ class SlOfflineStateWidget extends ConsumerWidget {
             height: onRetry != null ? AppDimens.spaceM : AppDimens.spaceXL,
           ),
           SltTextButton(
-            // Replaced SlButton with SltTextButton
             text: secondaryButtonText!,
             onPressed: onSecondaryAction!,
-            // Optional: Add icon for secondary action, e.g., settings
-            // prefixIcon: Icons.settings_outlined,
-            foregroundColor: colorScheme.primary, // Standard text button color
+            foregroundColor: colorScheme.primary,
           ),
         ],
-        // Standalone navigate back button if no other actions and not in AppBar mode
         if (onRetry == null &&
             onSecondaryAction == null &&
             onNavigateBack != null &&
@@ -220,7 +177,6 @@ class SlOfflineStateWidget extends ConsumerWidget {
     ColorScheme colorScheme,
   ) {
     return Card(
-      // Using a less intense color for compact offline, or errorContainer if a strong error indication is needed
       color: colorScheme.surfaceVariant.withOpacity(0.5),
       elevation: 0,
       margin: const EdgeInsets.symmetric(
@@ -229,7 +185,6 @@ class SlOfflineStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        // Border color can be subtle or error-related
         side: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.5)),
       ),
       child: Padding(
@@ -240,7 +195,7 @@ class SlOfflineStateWidget extends ConsumerWidget {
               icon,
               color: colorScheme.onSurfaceVariant,
               size: AppDimens.iconM,
-            ), // Adjusted color
+            ),
             const SizedBox(width: AppDimens.spaceM),
             Expanded(
               child: Column(
@@ -250,7 +205,7 @@ class SlOfflineStateWidget extends ConsumerWidget {
                   Text(
                     title,
                     style: textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onSurface, // Adjusted color
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -261,7 +216,7 @@ class SlOfflineStateWidget extends ConsumerWidget {
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
-                      maxLines: 1, // Compact view, limit lines
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -271,11 +226,9 @@ class SlOfflineStateWidget extends ConsumerWidget {
             if (onRetry != null) ...[
               const SizedBox(width: AppDimens.spaceS),
               SltTextButton(
-                // Replaced TextButton with SltTextButton
                 text: retryButtonText ?? 'Retry',
                 onPressed: onRetry!,
-                foregroundColor:
-                    colorScheme.primary, // Standard action color for retry
+                foregroundColor: colorScheme.primary,
               ),
             ],
           ],
@@ -288,7 +241,6 @@ class SlOfflineStateWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    // Use context.typography if available from theme_extensions.dart
     final textTheme = theme.textTheme;
 
     Widget offlineContent;
@@ -310,9 +262,18 @@ class SlOfflineStateWidget extends ConsumerWidget {
 
     if (showAppBar) {
       return Scaffold(
-        appBar: AppBarWithBack(
+        appBar: SltAppBar(
           title: appBarTitle ?? title,
-          onBackPressed: onNavigateBack ?? () => Navigator.maybePop(context),
+          showBackButton: true,
+          onBackPressed: () {
+            if (onNavigateBack != null) {
+              onNavigateBack!();
+              return;
+            }
+
+            context.pop();
+          },
+          centerTitle: false,
         ),
         body: Center(
           child: Padding(

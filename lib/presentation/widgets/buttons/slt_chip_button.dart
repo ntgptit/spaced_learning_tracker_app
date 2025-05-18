@@ -7,7 +7,7 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
 part 'slt_chip_button.g.dart';
 
-enum SlttChipVariant { filled, outlined, elevated }
+enum SltChipVariant { filled, outlined, elevated }
 
 @riverpod
 class ChipState extends _$ChipState {
@@ -47,7 +47,7 @@ class ChipGroupState extends _$ChipGroupState {
   }
 }
 
-class SlttChipButton extends ConsumerWidget {
+class SltChipButton extends ConsumerWidget {
   final String label;
   final String chipId;
   final String? groupId;
@@ -55,14 +55,14 @@ class SlttChipButton extends ConsumerWidget {
   final VoidCallback? onDeleted;
   final IconData? leadingIcon;
   final bool initialSelected;
-  final SlttChipVariant variant;
+  final SltChipVariant variant;
   final Color? backgroundColor;
   final Color? foregroundColor;
   final Color? selectedBackgroundColor;
   final Color? selectedForegroundColor;
   final bool isDisabled;
 
-  const SlttChipButton({
+  const SltChipButton({
     super.key,
     required this.label,
     required this.chipId,
@@ -71,7 +71,7 @@ class SlttChipButton extends ConsumerWidget {
     this.onDeleted,
     this.leadingIcon,
     this.initialSelected = false,
-    this.variant = SlttChipVariant.filled,
+    this.variant = SltChipVariant.filled,
     this.backgroundColor,
     this.foregroundColor,
     this.selectedBackgroundColor,
@@ -159,7 +159,7 @@ class SlttChipButton extends ConsumerWidget {
     }
 
     switch (variant) {
-      case SlttChipVariant.filled:
+      case SltChipVariant.filled:
         return ActionChip(
           label: Text(label),
           avatar: avatar,
@@ -174,7 +174,7 @@ class SlttChipButton extends ConsumerWidget {
           ),
         );
 
-      case SlttChipVariant.outlined:
+      case SltChipVariant.outlined:
         return FilterChip(
           label: Text(label),
           avatar: avatar,
@@ -195,7 +195,7 @@ class SlttChipButton extends ConsumerWidget {
           ),
         );
 
-      case SlttChipVariant.elevated:
+      case SltChipVariant.elevated:
         return InputChip(
           label: Text(label),
           avatar: avatar,
@@ -219,11 +219,11 @@ class SlttChipButton extends ConsumerWidget {
 
   Color _getDefaultBackgroundColor(ColorScheme colorScheme) {
     switch (variant) {
-      case SlttChipVariant.filled:
+      case SltChipVariant.filled:
         return colorScheme.surfaceContainerHighest;
-      case SlttChipVariant.outlined:
+      case SltChipVariant.outlined:
         return Colors.transparent;
-      case SlttChipVariant.elevated:
+      case SltChipVariant.elevated:
         return colorScheme.surfaceContainerLow;
     }
   }

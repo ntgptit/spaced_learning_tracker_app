@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../dialogs/slt_alert_dialog.dart';
 import '../dialogs/slt_confirm_dialog.dart';
 import '../dialogs/slt_date_picker_dialog.dart';
+import '../dialogs/slt_input_dialog.dart';
 import '../dialogs/slt_progress_dialog.dart';
 import '../dialogs/slt_time_picker_dialog.dart';
 
