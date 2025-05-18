@@ -108,7 +108,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
             width: AppDimens.iconXXL,
             height: AppDimens.iconXXL,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceVariant.withOpacity(0.7),
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.7),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -141,7 +141,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceXL),
           SltPrimaryButton(
             text: retryButtonText ?? 'Try Again',
-            onPressed: onRetry!,
+            onPressed: onRetry,
             prefixIcon: Icons.refresh_rounded,
           ),
         ],
@@ -151,7 +151,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
           ),
           SltTextButton(
             text: secondaryButtonText!,
-            onPressed: onSecondaryAction!,
+            onPressed: onSecondaryAction,
             foregroundColor: colorScheme.primary,
           ),
         ],
@@ -162,7 +162,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: 'Go Back',
-            onPressed: onNavigateBack!,
+            onPressed: onNavigateBack,
             foregroundColor: colorScheme.primary,
           ),
         ],
@@ -177,7 +177,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
     ColorScheme colorScheme,
   ) {
     return Card(
-      color: colorScheme.surfaceVariant.withOpacity(0.5),
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       elevation: 0,
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingL,
@@ -185,7 +185,9 @@ class SltOfflineStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        side: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.5)),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -227,7 +229,7 @@ class SltOfflineStateWidget extends ConsumerWidget {
               const SizedBox(width: AppDimens.spaceS),
               SltTextButton(
                 text: retryButtonText ?? 'Retry',
-                onPressed: onRetry!,
+                onPressed: onRetry,
                 foregroundColor: colorScheme.primary,
               ),
             ],

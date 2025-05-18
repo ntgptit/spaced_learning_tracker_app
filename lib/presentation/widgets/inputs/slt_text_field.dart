@@ -228,7 +228,9 @@ class _SltTextFieldState extends State<SltTextField> {
     return baseStyle.copyWith(
       color: widget.enabled
           ? colorScheme.onSurface
-          : colorScheme.onSurface.withOpacity(AppDimens.opacityDisabledText),
+          : colorScheme.onSurface.withValues(
+              alpha: AppDimens.opacityDisabledText,
+            ),
     );
   }
 
@@ -525,8 +527,8 @@ class _SltTextFieldState extends State<SltTextField> {
                   ?.copyWith(
                     color:
                         widget.hintColor ??
-                        colorScheme.onSurfaceVariant.withOpacity(
-                          AppDimens.opacityHintText,
+                        colorScheme.onSurfaceVariant.withValues(
+                          alpha: AppDimens.opacityHintText,
                         ),
                   ),
           errorStyle: TextStyle(
@@ -575,8 +577,8 @@ class _SltTextFieldState extends State<SltTextField> {
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
             borderSide: BorderSide(
-              color: (widget.borderColor ?? colorScheme.outline).withOpacity(
-                AppDimens.opacityDisabledOutline,
+              color: (widget.borderColor ?? colorScheme.outline).withValues(
+                alpha: AppDimens.opacityDisabledOutline,
               ),
             ),
           ),

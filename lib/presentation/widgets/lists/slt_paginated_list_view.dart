@@ -67,7 +67,7 @@ class SltPaginatedListView<T> extends StatefulWidget {
   final bool primary;
 
   const SltPaginatedListView({
-    Key? key,
+    super.key,
     required this.items,
     required this.itemBuilder,
     this.onLoadMore,
@@ -87,7 +87,7 @@ class SltPaginatedListView<T> extends StatefulWidget {
     this.shrinkWrap = false,
     this.emptyStateMessage = '',
     this.primary = true,
-  }) : super(key: key);
+  });
 
   @override
   State<SltPaginatedListView<T>> createState() =>

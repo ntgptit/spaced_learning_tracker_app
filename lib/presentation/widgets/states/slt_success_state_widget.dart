@@ -131,7 +131,7 @@ class SltSuccessStateWidget extends ConsumerWidget {
             width: AppDimens.iconXXL,
             height: AppDimens.iconXXL,
             decoration: BoxDecoration(
-              color: effectiveSuccessColor.withOpacity(0.1),
+              color: effectiveSuccessColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -175,7 +175,7 @@ class SltSuccessStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: secondaryButtonText!,
-            onPressed: onSecondaryButtonPressed!,
+            onPressed: onSecondaryButtonPressed,
             foregroundColor: effectiveSuccessColor,
           ),
         ],
@@ -191,7 +191,7 @@ class SltSuccessStateWidget extends ConsumerWidget {
     Color effectiveSuccessColor,
   ) {
     return Card(
-      color: effectiveSuccessColor.withOpacity(0.08),
+      color: effectiveSuccessColor.withValues(alpha: 0.08),
       elevation: 0,
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingL,
@@ -199,7 +199,7 @@ class SltSuccessStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        side: BorderSide(color: effectiveSuccessColor.withOpacity(0.4)),
+        side: BorderSide(color: effectiveSuccessColor.withValues(alpha: 0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingM),

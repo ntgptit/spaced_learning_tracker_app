@@ -142,8 +142,8 @@ class SltButtonBase extends ConsumerWidget {
             borderRadius: BorderRadius.circular(effectiveBorderRadius),
           ),
           padding: EdgeInsets.zero,
-          disabledBackgroundColor: colorScheme.primary.withOpacity(0.38),
-          disabledForegroundColor: Colors.white.withOpacity(0.38),
+          disabledBackgroundColor: colorScheme.primary.withValues(alpha: 0.38),
+          disabledForegroundColor: Colors.white.withValues(alpha: 0.38),
         );
 
       case SltButtonVariant.tonal:

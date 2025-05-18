@@ -189,8 +189,8 @@ class SltLoadingStateWidget extends ConsumerWidget {
                 children: [
                   backgroundWidget ??
                       Container(
-                        color: colorScheme.surface.withOpacity(
-                          AppDimens.opacityHigh,
+                        color: colorScheme.surface.withValues(
+                          alpha: AppDimens.opacityHigh,
                         ),
                       ),
                   centeredContent,
@@ -208,7 +208,9 @@ class SltLoadingStateWidget extends ConsumerWidget {
       children: [
         backgroundWidget ??
             Container(
-              color: colorScheme.surface.withOpacity(AppDimens.opacityHigh),
+              color: colorScheme.surface.withValues(
+                alpha: AppDimens.opacityHigh,
+              ),
             ),
         centeredContent,
         if (dismissible && onDismiss != null)

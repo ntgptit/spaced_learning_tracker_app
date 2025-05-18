@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'util.dart';
+
 import 'theme.dart';
+import 'util.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,9 +19,9 @@ class MyApp extends StatelessWidget {
     //TextTheme textTheme = Theme.of(context).textTheme;
 
     // Use with Google Fonts package to use downloadable fonts
-    TextTheme textTheme = createTextTheme(context, "Roboto", "Roboto");
+    final TextTheme textTheme = createTextTheme(context, 'Roboto', 'Roboto');
 
-    MaterialTheme theme = MaterialTheme(textTheme);
+    final MaterialTheme theme = MaterialTheme(textTheme);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: brightness == Brightness.light ? theme.light() : theme.dark(),
@@ -84,9 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -102,4 +101,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

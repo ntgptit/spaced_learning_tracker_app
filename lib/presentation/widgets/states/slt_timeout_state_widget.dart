@@ -126,7 +126,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
           width: AppDimens.iconXXL,
           height: AppDimens.iconXXL,
           decoration: BoxDecoration(
-            color: effectiveDisplayColor.withOpacity(0.1),
+            color: effectiveDisplayColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -157,7 +157,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
           Text(
             'Timeout occurred after ${timeoutDuration!.inSeconds} seconds.',
             style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -176,7 +176,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: cancelButtonText!,
-            onPressed: onCancel!,
+            onPressed: onCancel,
             foregroundColor: colorScheme.onSurfaceVariant,
           ),
         ],
@@ -184,7 +184,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: 'Go Back',
-            onPressed: onNavigateBack!,
+            onPressed: onNavigateBack,
             foregroundColor: colorScheme.primary,
           ),
         ],
@@ -203,7 +203,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
         : colorScheme.error;
 
     return Card(
-      color: effectiveDisplayColor.withOpacity(0.08),
+      color: effectiveDisplayColor.withValues(alpha: 0.08),
       elevation: 0,
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingL,
@@ -211,7 +211,7 @@ class SltTimeoutStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        side: BorderSide(color: effectiveDisplayColor.withOpacity(0.4)),
+        side: BorderSide(color: effectiveDisplayColor.withValues(alpha: 0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingM),

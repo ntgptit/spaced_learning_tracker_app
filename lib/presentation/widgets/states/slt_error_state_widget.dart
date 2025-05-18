@@ -132,7 +132,7 @@ class SltErrorStateWidget extends ConsumerWidget {
           width: AppDimens.iconXXL,
           height: AppDimens.iconXXL,
           decoration: BoxDecoration(
-            color: effectiveErrorColor.withOpacity(0.1),
+            color: effectiveErrorColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, size: AppDimens.iconXL, color: effectiveErrorColor),
@@ -160,7 +160,7 @@ class SltErrorStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceXL),
           SltPrimaryButton(
             text: retryText ?? 'Try Again',
-            onPressed: onRetry!,
+            onPressed: onRetry,
             prefixIcon: Icons.refresh_rounded,
             backgroundColor: effectiveErrorColor,
             isFullWidth: false,
@@ -177,7 +177,7 @@ class SltErrorStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: 'Go Back',
-            onPressed: onNavigateBack!,
+            onPressed: onNavigateBack,
             foregroundColor: colorScheme.primary,
           ),
         ],
@@ -194,7 +194,7 @@ class SltErrorStateWidget extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
 
     return Card(
-      color: effectiveErrorColor.withOpacity(0.08),
+      color: effectiveErrorColor.withValues(alpha: 0.08),
       elevation: 0,
       margin: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingL,
@@ -202,7 +202,7 @@ class SltErrorStateWidget extends ConsumerWidget {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        side: BorderSide(color: effectiveErrorColor.withOpacity(0.4)),
+        side: BorderSide(color: effectiveErrorColor.withValues(alpha: 0.4)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -240,7 +240,7 @@ class SltErrorStateWidget extends ConsumerWidget {
               const SizedBox(width: AppDimens.spaceS),
               SltTextButton(
                 text: retryText ?? 'Retry',
-                onPressed: onRetry!,
+                onPressed: onRetry,
                 foregroundColor: effectiveErrorColor,
               ),
             ],

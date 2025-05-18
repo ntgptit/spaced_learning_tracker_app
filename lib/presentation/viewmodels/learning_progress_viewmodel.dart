@@ -88,7 +88,7 @@ class FilteredModules extends _$FilteredModules {
       final dateMatch =
           selectedDate == null ||
           (module.progressNextStudyDate != null &&
-              DateUtils.isSameDay(module.progressNextStudyDate!, selectedDate));
+              DateUtils.isSameDay(module.progressNextStudyDate, selectedDate));
       return bookMatch && dateMatch;
     }).toList();
   }

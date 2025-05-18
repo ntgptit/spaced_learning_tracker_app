@@ -134,19 +134,19 @@ class SltSegmentButton<T> extends ConsumerWidget {
         emptySelectionAllowed: true,
         showSelectedIcon: showSelectedIcon,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return effectiveSelectedBackgroundColor;
             }
             return effectiveBackgroundColor;
           }),
-          foregroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return effectiveSelectedForegroundColor;
             }
             return effectiveForegroundColor;
           }),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(effectiveBorderRadius),
             ),
@@ -178,19 +178,19 @@ class SltSegmentButton<T> extends ConsumerWidget {
         emptySelectionAllowed: false,
         showSelectedIcon: showSelectedIcon,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return effectiveSelectedBackgroundColor;
             }
             return effectiveBackgroundColor;
           }),
-          foregroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return effectiveSelectedForegroundColor;
             }
             return effectiveForegroundColor;
           }),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(effectiveBorderRadius),
             ),

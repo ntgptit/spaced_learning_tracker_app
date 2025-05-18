@@ -100,8 +100,8 @@ class SltExpandableButton extends ConsumerWidget {
                     Icon(
                       icon,
                       color: isDisabled
-                          ? colorScheme.onSurface.withOpacity(
-                              AppDimens.opacityDisabled,
+                          ? colorScheme.onSurface.withValues(
+                              alpha: AppDimens.opacityDisabled,
                             )
                           : effectiveForegroundColor,
                       size: AppDimens.iconM,
@@ -113,8 +113,8 @@ class SltExpandableButton extends ConsumerWidget {
                       label,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: isDisabled
-                            ? colorScheme.onSurface.withOpacity(
-                                AppDimens.opacityDisabled,
+                            ? colorScheme.onSurface.withValues(
+                                alpha: AppDimens.opacityDisabled,
                               )
                             : effectiveForegroundColor,
                         fontWeight: FontWeight.w500,
@@ -126,8 +126,8 @@ class SltExpandableButton extends ConsumerWidget {
                     child: Icon(
                       Icons.keyboard_arrow_down,
                       color: isDisabled
-                          ? colorScheme.onSurface.withOpacity(
-                              AppDimens.opacityDisabled,
+                          ? colorScheme.onSurface.withValues(
+                              alpha: AppDimens.opacityDisabled,
                             )
                           : effectiveForegroundColor,
                     ),

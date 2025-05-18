@@ -70,8 +70,9 @@ class SltProgressButton extends ConsumerWidget {
               );
               try {
                 // Check if the widget is still mounted before updating state
-                if (!ref.exists(progressButtonStateProvider(id: loadingId)))
+                if (!ref.exists(progressButtonStateProvider(id: loadingId))) {
                   return;
+                }
                 notifier.setLoading(true);
 
                 await onPressed!();

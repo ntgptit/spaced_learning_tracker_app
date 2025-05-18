@@ -105,7 +105,7 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
     }
 
     return CircleAvatar(
-      backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Icon(iconData, color: Theme.of(context).colorScheme.primary),
     );
   }

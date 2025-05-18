@@ -47,7 +47,10 @@ class SltProgressCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         side: elevated
             ? BorderSide.none
-            : BorderSide(color: colorScheme.outline.withOpacity(0.5), width: 1),
+            : BorderSide(
+                color: colorScheme.outline.withValues(alpha: 0.5),
+                width: 1,
+              ),
       ),
       color: effectiveBackgroundColor,
       clipBehavior: Clip.hardEdge,
@@ -109,7 +112,7 @@ class SltProgressCard extends StatelessWidget {
             // Progress indicator
             LinearProgressIndicator(
               value: progress.clamp(0.0, 1.0),
-              backgroundColor: effectiveProgressColor.withOpacity(0.1),
+              backgroundColor: effectiveProgressColor.withValues(alpha: 0.1),
               valueColor: AlwaysStoppedAnimation<Color>(effectiveProgressColor),
               minHeight: AppDimens.lineProgressHeight,
             ),

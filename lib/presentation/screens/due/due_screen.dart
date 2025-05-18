@@ -190,7 +190,7 @@ class _DueScreenState extends ConsumerState<DueScreen>
         statusText,
         style: TextStyle(fontSize: AppDimens.fontXS, color: statusColor),
       ),
-      backgroundColor: statusColor.withOpacity(0.1),
+      backgroundColor: statusColor.withValues(alpha: 0.1),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );

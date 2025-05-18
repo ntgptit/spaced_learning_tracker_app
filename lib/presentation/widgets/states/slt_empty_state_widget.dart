@@ -179,7 +179,7 @@ class SltEmptyStateWidget extends ConsumerWidget {
     if (customImage != null) {
       return Padding(
         padding: const EdgeInsets.only(bottom: AppDimens.spaceXL),
-        child: customImage!,
+        child: customImage,
       );
     }
 
@@ -191,12 +191,12 @@ class SltEmptyStateWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color: showGradientBackground
             ? null
-            : effectiveIconColor.withOpacity(0.1),
+            : effectiveIconColor.withValues(alpha: 0.1),
         gradient: showGradientBackground
             ? LinearGradient(
                 colors: [
-                  effectiveIconColor.withOpacity(0.05),
-                  effectiveIconColor.withOpacity(0.15),
+                  effectiveIconColor.withValues(alpha: 0.05),
+                  effectiveIconColor.withValues(alpha: 0.15),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -207,8 +207,8 @@ class SltEmptyStateWidget extends ConsumerWidget {
       child: Icon(
         icon,
         size: AppDimens.iconXL,
-        color: effectiveIconColor.withOpacity(
-          showGradientBackground ? 1.0 : 0.8,
+        color: effectiveIconColor.withValues(
+          alpha: showGradientBackground ? 1.0 : 0.8,
         ),
       ),
     );

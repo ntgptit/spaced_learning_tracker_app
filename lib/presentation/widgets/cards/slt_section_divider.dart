@@ -32,7 +32,7 @@ class SltSectionDivider extends StatelessWidget {
         // Divider line
         Container(
           height: AppDimens.dividerThickness,
-          color: colorScheme.surfaceVariant,
+          color: colorScheme.surfaceContainerHighest,
           margin: const EdgeInsets.symmetric(vertical: AppDimens.spaceM),
         ),
 

@@ -224,7 +224,7 @@ class SltBottomSheetDialog extends ConsumerWidget {
                 width: AppDimens.paddingXXL + AppDimens.paddingS,
                 height: AppDimens.paddingXXS * 2,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.4),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(AppDimens.radiusCircular),
                 ),
               ),
@@ -296,7 +296,7 @@ class SltBottomSheetDialog extends ConsumerWidget {
                     ? padding.resolve(TextDirection.ltr).bottom
                     : AppDimens.paddingS,
               ),
-              child: content!,
+              child: content,
             ),
           ),
         if (actions != null && actions!.isNotEmpty)
@@ -329,7 +329,7 @@ class SltBottomSheetDialog extends ConsumerWidget {
           boxShadow: [
             // M3 style elevation shadow
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.1),
+              color: theme.shadowColor.withValues(alpha: 0.1),
               blurRadius: AppDimens.elevationS, // e.g., 3.0
               offset: const Offset(0, 1), // Shadow below
             ),

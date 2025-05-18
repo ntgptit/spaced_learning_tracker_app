@@ -126,7 +126,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         gradient: LinearGradient(
           colors: [
             colorScheme.primaryContainer,
-            colorScheme.primary.withOpacity(0.7),
+            colorScheme.primary.withValues(alpha: 0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -147,7 +147,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           Text(
             'Track your learning progress and stay on schedule.',
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onPrimaryContainer.withOpacity(0.9),
+              color: colorScheme.onPrimaryContainer.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -252,7 +252,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: color.withOpacity(0.1),
+            backgroundColor: color.withValues(alpha: 0.1),
             child: Icon(icon, color: color, size: AppDimens.iconM),
           ),
           const SizedBox(width: AppDimens.spaceM),
@@ -395,8 +395,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ),
                         ),
-                      )
-                      .toList(),
+                      ),
 
                   // View all button if more than 3 items
                   if (dueProgress.length > 3)

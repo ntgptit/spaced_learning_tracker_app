@@ -171,7 +171,7 @@ class SltScoreInputDialogContent extends ConsumerWidget {
     );
 
     final scoreColor = _getScoreColor(colorScheme, context, scoreValue);
-    final scoreDisplayBackgroundColor = scoreColor.withOpacity(0.1);
+    final scoreDisplayBackgroundColor = scoreColor.withValues(alpha: 0.1);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -215,10 +215,13 @@ class SltScoreInputDialogContent extends ConsumerWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: scoreDisplayBackgroundColor,
-            border: Border.all(color: scoreColor.withOpacity(0.5), width: 2),
+            border: Border.all(
+              color: scoreColor.withValues(alpha: 0.5),
+              width: 2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: scoreColor.withOpacity(0.2),
+                color: scoreColor.withValues(alpha: 0.2),
                 blurRadius: AppDimens.shadowRadiusM,
                 spreadRadius: AppDimens.shadowOffsetS,
               ),
@@ -238,9 +241,9 @@ class SltScoreInputDialogContent extends ConsumerWidget {
         SliderTheme(
           data: SliderThemeData(
             activeTrackColor: scoreColor,
-            inactiveTrackColor: scoreColor.withOpacity(0.25),
+            inactiveTrackColor: scoreColor.withValues(alpha: 0.25),
             thumbColor: scoreColor,
-            overlayColor: scoreColor.withOpacity(0.15),
+            overlayColor: scoreColor.withValues(alpha: 0.15),
             trackHeight: AppDimens.lineProgressHeightL,
             thumbShape: const RoundSliderThumbShape(
               enabledThumbRadius: AppDimens.radiusM,

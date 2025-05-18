@@ -164,7 +164,7 @@ class SltScaffold extends StatelessWidget {
           // Loading overlay
           ModalBarrier(
             dismissible: false,
-            color: loadingOverlayColor ?? Colors.black.withOpacity(0.3),
+            color: loadingOverlayColor ?? Colors.black.withValues(alpha: 0.3),
           ),
           // Loading indicator
           Center(child: loadingWidget ?? _buildDefaultLoadingWidget()),
@@ -190,7 +190,7 @@ class SltScaffold extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimens.radiusL),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             spreadRadius: 2,
           ),

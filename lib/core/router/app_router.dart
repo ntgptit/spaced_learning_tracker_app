@@ -1,5 +1,6 @@
 // lib/core/router/app_router.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/presentation/screens/auth/login_screen.dart';
@@ -44,7 +45,7 @@ String? _authRedirect(bool isAuthenticated, String location) {
 }
 
 @riverpod
-GoRouter appRouter(AppRouterRef ref) {
+GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateProvider);
   final bottomNavTab = ref.watch(bottomNavigationStateProvider);
   final isAuthenticated = authState.valueOrNull ?? false;

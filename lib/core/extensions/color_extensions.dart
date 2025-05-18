@@ -73,9 +73,9 @@ extension ColorExtension on Color {
     return hex.toUpperCase();
   }
 
-  /// MaterialStateColor for Material widgets
-  MaterialStateColor toMaterialStateColor() {
-    return MaterialStateColor.resolveWith((_) => this);
+  /// WidgetStateColor for Material widgets
+  WidgetStateColor toWidgetStateColor() {
+    return WidgetStateColor.resolveWith((_) => this);
   }
 
   /// Is color light
@@ -110,27 +110,27 @@ extension MaterialColorExtension on Color {
 
   /// Custom MaterialColor palette (better for theming)
   MaterialColor toCustomMaterialColor() {
-    Color _colorFromHSL(HSLColor hsl, double lightness) =>
+    Color colorFromHSL(HSLColor hsl, double lightness) =>
         hsl.withLightness(lightness.clamp(0.0, 1.0)).toColor();
 
-    Map<int, Color> _getSwatch(Color color) {
+    Map<int, Color> getSwatch(Color color) {
       final hsl = HSLColor.fromColor(color);
       final l = hsl.lightness;
       return {
-        50: _colorFromHSL(hsl, l + 0.35),
-        100: _colorFromHSL(hsl, l + 0.30),
-        200: _colorFromHSL(hsl, l + 0.25),
-        300: _colorFromHSL(hsl, l + 0.15),
-        400: _colorFromHSL(hsl, l + 0.05),
-        500: _colorFromHSL(hsl, l),
-        600: _colorFromHSL(hsl, l - 0.05),
-        700: _colorFromHSL(hsl, l - 0.10),
-        800: _colorFromHSL(hsl, l - 0.15),
-        900: _colorFromHSL(hsl, l - 0.20),
+        50: colorFromHSL(hsl, l + 0.35),
+        100: colorFromHSL(hsl, l + 0.30),
+        200: colorFromHSL(hsl, l + 0.25),
+        300: colorFromHSL(hsl, l + 0.15),
+        400: colorFromHSL(hsl, l + 0.05),
+        500: colorFromHSL(hsl, l),
+        600: colorFromHSL(hsl, l - 0.05),
+        700: colorFromHSL(hsl, l - 0.10),
+        800: colorFromHSL(hsl, l - 0.15),
+        900: colorFromHSL(hsl, l - 0.20),
       };
     }
 
-    final swatch = _getSwatch(this);
+    final swatch = getSwatch(this);
     return MaterialColor(value, {
       50: swatch[50]!,
       100: swatch[100]!,

@@ -125,7 +125,7 @@ class SltChipButton extends ConsumerWidget {
       color: isSelected
           ? effectiveSelectedForegroundColor
           : isDisabled
-          ? colorScheme.onSurface.withOpacity(AppDimens.opacityDisabled)
+          ? colorScheme.onSurface.withValues(alpha: AppDimens.opacityDisabled)
           : effectiveForegroundColor,
     );
 
@@ -136,7 +136,9 @@ class SltChipButton extends ConsumerWidget {
             color: isSelected
                 ? effectiveSelectedForegroundColor
                 : isDisabled
-                ? colorScheme.onSurface.withOpacity(AppDimens.opacityDisabled)
+                ? colorScheme.onSurface.withValues(
+                    alpha: AppDimens.opacityDisabled,
+                  )
                 : effectiveForegroundColor,
           )
         : null;
@@ -184,7 +186,9 @@ class SltChipButton extends ConsumerWidget {
           labelStyle: labelStyle,
           side: BorderSide(
             color: isDisabled
-                ? colorScheme.outline.withOpacity(AppDimens.opacityDisabled)
+                ? colorScheme.outline.withValues(
+                    alpha: AppDimens.opacityDisabled,
+                  )
                 : colorScheme.outline,
           ),
           selectedColor: effectiveSelectedBackgroundColor,

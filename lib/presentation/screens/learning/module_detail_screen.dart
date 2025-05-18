@@ -368,7 +368,7 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     };
 
     return CircleAvatar(
-      backgroundColor: iconColor.withOpacity(0.1),
+      backgroundColor: iconColor.withValues(alpha: 0.1),
       child: Icon(iconData, color: iconColor),
     );
   }
@@ -392,7 +392,7 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
         text,
         style: TextStyle(fontSize: AppDimens.fontXS, color: color),
       ),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );

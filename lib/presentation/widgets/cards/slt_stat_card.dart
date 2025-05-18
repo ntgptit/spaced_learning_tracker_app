@@ -47,7 +47,10 @@ class SltStatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         side: elevated
             ? BorderSide.none
-            : BorderSide(color: colorScheme.outline.withOpacity(0.5), width: 1),
+            : BorderSide(
+                color: colorScheme.outline.withValues(alpha: 0.5),
+                width: 1,
+              ),
       ),
       color: effectiveBackgroundColor,
       clipBehavior: Clip.hardEdge,

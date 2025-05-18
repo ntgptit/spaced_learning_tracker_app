@@ -127,7 +127,7 @@ class SlUnauthorizedStateWidget extends ConsumerWidget {
     final iconContainerColor = colorScheme.secondaryContainer;
     final onIconContainerColor = colorScheme.onSecondaryContainer;
 
-    Widget unauthorizedContent = Column(
+    final Widget unauthorizedContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -137,7 +137,7 @@ class SlUnauthorizedStateWidget extends ConsumerWidget {
             width: AppDimens.iconXXL,
             height: AppDimens.iconXXL,
             decoration: BoxDecoration(
-              color: iconContainerColor.withOpacity(0.7),
+              color: iconContainerColor.withValues(alpha: 0.7),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -174,7 +174,7 @@ class SlUnauthorizedStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: secondaryButtonText!,
-            onPressed: onSecondaryButtonPressed!,
+            onPressed: onSecondaryButtonPressed,
           ),
         ],
         if (secondaryButtonText == null &&
@@ -184,7 +184,7 @@ class SlUnauthorizedStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: 'Go Back',
-            onPressed: onNavigateBack!,
+            onPressed: onNavigateBack,
             foregroundColor: colorScheme.primary,
           ),
         ],

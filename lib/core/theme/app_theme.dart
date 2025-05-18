@@ -62,22 +62,19 @@ class AppTheme {
         onSecondaryContainer: AppColors.secondaryDark,
         tertiary: AppColors.info,
         onTertiary: Colors.white,
-        tertiaryContainer: AppColors.info.withOpacity(0.2),
+        tertiaryContainer: AppColors.info.withValues(alpha: 0.2),
         onTertiaryContainer: AppColors.info,
         error: AppColors.error,
         onError: Colors.white,
-        errorContainer: AppColors.error.withOpacity(0.1),
+        errorContainer: AppColors.error.withValues(alpha: 0.1),
         onErrorContainer: AppColors.error,
-        background: AppColors.backgroundLight,
-        onBackground: AppColors.textPrimary,
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
-        surfaceVariant: AppColors.surfaceContainerLow,
         onSurfaceVariant: AppColors.textSecondary,
         outline: AppColors.outline,
         outlineVariant: AppColors.outlineVariant,
         shadow: AppColors.shadow,
-        scrim: Colors.black.withOpacity(0.4),
+        scrim: Colors.black.withValues(alpha: 0.4),
         inverseSurface: AppColors.surfaceDark,
         onInverseSurface: AppColors.textPrimaryDark,
         inversePrimary: AppColors.primaryLight,
@@ -103,22 +100,19 @@ class AppTheme {
       onSecondaryContainer: Colors.white,
       tertiary: AppColors.infoDark,
       onTertiary: Colors.black,
-      tertiaryContainer: AppColors.infoDark.withOpacity(0.2),
+      tertiaryContainer: AppColors.infoDark.withValues(alpha: 0.2),
       onTertiaryContainer: AppColors.infoDark,
       error: AppColors.errorDark,
       onError: Colors.black,
-      errorContainer: AppColors.errorDark.withOpacity(0.1),
+      errorContainer: AppColors.errorDark.withValues(alpha: 0.1),
       onErrorContainer: AppColors.errorDark,
-      background: AppColors.backgroundDark,
-      onBackground: AppColors.textPrimaryDark,
       surface: AppColors.surfaceDark,
       onSurface: AppColors.textPrimaryDark,
-      surfaceVariant: AppColors.surfaceContainerLowDark,
       onSurfaceVariant: AppColors.textSecondaryDark,
       outline: AppColors.outlineDark,
       outlineVariant: AppColors.outlineVariantDark,
       shadow: AppColors.shadowDark,
-      scrim: Colors.black.withOpacity(0.6),
+      scrim: Colors.black.withValues(alpha: 0.6),
       inverseSurface: AppColors.surface,
       onInverseSurface: AppColors.textPrimary,
       inversePrimary: AppColors.primary,
@@ -155,8 +149,8 @@ class AppTheme {
       titleTextStyle: AppTypography.titleLargeDark,
       toolbarHeight: AppDimens.appBarHeight,
       centerTitle: false,
-      iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
-      actionsIconTheme: IconThemeData(color: AppColors.textPrimaryDark),
+      iconTheme: const IconThemeData(color: AppColors.textPrimaryDark),
+      actionsIconTheme: const IconThemeData(color: AppColors.textPrimaryDark),
     );
   }
 
@@ -181,8 +175,8 @@ class AppTheme {
       minLeadingWidth: 24,
       tileColor: isLight ? AppColors.surface : AppColors.surfaceDark,
       selectedTileColor: isLight
-          ? AppColors.primary.withOpacity(0.1)
-          : AppColors.primaryLight.withOpacity(0.1),
+          ? AppColors.primary.withValues(alpha: 0.1)
+          : AppColors.primaryLight.withValues(alpha: 0.1),
       iconColor: isLight ? AppColors.primary : AppColors.primaryLight,
       textColor: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
       selectedColor: isLight ? AppColors.primary : AppColors.primaryLight,
@@ -215,7 +209,7 @@ class AppTheme {
       elevation: AppDimens.elevationM,
       backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
       modalBackgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppDimens.bottomSheetBorderRadius),
           topRight: Radius.circular(AppDimens.bottomSheetBorderRadius),
@@ -223,8 +217,8 @@ class AppTheme {
       ),
       surfaceTintColor: Colors.transparent,
       dragHandleColor: isLight
-          ? AppColors.textSecondary.withOpacity(0.4)
-          : AppColors.textSecondaryDark.withOpacity(0.4),
+          ? AppColors.textSecondary.withValues(alpha: 0.4)
+          : AppColors.textSecondaryDark.withValues(alpha: 0.4),
       dragHandleSize: const Size(32, 4),
     );
   }
@@ -327,7 +321,7 @@ class AppTheme {
                     (isLight
                             ? AppColors.textSecondary
                             : AppColors.textSecondaryDark)
-                        .withOpacity(AppDimens.opacityHintText),
+                        .withValues(alpha: AppDimens.opacityHintText),
               ),
       errorStyle:
           (isLight ? AppTypography.bodySmall : AppTypography.bodySmallDark)
@@ -423,10 +417,10 @@ class AppTheme {
           : AppTypography.labelLargeDark,
       indicatorSize: TabBarIndicatorSize.tab,
       dividerColor: Colors.transparent,
-      overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.pressed)) {
+      overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.pressed)) {
           return (isLight ? AppColors.primary : AppColors.primaryLight)
-              .withOpacity(0.1);
+              .withValues(alpha: 0.1);
         }
         return Colors.transparent;
       }),
@@ -435,16 +429,16 @@ class AppTheme {
 
   static CheckboxThemeData _buildCheckboxTheme(bool isLight) {
     return CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
           return isLight ? AppColors.primary : AppColors.primaryLight;
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return isLight ? AppColors.textDisabled : AppColors.textDisabledDark;
         }
         return Colors.transparent;
       }),
-      checkColor: MaterialStateProperty.all(
+      checkColor: WidgetStateProperty.all(
         isLight ? Colors.white : Colors.black,
       ),
       shape: RoundedRectangleBorder(
@@ -461,11 +455,11 @@ class AppTheme {
 
   static RadioThemeData _buildRadioTheme(bool isLight) {
     return RadioThemeData(
-      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
           return isLight ? AppColors.primary : AppColors.primaryLight;
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return isLight ? AppColors.textDisabled : AppColors.textDisabledDark;
         }
         return isLight ? AppColors.textSecondary : AppColors.textSecondaryDark;
@@ -477,34 +471,34 @@ class AppTheme {
 
   static SwitchThemeData _buildSwitchTheme(bool isLight) {
     return SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.selected)) {
+      thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
           return isLight ? AppColors.primary : AppColors.primaryLight;
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return isLight ? Colors.grey.shade400 : Colors.grey.shade700;
         }
         return isLight ? Colors.white : Colors.grey.shade400;
       }),
-      trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.selected)) {
+      trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
           return (isLight ? AppColors.primary : AppColors.primaryLight)
-              .withOpacity(AppDimens.opacityMediumHigh);
+              .withValues(alpha: AppDimens.opacityMediumHigh);
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return isLight ? Colors.grey.shade300 : Colors.grey.shade800;
         }
-        return Colors.grey.withOpacity(AppDimens.opacityMedium);
+        return Colors.grey.withValues(alpha: AppDimens.opacityMedium);
       }),
-      trackOutlineColor: MaterialStateProperty.resolveWith<Color?>((states) {
-        if (states.contains(MaterialState.selected)) {
+      trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
           return null; // No outline for selected state
         }
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return null; // No outline for disabled state
         }
-        return Colors.grey.withOpacity(
-          0.5,
+        return Colors.grey.withValues(
+          alpha: 0.5,
         ); // Subtle outline for inactive state
       }),
       materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -529,8 +523,8 @@ class AppTheme {
       deleteIconColor: isLight ? AppColors.primary : AppColors.primaryLight,
       disabledColor: isLight ? Colors.grey.shade200 : Colors.grey.shade800,
       selectedColor: isLight
-          ? AppColors.primary.withOpacity(0.15)
-          : AppColors.primaryLight.withOpacity(0.15),
+          ? AppColors.primary.withValues(alpha: 0.15)
+          : AppColors.primaryLight.withValues(alpha: 0.15),
       labelStyle:
           (isLight ? AppTypography.labelMedium : AppTypography.labelMediumDark)
               .copyWith(
@@ -553,15 +547,15 @@ class AppTheme {
         borderRadius: BorderRadius.circular(AppDimens.radiusS),
         side: BorderSide(
           color: isLight
-              ? AppColors.outline.withOpacity(0.5)
-              : AppColors.outlineDark.withOpacity(0.5),
+              ? AppColors.outline.withValues(alpha: 0.5)
+              : AppColors.outlineDark.withValues(alpha: 0.5),
           width: 1,
         ),
       ),
       side: BorderSide(
         color: isLight
-            ? AppColors.outline.withOpacity(0.5)
-            : AppColors.outlineDark.withOpacity(0.5),
+            ? AppColors.outline.withValues(alpha: 0.5)
+            : AppColors.outlineDark.withValues(alpha: 0.5),
         width: 1,
       ),
       selectedShadowColor: isLight ? AppColors.shadow : AppColors.shadowDark,
@@ -622,9 +616,9 @@ class AppTheme {
     return ProgressIndicatorThemeData(
       color: isLight ? AppColors.primary : AppColors.primaryLight,
       circularTrackColor: (isLight ? AppColors.primaryLight : AppColors.primary)
-          .withOpacity(AppDimens.opacityLight),
+          .withValues(alpha: AppDimens.opacityLight),
       linearTrackColor: (isLight ? AppColors.primaryLight : AppColors.primary)
-          .withOpacity(AppDimens.opacityLight),
+          .withValues(alpha: AppDimens.opacityLight),
       linearMinHeight: AppDimens.lineProgressHeight,
       refreshBackgroundColor: isLight
           ? AppColors.surfaceContainerLow
@@ -694,13 +688,13 @@ class AppTheme {
     final bool isLight = brightness == Brightness.light;
 
     // Start with standard theme
-    ThemeData baseTheme = isLight ? lightTheme : darkTheme;
+    final ThemeData baseTheme = isLight ? lightTheme : darkTheme;
 
     // Apply the new color scheme
     return baseTheme.copyWith(
       colorScheme: colorScheme,
       primaryColor: colorScheme.primary,
-      scaffoldBackgroundColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.surface,
       appBarTheme: baseTheme.appBarTheme.copyWith(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
@@ -708,26 +702,30 @@ class AppTheme {
       // Update other theme components as needed
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: baseTheme.elevatedButtonTheme.style?.copyWith(
-          backgroundColor: MaterialStateProperty.resolveWith(
-            (states) => states.contains(MaterialState.disabled)
-                ? colorScheme.primary.withOpacity(AppDimens.opacityDisabled)
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.disabled)
+                ? colorScheme.primary.withValues(
+                    alpha: AppDimens.opacityDisabled,
+                  )
                 : colorScheme.primary,
           ),
-          foregroundColor: MaterialStateProperty.all(colorScheme.onPrimary),
+          foregroundColor: WidgetStateProperty.all(colorScheme.onPrimary),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: baseTheme.textButtonTheme.style?.copyWith(
-          foregroundColor: MaterialStateProperty.all(colorScheme.primary),
+          foregroundColor: WidgetStateProperty.all(colorScheme.primary),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: baseTheme.outlinedButtonTheme.style?.copyWith(
-          foregroundColor: MaterialStateProperty.all(colorScheme.primary),
-          side: MaterialStateProperty.resolveWith(
+          foregroundColor: WidgetStateProperty.all(colorScheme.primary),
+          side: WidgetStateProperty.resolveWith(
             (states) => BorderSide(
-              color: states.contains(MaterialState.disabled)
-                  ? colorScheme.primary.withOpacity(AppDimens.opacityDisabled)
+              color: states.contains(WidgetState.disabled)
+                  ? colorScheme.primary.withValues(
+                      alpha: AppDimens.opacityDisabled,
+                    )
                   : colorScheme.primary,
               width: AppDimens.outlineButtonBorderWidth,
             ),
@@ -735,7 +733,7 @@ class AppTheme {
         ),
       ),
       chipTheme: baseTheme.chipTheme.copyWith(
-        selectedColor: colorScheme.primary.withOpacity(0.15),
+        selectedColor: colorScheme.primary.withValues(alpha: 0.15),
         checkmarkColor: colorScheme.primary,
       ),
       progressIndicatorTheme: baseTheme.progressIndicatorTheme.copyWith(
@@ -829,7 +827,7 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
 
       // Functional colors
       disabledColor: AppColors.textDisabled,
-      highlightColor: AppColors.secondary.withOpacity(0.15),
+      highlightColor: AppColors.secondary.withValues(alpha: 0.15),
       selectedColor: AppColors.primary,
       unselectedColor: AppColors.textSecondary,
 
@@ -854,7 +852,7 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
       excellentColor: AppColors.successDark,
       goodColor: AppColors.infoDark,
       averageColor: AppColors.warningDark,
-      belowAverageColor: Color(0xFFFBBD06),
+      belowAverageColor: const Color(0xFFFBBD06),
       poorColor: AppColors.errorDark,
 
       // Status colors
@@ -866,7 +864,7 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
 
       // Functional colors
       disabledColor: AppColors.textDisabledDark,
-      highlightColor: AppColors.secondaryLight.withOpacity(0.15),
+      highlightColor: AppColors.secondaryLight.withValues(alpha: 0.15),
       selectedColor: AppColors.primaryLight,
       unselectedColor: AppColors.textSecondaryDark,
 

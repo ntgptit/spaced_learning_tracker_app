@@ -261,7 +261,7 @@ class SltAlertDialog extends ConsumerWidget {
       icon: Container(
         padding: const EdgeInsets.all(AppDimens.paddingXS),
         decoration: BoxDecoration(
-          color: effectiveAlertColor.withOpacity(0.1),
+          color: effectiveAlertColor.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(

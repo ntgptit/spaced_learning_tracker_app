@@ -27,7 +27,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
     super.key,
     this.title = 'Under Maintenance',
     this.message =
-        'We\'re currently making some improvements. Please check back shortly.',
+    'We\'re currently making some improvements. Please check back shortly.',
     this.estimatedTimeMessageText,
     this.onRetryPressed,
     this.retryButtonText = 'Check Again',
@@ -45,7 +45,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
     Key? key,
     String title = 'System Maintenance',
     String message =
-        'Our services are temporarily unavailable as we perform scheduled maintenance. We apologize for any inconvenience.',
+    'Our services are temporarily unavailable as we perform scheduled maintenance. We apologize for any inconvenience.',
     VoidCallback? onRetry,
     bool showAppBar = false,
     String? appBarTitle,
@@ -78,7 +78,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
       key: key,
       title: title,
       message:
-          'We\'re temporarily down for maintenance: $reason. We expect to be back soon.',
+      'We\'re temporarily down for maintenance: $reason. We expect to be back soon.',
       estimatedCompletionTime: estimatedEndTime,
       onRetryPressed: onRetry,
       retryButtonText: retryText,
@@ -107,14 +107,15 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
 
     final DateFormat timeFormatter = DateFormat.jm(); // Example: 5:08 PM
     final DateFormat dateFormatter =
-        DateFormat.yMMMd(); // Example: May 17, 2025
+    DateFormat.yMMMd(); // Example: May 17, 2025
 
     if (isActive) {
       effectiveMessage =
-          'Scheduled maintenance is currently in progress. We appreciate your patience.';
+      'Scheduled maintenance is currently in progress. We appreciate your patience.';
     } else if (now.isBefore(startTime)) {
       effectiveMessage =
-          'We will be undergoing scheduled maintenance starting at ${timeFormatter.format(startTime)} on ${dateFormatter.format(startTime)}.';
+      'We will be undergoing scheduled maintenance starting at ${timeFormatter
+          .format(startTime)} on ${dateFormatter.format(startTime)}.';
     } else {
       effectiveMessage = 'Scheduled maintenance has been completed.';
     }
@@ -156,14 +157,18 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
       } else if (difference.inDays > 0) {
         final hours = difference.inHours % 24;
         displayTimeMessage =
-            'Estimated completion: In ${difference.inDays} day(s)${hours > 0 ? ' and $hours hour(s)' : ''}.';
+        'Estimated completion: In ${difference.inDays} day(s)${hours > 0
+            ? ' and $hours hour(s)'
+            : ''}.';
       } else if (difference.inHours > 0) {
         final minutes = difference.inMinutes % 60;
         displayTimeMessage =
-            'Estimated time remaining: ~${difference.inHours} hour(s)${minutes > 0 ? ' and $minutes minute(s)' : ''}.';
+        'Estimated time remaining: ~${difference.inHours} hour(s)${minutes > 0
+            ? ' and $minutes minute(s)'
+            : ''}.';
       } else if (difference.inMinutes > 0) {
         displayTimeMessage =
-            'Estimated time remaining: ~${difference.inMinutes} minute(s).';
+        'Estimated time remaining: ~${difference.inMinutes} minute(s).';
       } else {
         // This case handles remaining time less than a minute or very close to completion
         displayTimeMessage = 'Maintenance should be complete very soon.';
@@ -182,7 +187,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
                 width: AppDimens.iconXXL,
                 height: AppDimens.iconXXL,
                 decoration: BoxDecoration(
-                  color: colorScheme.secondaryContainer.withOpacity(0.7),
+                  color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -217,7 +222,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
               vertical: AppDimens.paddingM,
             ),
             decoration: BoxDecoration(
-              color: colorScheme.tertiaryContainer.withOpacity(0.7),
+              color: colorScheme.tertiaryContainer.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(AppDimens.radiusM),
             ),
             child: Text(
@@ -234,7 +239,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceXL),
           SltOutlinedButton(
             text: retryButtonText!,
-            onPressed: onRetryPressed!,
+            onPressed: onRetryPressed,
             prefixIcon: Icons.refresh_rounded,
           ),
         ],
@@ -244,7 +249,7 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
           const SizedBox(height: AppDimens.spaceM),
           SltTextButton(
             text: 'Go Back',
-            onPressed: onNavigateBack!,
+            onPressed: onNavigateBack,
             foregroundColor: colorScheme.primary,
           ),
         ],

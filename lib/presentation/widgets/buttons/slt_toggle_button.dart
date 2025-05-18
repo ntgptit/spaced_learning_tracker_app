@@ -88,8 +88,8 @@ class SltToggleButton extends ConsumerWidget {
               Icon(
                 icon,
                 color: isDisabled
-                    ? colorScheme.onSurface.withOpacity(
-                        AppDimens.opacityDisabled,
+                    ? colorScheme.onSurface.withValues(
+                        alpha: AppDimens.opacityDisabled,
                       )
                     : (value
                           ? effectiveActiveColor
@@ -103,8 +103,8 @@ class SltToggleButton extends ConsumerWidget {
                 label!,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isDisabled
-                      ? colorScheme.onSurface.withOpacity(
-                          AppDimens.opacityDisabled,
+                      ? colorScheme.onSurface.withValues(
+                          alpha: AppDimens.opacityDisabled,
                         )
                       : colorScheme.onSurface,
                 ),

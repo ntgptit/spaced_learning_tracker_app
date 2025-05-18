@@ -181,7 +181,7 @@ class SltAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final Widget titleWidget = _buildTitleWidget(context, theme);
 
     // Create leading widget based on configuration
-    Widget? leadingWidget = _buildLeadingWidget(context);
+    final Widget? leadingWidget = _buildLeadingWidget(context);
 
     // Create app bar
     final appBar = AppBar(

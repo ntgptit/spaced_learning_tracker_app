@@ -40,7 +40,10 @@ class SltInsightCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         side: elevated
             ? BorderSide.none
-            : BorderSide(color: colorScheme.outline.withOpacity(0.5), width: 1),
+            : BorderSide(
+                color: colorScheme.outline.withValues(alpha: 0.5),
+                width: 1,
+              ),
       ),
       color: effectiveBackgroundColor,
       clipBehavior: Clip.hardEdge,
@@ -56,7 +59,7 @@ class SltInsightCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: effectiveAccentColor.withOpacity(0.1),
+                  color: effectiveAccentColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
