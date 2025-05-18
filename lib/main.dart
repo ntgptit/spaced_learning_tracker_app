@@ -14,8 +14,10 @@ class SpacedLearningApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch theme mode changes
     final themeMode = ref.watch(themeStateProvider);
+
+    // Lấy GoRouter từ provider đã generate (sau khi build_runner)
+    final goRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
       title: 'Spaced Learning',
@@ -23,7 +25,7 @@ class SpacedLearningApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      routerConfig: AppRoutes.router,
+      routerConfig: goRouter,
     );
   }
 }

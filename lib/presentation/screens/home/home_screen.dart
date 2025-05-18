@@ -6,15 +6,16 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/learning_stats_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/progress_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/theme_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/widgets/buttons/slt_icon_button.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_scaffold.dart';
+import 'package:spaced_learning_app/presentation/widgets/home/slt_progress_card.dart';
+import 'package:spaced_learning_app/presentation/widgets/home/slt_stat_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
-
-import '../../viewmodels/progress_viewmodel.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -27,8 +28,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Load initial data when the screen is created
     Future.microtask(() {
       ref.read(homeViewModelProvider.notifier).loadInitialData();
     });
@@ -36,23 +35,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get theme data
-    Theme.of(context);
     final isDark = ref.watch(isDarkModeProvider);
 
-    // Get current user
+    // User, HomeState, Stats, Due Progress lấy đúng type!
     final user = ref.watch(currentUserProvider);
-
-    // Watch home view model state
     final homeState = ref.watch(homeViewModelProvider);
+    final learningStats = ref.watch(
+      learningStatsStateProvider,
+    ); // AsyncValue<LearningStatsModel>
+    final dueProgress = ref.watch(todayDueTasksProvider); // List<ProgressModel>
 
-    // Watch learning stats
-    final learningStats = ref.watch(learningStatsStateProvider);
-
-    // Watch due progress
-    final dueProgress = ref.watch(todayDueTasksProvider);
-
-    // Build welcome message
     final welcomeMessage = user != null
         ? 'Welcome back, ${user.displayName ?? user.firstName ?? user.username}!'
         : 'Welcome to Spaced Learning!';
@@ -89,15 +81,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     BuildContext context,
     HomeState homeState,
     String welcomeMessage,
-    AsyncValue<dynamic> learningStats,
-    List<dynamic> dueProgress,
+    AsyncValue<LearningStatsModel> learningStats,
+    List<ProgressModel> dueProgress,
   ) {
-    // Handle loading state
     if (homeState.isFirstLoading) {
       return const SltLoadingStateWidget(message: 'Loading your dashboard...');
     }
 
-    // Handle error state
     if (homeState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Dashboard',
@@ -113,18 +103,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Welcome section
+          // Welcome
           Text(
             welcomeMessage,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Stats section
+          // Stats
           _buildStatsSection(context, learningStats),
           const SizedBox(height: AppDimens.spaceXL),
 
-          // Due tasks section
+          // Due Tasks
           _buildDueTasksSection(context, dueProgress),
         ],
       ),
@@ -133,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildStatsSection(
     BuildContext context,
-    AsyncValue<dynamic> learningStats,
+    AsyncValue<LearningStatsModel> learningStats,
   ) {
     return learningStats.when(
       data: (data) {
@@ -144,7 +134,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           );
         }
 
-        // Build stats grid with actual data
+        // Mapping stats grid với đúng field
         return GridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: AppDimens.spaceM,
@@ -192,18 +182,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildDueTasksSection(
     BuildContext context,
-    List<dynamic> dueProgress,
+    List<ProgressModel> dueProgress,
   ) {
     final theme = Theme.of(context);
 
-    // Display section header
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Due Today', style: theme.textTheme.titleLarge),
         const SizedBox(height: AppDimens.spaceM),
-
-        // Check if there are any due tasks
         dueProgress.isEmpty
             ? SltEmptyStateWidget.noData(
                 title: 'No Tasks Due Today',
@@ -222,7 +209,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   return SltProgressCard(
                     title: progress.moduleTitle ?? 'Module',
                     subtitle: 'Book: ${progress.moduleTitle ?? 'Unknown'}',
-                    progress: progress.percentComplete / 100,
+                    progress: (progress.percentComplete ?? 0) / 100,
                     onTap: () => _navigateToModule(progress.id),
                   );
                 },
@@ -233,10 +220,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _navigateToModule(String progressId) {
     // TODO: Implement navigation to module details
+    // context.go('/module/$progressId');
   }
 
   Future<void> _handleLogout() async {
-    // Show a confirmation dialog
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -255,10 +242,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
 
-    // Proceed with logout if confirmed
     if (shouldLogout == true) {
       await ref.read(authStateProvider.notifier).logout();
-
       if (context.mounted) {
         context.go(AppRoutes.login);
       }
