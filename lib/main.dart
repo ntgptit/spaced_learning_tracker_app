@@ -1,54 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:slt_app/core/config/env_config.dart';
-import 'package:slt_app/core/di/dependency_injection.dart';
-import 'package:slt_app/core/router/app_routes.dart';
-import 'package:slt_app/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
+
+import 'core/di/providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize environment config with graceful fallback
-  try {
-    await EnvConfig.initialize(EnvConfig.dev);
-    debugPrint('Environment initialized: ${EnvConfig.currentEnv}');
-  } catch (e) {
-    debugPrint('Failed to initialize environment: $e');
-    // Continue with default values if environment initialization fails
-  }
+  // Initialize daily task checker if needed
+  final prefs = await SharedPreferences.getInstance();
+  final isCheckerActive = prefs.getBool('daily_task_checker_active') ?? false;
 
-  // Initialize dependency injection
-  await DependencyInjection.init();
+  final container = ProviderContainer();
 
-  runApp(
-    // Enable Riverpod for the entire app
-    const ProviderScope(
-      child: SltApp(),
-    ),
-  );
+  // Khởi tạo trạng thái xác thực ngay khi ứng dụng khởi động
+  await container.read(authStateProvider.future);
+
+  // if (isCheckerActive) {
+  //   // Initialize the daily task checker
+  //   await container.read(dailyTaskCheckerProvider.future);
+  // }
+
+  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
 
-class SltApp extends ConsumerWidget {
-  const SltApp({Key? key}) : super(key: key);
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: Use Theme provider once implemented
-    const themeMode = ThemeMode.system;
-
-    // Use app name from environment if available
-    final appName = EnvConfig.appName;
+    final themeMode = ref.watch(themeModeStateProvider);
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: appName,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      title: 'Spaced Learning App',
+      theme: ref.watch(lightThemeProvider),
+      darkTheme: ref.watch(darkThemeProvider),
       themeMode: themeMode,
-      routerDelegate: AppRoutes.router.routerDelegate,
-      routeInformationParser: AppRoutes.router.routeInformationParser,
-      routeInformationProvider: AppRoutes.router.routeInformationProvider,
-      debugShowCheckedModeBanner:
-          !EnvConfig.isProd, // Hide debug banner in production
+      routerConfig: router,
     );
   }
 }

@@ -1,121 +1,115 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:slt_app/core/config/env_config.dart';
-import 'package:slt_app/core/constants/app_constants.dart';
+// Cập nhật để sử dụng Riverpod thay vì ServiceLocator
 
-/// Authentication interceptor for Dio
-/// Handles adding auth tokens to requests and token refresh
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spaced_learning_app/core/constants/api_endpoints.dart';
+import 'package:spaced_learning_app/core/di/providers.dart';
+import 'package:spaced_learning_app/core/services/storage_service.dart';
+
+import '../../services/storage_service.dart';
+
 class AuthInterceptor extends Interceptor {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final StorageService _storageService;
+  final Dio _dio = Dio();
+  bool _isRefreshing = false;
+
+  AuthInterceptor()
+      : _storageService = ProviderContainer().read(storageServiceProvider);
 
   @override
-  Future<void> onRequest(
+  void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth for login and register endpoints
-    if (_isAuthEndpoint(options.path)) {
-      return super.onRequest(options, handler);
+    if (_shouldSkipAuth(options.path)) {
+      return handler.next(options);
     }
 
-    // Get token from secure storage
-    final token = await _secureStorage.read(key: AppConstants.secureKeyToken);
+    final token = await _storageService.getToken();
 
-    if (token != null) {
-      // Add token to headers
+    if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
-    return super.onRequest(options, handler);
+    handler.next(options);
   }
 
   @override
-  Future<void> onError(
-      DioException err, ErrorInterceptorHandler handler) async {
-    // If token is expired, try to refresh it
-    if (_isTokenExpired(err) && EnvConfig.refreshTokenEnabled) {
-      try {
-        final newToken = await _refreshToken();
-
-        if (newToken != null) {
-          // Retry the original request with the new token
-          final options = err.requestOptions;
-          options.headers['Authorization'] = 'Bearer $newToken';
-
-          // Create new request with the updated token
-          final response = await Dio().fetch(options);
-          return handler.resolve(response);
-        }
-      } catch (e) {
-        // If token refresh fails, logout user
-        await _handleLogout();
-      }
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode != 401 || _isRefreshing) {
+      return handler.next(err);
     }
 
-    return super.onError(err, handler);
+    if (_shouldSkipAuth(err.requestOptions.path)) {
+      return handler.next(err);
+    }
+
+    try {
+      final refreshedToken = await _refreshToken();
+      if (refreshedToken == null) {
+        return handler.next(err);
+      }
+
+      final options = err.requestOptions;
+      options.headers['Authorization'] = 'Bearer $refreshedToken';
+      final response = await _dio.fetch(options);
+      return handler.resolve(response);
+    } catch (e) {
+      return handler.next(err);
+    }
   }
 
-  /// Check if the request is for an auth endpoint
-  bool _isAuthEndpoint(String path) {
+  bool _shouldSkipAuth(String path) {
     final authPaths = [
-      '/login',
-      '/register',
-      '/forgot-password',
-      '/reset-password',
+      ApiEndpoints.login,
+      ApiEndpoints.register,
+      ApiEndpoints.refreshToken,
+      ApiEndpoints.validateToken,
     ];
 
     return authPaths.any((authPath) => path.contains(authPath));
   }
 
-  /// Check if the error is due to token expiration
-  bool _isTokenExpired(DioException err) {
-    return err.response?.statusCode == 401;
-  }
-
-  /// Refresh the token
   Future<String?> _refreshToken() async {
-    try {
-      final refreshToken = await _secureStorage.read(
-        key: AppConstants.secureKeyRefreshToken,
-      );
+    _isRefreshing = true;
 
-      if (refreshToken == null) {
+    try {
+      final refreshToken = await _storageService.getRefreshToken();
+
+      if (refreshToken == null || refreshToken.isEmpty) {
+        await _storageService.clearTokens();
+        _isRefreshing = false;
         return null;
       }
 
-      // Make a request to refresh the token
-      final response = await Dio().post(
-        '${EnvConfig.authUrl}/refresh',
-        data: {
-          'refresh_token': refreshToken,
-        },
+      final response = await _dio.post(
+        ApiEndpoints.refreshToken,
+        data: {'refreshToken': refreshToken},
       );
 
-      // Save the new token
-      final newToken = response.data['token'] as String;
-      final newRefreshToken = response.data['refresh_token'] as String;
+      if (response.statusCode != 200 || response.data == null) {
+        await _storageService.clearTokens();
+        _isRefreshing = false;
+        return null;
+      }
 
-      await _secureStorage.write(
-        key: AppConstants.secureKeyToken,
-        value: newToken,
-      );
+      final newToken = response.data['data']['token'];
+      final newRefreshToken = response.data['data']['refreshToken'];
 
-      await _secureStorage.write(
-        key: AppConstants.secureKeyRefreshToken,
-        value: newRefreshToken,
-      );
+      if (newToken == null || newRefreshToken == null) {
+        await _storageService.clearTokens();
+        _isRefreshing = false;
+        return null;
+      }
 
+      await _storageService.saveToken(newToken);
+      await _storageService.saveRefreshToken(newRefreshToken);
+      _isRefreshing = false;
       return newToken;
     } catch (e) {
+      await _storageService.clearTokens();
+      _isRefreshing = false;
       return null;
     }
-  }
-
-  /// Handle logout when token refresh fails
-  Future<void> _handleLogout() async {
-    // Clear tokens
-    await _secureStorage.delete(key: AppConstants.secureKeyToken);
-    await _secureStorage.delete(key: AppConstants.secureKeyRefreshToken);
-    // Other logout logic...
   }
 }

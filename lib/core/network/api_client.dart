@@ -1,166 +1,148 @@
-import 'package:dio/dio.dart';
-import 'package:slt_app/core/config/env_config.dart';
-import 'package:slt_app/core/constants/app_constants.dart';
-import 'package:slt_app/core/logging/app_logger.dart';
-import 'package:slt_app/core/network/interceptors/auth_interceptor.dart';
-import 'package:slt_app/core/network/interceptors/cache_interceptor.dart';
-import 'package:slt_app/core/network/interceptors/error_interceptor.dart';
-import 'package:slt_app/core/network/interceptors/logger_interceptor.dart';
+import 'dart:io';
 
-/// API client for handling HTTP requests
-/// Uses Dio under the hood
+import 'package:dio/dio.dart';
+import 'package:spaced_learning_app/core/constants/app_constants.dart';
+import 'package:spaced_learning_app/core/network/interceptors/auth_interceptor.dart';
+import 'package:spaced_learning_app/core/network/interceptors/logging_interceptor.dart';
+
+import '../exception/app_exceptions.dart';
+
 class ApiClient {
   late final Dio _dio;
-  final AppLogger _logger;
 
-  ApiClient({required AppLogger logger}) : _logger = logger {
-    _initDio();
-  }
+  ApiClient() {
+    _dio = Dio();
 
-  /// Initialize Dio instance
-  void _initDio() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: EnvConfig.apiBaseUrl,
-        connectTimeout:
-            const Duration(milliseconds: AppConstants.connectionTimeout),
-        receiveTimeout:
-            const Duration(milliseconds: AppConstants.receiveTimeout),
-        responseType: ResponseType.json,
-        headers: <String, dynamic>{
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-API-KEY': EnvConfig.apiKey,
-        },
-      ),
+    _dio.options.baseUrl = AppConstants.baseUrl;
+    _dio.options.connectTimeout = const Duration(
+      milliseconds: AppConstants.connectTimeout,
     );
+    _dio.options.receiveTimeout = const Duration(
+      milliseconds: AppConstants.receiveTimeout,
+    );
+    _dio.options.contentType = Headers.jsonContentType;
+    _dio.options.responseType = ResponseType.json;
 
-    // Add interceptors
-    _dio.interceptors.addAll([
-      LoggerInterceptor(_logger),
-      AuthInterceptor(),
-      ErrorInterceptor(),
-      if (EnvConfig.cacheEnabled) CacheInterceptor(),
-    ]);
+    _dio.interceptors.add(LoggingInterceptor());
+    _dio.interceptors.add(AuthInterceptor());
   }
 
-  /// Get method
-  Future<Response<T>> get<T>(
-    String path, {
+  Future<dynamic> get(
+    String url, {
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
   }) async {
-    return _dio.get<T>(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-      onReceiveProgress: onReceiveProgress,
+    try {
+      final response = await _dio.get(url, queryParameters: queryParameters);
+      return _processResponse(response);
+    } catch (e) {
+      return _handleError(e, url);
+    }
+  }
+
+  Future<dynamic> post(String url, {dynamic data}) async {
+    try {
+      final response = await _dio.post(url, data: data);
+      return _processResponse(response);
+    } catch (e) {
+      return _handleError(e, url);
+    }
+  }
+
+  Future<dynamic> put(String url, {dynamic data}) async {
+    try {
+      final response = await _dio.put(url, data: data);
+      return _processResponse(response);
+    } catch (e) {
+      return _handleError(e, url);
+    }
+  }
+
+  Future<dynamic> delete(String url) async {
+    try {
+      final response = await _dio.delete(url);
+      return _processResponse(response);
+    } catch (e) {
+      return _handleError(e, url);
+    }
+  }
+
+  dynamic _processResponse(Response response) {
+    final statusCode = response.statusCode;
+
+    if (statusCode == 200 || statusCode == 201) {
+      return response.data;
+    }
+
+    if (statusCode == 204) {
+      return null;
+    }
+
+    if (statusCode == 400) {
+      throw BadRequestException(
+        response.data?['message'] ?? 'Bad request',
+        response.requestOptions.path,
+        response.data?['errors'],
+      );
+    }
+
+    if (statusCode == 401) {
+      throw AuthenticationException(
+        response.data?['message'] ?? 'Authentication failed',
+        response.requestOptions.path,
+      );
+    }
+
+    if (statusCode == 403) {
+      throw ForbiddenException(
+        response.data?['message'] ?? 'Access denied',
+        response.requestOptions.path,
+      );
+    }
+
+    if (statusCode == 404) {
+      throw NotFoundException(
+        response.data?['message'] ?? 'Resource not found',
+        response.requestOptions.path,
+      );
+    }
+
+    if (statusCode == 500 ||
+        statusCode == 502 ||
+        statusCode == 503 ||
+        statusCode == 504) {
+      throw ServerException(
+        response.data?['message'] ?? 'Server error',
+        response.requestOptions.path,
+      );
+    }
+
+    throw HttpException(
+      statusCode ?? 0,
+      response.data?['message'] ?? 'Unknown error occurred',
+      response.requestOptions.path,
     );
   }
 
-  /// Post method
-  Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return _dio.post<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-  }
+  dynamic _handleError(dynamic e, String? url) {
+    if (e is DioException) {
+      if (e.error is SocketException) {
+        throw NoInternetException();
+      }
 
-  /// Put method
-  Future<Response<T>> put<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return _dio.put<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-  }
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw TimeoutException('Request timeout', url);
+      }
 
-  /// Patch method
-  Future<Response<T>> patch<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return _dio.patch<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-  }
+      if (e.response != null) {
+        return _processResponse(e.response!);
+      }
+    }
 
-  /// Delete method
-  Future<Response<T>> delete<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-  }) async {
-    return _dio.delete<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-    );
-  }
+    if (e is AppException) {
+      throw e;
+    }
 
-  /// Download method
-  Future<Future<Response>> download<T>(
-    String urlPath,
-    String savePath, {
-    ProgressCallback? onReceiveProgress,
-    Map<String, dynamic>? queryParameters,
-    CancelToken? cancelToken,
-    bool deleteOnError = true,
-    String lengthHeader = Headers.contentLengthHeader,
-    Options? options,
-  }) async {
-    return _dio.download(
-      urlPath,
-      savePath,
-      onReceiveProgress: onReceiveProgress,
-      queryParameters: queryParameters,
-      cancelToken: cancelToken,
-      deleteOnError: deleteOnError,
-      lengthHeader: lengthHeader,
-      options: options,
-    );
+    throw UnexpectedException('Unexpected error occurred', url);
   }
 }

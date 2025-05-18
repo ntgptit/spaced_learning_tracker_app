@@ -1,201 +1,289 @@
+// lib/presentation/widgets/common/dialog/sl_input_dialog.dart
 import 'package:flutter/material.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_primary_button.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_secondary_button.dart';
-import 'package:slt_app/presentation/widgets/inputs/slt_text_field.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/input/sl_text_field.dart';
 
-import '../../../core/theme/app_dimens.dart';
+import '../buttons/slt_dialog_button_bar.dart';
+import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
+import '../inputs/slt_text_field.dart';
 
-/// Input dialog
-/// A dialog that allows user to input text
-class SltInputDialog extends StatefulWidget {
-  /// Title of the dialog
+part 'slt_input_dialog.g.dart';
+
+@riverpod
+class DialogInputValue extends _$DialogInputValue {
+  @override
+  String build(String dialogId) => '';
+
+  void setValue(String value) {
+    state = value;
+  }
+
+  void clear() {
+    state = '';
+  }
+}
+
+/// A dialog that allows the user to input text with various customization options.
+class SlInputDialog extends ConsumerStatefulWidget {
+  final String dialogId;
   final String title;
-
-  /// Message to display
   final String? message;
-
-  /// Hint text for the input field
-  final String? hintText;
-
-  /// Label text for the input field
-  final String? labelText;
-
-  /// Initial value for the input field
   final String? initialValue;
-
-  /// Whether input is multiline
-  final bool isMultiline;
-
-  /// Confirm button text
+  final String? hintText;
   final String confirmText;
-
-  /// Cancel button text
   final String cancelText;
-
-  /// Keyboard type for the input field
   final TextInputType keyboardType;
-
-  /// Validator function
+  final bool obscureText;
+  final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
-
-  /// Dialog border radius
-  final double borderRadius;
-
-  /// Whether to show the cancel button
-  final bool showCancelButton;
-
-  /// Icon to display above the title
-  final IconData? icon;
-
-  /// Icon color
-  final Color? iconColor;
-
-  /// Icon size
-  final double iconSize;
-
-  /// Confirm button color
-  final Color? confirmButtonColor;
-
-  /// Cancel button color
-  final Color? cancelButtonColor;
-
-  /// Dialog width
-  final double? width;
-
-  /// Dialog content padding
-  final EdgeInsetsGeometry contentPadding;
-
-  /// Dialog title padding
-  final EdgeInsetsGeometry titlePadding;
-
-  /// Dialog action buttons padding
-  final EdgeInsetsGeometry actionsPadding;
-
-  /// Whether to auto-validate the input
-  final bool autoValidate;
-
-  /// Maximum length of input
   final int? maxLength;
+  final int maxLines;
+  final bool isDangerAction; // For styling the confirm button if needed
+  final IconData? prefixIcon;
+  final bool barrierDismissible;
+  final bool autofocus;
+  final TextCapitalization textCapitalization;
+  final AutovalidateMode autovalidateMode;
 
-  /// Maximum number of lines
-  final int? maxLines;
-
-  /// Whether to show counter
-  final bool showCounter;
-
-  const SltInputDialog({
-    Key? key,
+  const SlInputDialog({
+    super.key,
+    required this.dialogId,
     required this.title,
     this.message,
-    this.hintText,
-    this.labelText,
     this.initialValue,
-    this.isMultiline = false,
-    this.confirmText = AppStrings.ok,
-    this.cancelText = AppStrings.cancel,
+    this.hintText,
+    this.confirmText = 'Submit',
+    this.cancelText = 'Cancel',
     this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.inputFormatters,
     this.validator,
-    this.borderRadius = AppDimens.dialogBorderRadius,
-    this.showCancelButton = true,
-    this.icon,
-    this.iconColor,
-    this.iconSize = 32.0,
-    this.confirmButtonColor,
-    this.cancelButtonColor,
-    this.width,
-    this.contentPadding = AppDimens.dialogContentPadding,
-    this.titlePadding = const EdgeInsets.only(
-      left: AppDimens.paddingL,
-      right: AppDimens.paddingL,
-      top: AppDimens.paddingL,
-    ),
-    this.actionsPadding = const EdgeInsets.all(AppDimens.paddingM),
-    this.autoValidate = false,
     this.maxLength,
-    this.maxLines,
-    this.showCounter = false,
-  }) : super(key: key);
+    this.maxLines = 1,
+    this.isDangerAction = false,
+    this.prefixIcon,
+    this.barrierDismissible = true,
+    this.autofocus = true,
+    this.textCapitalization = TextCapitalization.none,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
+  });
 
-  /// Show the dialog
-  static Future<String?> show({
-    required BuildContext context,
+  factory SlInputDialog._create({
+    required String dialogId,
     required String title,
     String? message,
-    String? hintText,
-    String? labelText,
     String? initialValue,
-    bool isMultiline = false,
-    String confirmText = AppStrings.ok,
-    String cancelText = AppStrings.cancel,
+    String? hintText,
+    String confirmText = 'Submit',
+    String cancelText = 'Cancel',
     TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    List<TextInputFormatter>? inputFormatters,
     String? Function(String?)? validator,
-    double borderRadius = AppDimens.dialogBorderRadius,
-    bool showCancelButton = true,
-    IconData? icon,
-    Color? iconColor,
-    double iconSize = 32.0,
-    Color? confirmButtonColor,
-    Color? cancelButtonColor,
-    double? width,
-    EdgeInsetsGeometry contentPadding = AppDimens.dialogContentPadding,
-    EdgeInsetsGeometry titlePadding = const EdgeInsets.only(
-      left: AppDimens.paddingL,
-      right: AppDimens.paddingL,
-      top: AppDimens.paddingL,
-    ),
-    EdgeInsetsGeometry actionsPadding =
-        const EdgeInsets.all(AppDimens.paddingM),
-    bool autoValidate = false,
     int? maxLength,
-    int? maxLines,
-    bool showCounter = false,
+    int maxLines = 1,
+    bool isDangerAction = false,
+    IconData? prefixIcon,
+    bool barrierDismissible = true,
+    bool autofocus = true,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
   }) {
-    return showDialog<String>(
-      context: context,
-      builder: (context) => SltInputDialog(
-        title: title,
-        message: message,
-        hintText: hintText,
-        labelText: labelText,
-        initialValue: initialValue,
-        isMultiline: isMultiline,
-        confirmText: confirmText,
-        cancelText: cancelText,
-        keyboardType: keyboardType,
-        validator: validator,
-        borderRadius: borderRadius,
-        showCancelButton: showCancelButton,
-        icon: icon,
-        iconColor: iconColor,
-        iconSize: iconSize,
-        confirmButtonColor: confirmButtonColor,
-        cancelButtonColor: cancelButtonColor,
-        width: width,
-        contentPadding: contentPadding,
-        titlePadding: titlePadding,
-        actionsPadding: actionsPadding,
-        autoValidate: autoValidate,
-        maxLength: maxLength,
-        maxLines: maxLines,
-        showCounter: showCounter,
-      ),
+    return SlInputDialog(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      hintText: hintText,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      inputFormatters: inputFormatters,
+      validator: validator,
+      maxLength: maxLength,
+      maxLines: maxLines,
+      isDangerAction: isDangerAction,
+      prefixIcon: prefixIcon,
+      barrierDismissible: barrierDismissible,
+      autofocus: autofocus,
+      textCapitalization: textCapitalization,
+      autovalidateMode: autovalidateMode,
+    );
+  }
+
+  /// Factory for generic text input
+  factory SlInputDialog.text({
+    required String dialogId,
+    required String title,
+    String? message,
+    String? initialValue,
+    String? hintText,
+    String confirmText = 'OK',
+    String? Function(String?)? validator,
+  }) {
+    return SlInputDialog._create(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      hintText: hintText,
+      confirmText: confirmText,
+      validator: validator,
+    );
+  }
+
+  /// Factory for number input
+  factory SlInputDialog.number({
+    required String dialogId,
+    required String title,
+    String? message,
+    String? initialValue,
+    String? hintText = 'Enter a number',
+    String confirmText = 'OK',
+    int? maxLength,
+    String? Function(String?)? validator,
+  }) {
+    return SlInputDialog._create(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      initialValue: initialValue,
+      hintText: hintText,
+      confirmText: confirmText,
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      maxLength: maxLength,
+      prefixIcon: Icons.looks_one_outlined,
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Number cannot be empty.';
+            }
+            if (double.tryParse(value) == null) return 'Invalid number.';
+            return null;
+          },
+    );
+  }
+
+  /// Factory for password input
+  factory SlInputDialog.password({
+    required String dialogId,
+    required String title,
+    String? message,
+    String hintText = 'Enter password',
+    String confirmText = 'Confirm',
+    String? Function(String?)? validator,
+  }) {
+    return SlInputDialog._create(
+      dialogId: dialogId,
+      title: title,
+      message: message,
+      hintText: hintText,
+      confirmText: confirmText,
+      obscureText: true,
+      prefixIcon: Icons.lock_outline_rounded,
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Password cannot be empty.';
+            }
+            if (value.length < 6) {
+              return 'Password must be at least 6 characters.';
+            }
+            return null;
+          },
     );
   }
 
   @override
-  State<SltInputDialog> createState() => _SltInputDialogState();
+  ConsumerState<SlInputDialog> createState() => _SlInputDialogState();
+
+  /// Show the input dialog with the given parameters
+  static Future<String?> show(
+    BuildContext context,
+    WidgetRef ref, {
+    required String dialogId,
+    required String title,
+    String? message,
+    String? initialValue,
+    String? hintText,
+    String confirmText = 'Submit',
+    String cancelText = 'Cancel',
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+    int? maxLength,
+    int maxLines = 1,
+    bool isDangerAction = false,
+    IconData? prefixIcon,
+    bool barrierDismissible = true,
+    bool autofocus = true,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
+  }) {
+    // Set initial value in provider if present
+    final notifier = ref.read(dialogInputValueProvider(dialogId).notifier);
+    if (initialValue != null && initialValue.isNotEmpty) {
+      notifier.setValue(initialValue);
+    } else {
+      notifier.clear();
+    }
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      builder: (context) => SlInputDialog._create(
+        // Using private factory
+        dialogId: dialogId,
+        title: title,
+        message: message,
+        initialValue: initialValue,
+        hintText: hintText,
+        confirmText: confirmText,
+        cancelText: cancelText,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        inputFormatters: inputFormatters,
+        validator: validator,
+        maxLength: maxLength,
+        maxLines: maxLines,
+        isDangerAction: isDangerAction,
+        prefixIcon: prefixIcon,
+        barrierDismissible: barrierDismissible,
+        autofocus: autofocus,
+        textCapitalization: textCapitalization,
+        autovalidateMode: autovalidateMode,
+      ),
+    );
+  }
 }
 
-class _SltInputDialogState extends State<SltInputDialog> {
-  late TextEditingController _controller;
+class _SlInputDialogState extends ConsumerState<SlInputDialog> {
+  late final TextEditingController _controller;
   final _formKey = GlobalKey<FormState>();
-  String? _errorText;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final providerValue = ref.read(dialogInputValueProvider(widget.dialogId));
+      if (providerValue.isNotEmpty && _controller.text.isEmpty) {
+        _controller.text = providerValue;
+      }
+    });
   }
 
   @override
@@ -204,118 +292,111 @@ class _SltInputDialogState extends State<SltInputDialog> {
     super.dispose();
   }
 
-  void _validateAndSubmit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pop(_controller.text);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    final Widget dialogHeader = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (widget.icon != null) ...[
-          Icon(
-            widget.icon,
-            size: widget.iconSize,
-            color: widget.iconColor ?? theme.colorScheme.primary,
-          ),
-          AppDimens.vGapM,
-        ],
-        Text(
-          widget.title,
-          style: theme.textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        if (widget.message != null) ...[
-          AppDimens.vGapS,
-          Text(
-            widget.message!,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ],
-    );
+    final Color effectiveConfirmButtonColor = widget.isDangerAction
+        ? colorScheme.error
+        : colorScheme.primary;
 
-    final inputField = Form(
-      key: _formKey,
-      child: SltTextField(
-        controller: _controller,
-        hintText: widget.hintText,
-        labelText: widget.labelText,
-        errorText: _errorText,
-        keyboardType: widget.keyboardType,
-        maxLines: widget.isMultiline ? widget.maxLines ?? 5 : 1,
-        minLines: widget.isMultiline ? 3 : 1,
-        maxLength: widget.maxLength,
-        showCounter: widget.showCounter,
-        autovalidateMode: widget.autoValidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        validator: widget.validator,
-        onChanged: (value) {
-          if (_errorText != null) {
-            setState(() {
-              _errorText = null;
-            });
-          }
-        },
-        textInputAction:
-            widget.isMultiline ? TextInputAction.newline : TextInputAction.done,
-        onSubmitted: widget.isMultiline ? null : (_) => _validateAndSubmit(),
-      ),
-    );
+    final Color effectiveConfirmButtonForegroundColor =
+        effectiveConfirmButtonColor.computeLuminance() > 0.5
+        ? colorScheme.onSurface
+        : colorScheme.surface;
 
-    final actionButtons = Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (widget.showCancelButton) ...[
-          SltSecondaryButton(
-            text: widget.cancelText,
-            onPressed: () => Navigator.of(context).pop(),
-            foregroundColor: widget.cancelButtonColor,
-          ),
-          AppDimens.hGapM,
-        ],
-        SltPrimaryButton(
-          text: widget.confirmText,
-          onPressed: _validateAndSubmit,
-          backgroundColor: widget.confirmButtonColor,
-        ),
-      ],
-    );
-
-    return Dialog(
+    return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(widget.borderRadius),
+        borderRadius: BorderRadius.circular(AppDimens.radiusL),
       ),
-      child: Container(
-        width: widget.width ?? AppDimens.dialogWidthLarge,
-        padding: EdgeInsets.zero,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surfaceTint,
+      titlePadding: const EdgeInsets.fromLTRB(
+        AppDimens.paddingL,
+        AppDimens.paddingL,
+        AppDimens.paddingL,
+        AppDimens.paddingS,
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(
+        AppDimens.paddingL,
+        AppDimens.paddingS,
+        AppDimens.paddingL,
+        AppDimens.paddingL,
+      ),
+      actionsPadding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingL,
+        vertical: AppDimens.paddingM,
+      ),
+      actionsAlignment: MainAxisAlignment.end,
+
+      title: Text(
+        widget.title,
+        style: theme.textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: widget.isDangerAction
+              ? colorScheme.error
+              : colorScheme.onSurface,
+        ),
+      ),
+      content: Form(
+        key: _formKey,
+        autovalidateMode: widget.autovalidateMode,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: widget.titlePadding,
-              child: dialogHeader,
-            ),
-            Padding(
-              padding: widget.contentPadding,
-              child: inputField,
-            ),
-            Padding(
-              padding: widget.actionsPadding,
-              child: actionButtons,
+            if (widget.message != null) ...[
+              Text(
+                widget.message!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppDimens.spaceM),
+            ],
+            SltTextField(
+              controller: _controller,
+              autofocus: widget.autofocus,
+              hint: widget.hintText,
+              prefixIcon: widget.prefixIcon,
+              keyboardType: widget.keyboardType,
+              obscureText: widget.obscureText,
+              inputFormatters: widget.inputFormatters,
+              validator: widget.validator,
+              maxLength: widget.maxLength,
+              maxLines: widget.maxLines,
+              textCapitalization: widget.textCapitalization,
+              fillColor: colorScheme.surfaceContainerLowest,
+              borderColor: colorScheme.outlineVariant,
+              focusedBorderColor: colorScheme.primary,
+              onChanged: (value) {
+                ref
+                    .read(dialogInputValueProvider(widget.dialogId).notifier)
+                    .setValue(value);
+              },
             ),
           ],
         ),
       ),
+      actions: [
+        SltDialogButtonBar(
+          cancelButton: SltTextButton(
+            text: widget.cancelText,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          confirmButton: SltPrimaryButton(
+            text: widget.confirmText,
+            onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+                Navigator.of(context).pop(_controller.text);
+              }
+            },
+            backgroundColor: effectiveConfirmButtonColor,
+            foregroundColor: effectiveConfirmButtonForegroundColor,
+          ),
+        ),
+      ],
     );
   }
 }

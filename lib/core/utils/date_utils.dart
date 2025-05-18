@@ -107,8 +107,10 @@ class DateUtils {
 
   /// Get the end of the month
   static DateTime endOfMonth(DateTime date) {
-    return DateTime(date.year, date.month + 1)
-        .subtract(const Duration(microseconds: 1));
+    return DateTime(
+      date.year,
+      date.month + 1,
+    ).subtract(const Duration(microseconds: 1));
   }
 
   /// Get the difference in days between two dates
@@ -186,8 +188,16 @@ class DateUtils {
     final daysInMonth = DateTime(year, month + 1, 0).day;
     final day = date.day > daysInMonth ? daysInMonth : date.day;
 
-    return DateTime(year, month, day, date.hour, date.minute, date.second,
-        date.millisecond, date.microsecond);
+    return DateTime(
+      year,
+      month,
+      day,
+      date.hour,
+      date.minute,
+      date.second,
+      date.millisecond,
+      date.microsecond,
+    );
   }
 
   /// Check if a date is in the future

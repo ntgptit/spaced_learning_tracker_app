@@ -1,277 +1,273 @@
+// lib/presentation/screens/auth/register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:slt_app/core/constants/app_assets.dart';
-import 'package:slt_app/core/di/dependency_injection.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_primary_button.dart';
-import 'package:slt_app/presentation/widgets/common/slt_app_bar.dart';
-import 'package:slt_app/presentation/widgets/inputs/slt_password_text_field.dart';
-import 'package:slt_app/presentation/widgets/inputs/slt_text_field.dart';
+import 'package:spaced_learning_app/core/constants/app_constants.dart';
+import 'package:spaced_learning_app/core/navigation/navigation_helper.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/slt_primary_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/slt_text_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/input/slt_password_field.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/input/slt_text_field.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/state/slt_error_state_widget.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/state/slt_loading_state_widget.dart';
 
-import '../../../core/services/slt_ui_notifier_service.dart';
-import '../../../core/theme/app_dimens.dart';
-import '../../viewmodels/auth/register_view_model.dart';
+import '../../widgets/common/button/slt_button_base.dart';
 
-/// Register screen
-class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
-
-  @override
-  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends ConsumerState<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  final _uiNotifier = DependencyInjection.locator<UiNotifierService>();
+class RegisterScreen extends ConsumerWidget {
+  const RegisterScreen({super.key});
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final authState = ref.watch(authStateProvider);
+    final authError = ref.watch(authErrorProvider);
+    final formState = ref.watch(registerFormStateProvider);
+    final formNotifier = ref.read(registerFormStateProvider.notifier);
 
-  void _register() async {
-    final registerViewModel = ref.read(registerViewModelProvider.notifier);
-
-    // Validate form
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Hide keyboard
-    FocusScope.of(context).unfocus();
-
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    final success = await registerViewModel.register(
-      name: name,
-      email: email,
-      password: password,
+    // Controllers for text fields - populated with current state values
+    final firstNameController = TextEditingController(
+      text: formState.firstName,
+    );
+    final lastNameController = TextEditingController(text: formState.lastName);
+    final usernameController = TextEditingController(text: formState.username);
+    final emailController = TextEditingController(text: formState.email);
+    final passwordController = TextEditingController(text: formState.password);
+    final confirmPasswordController = TextEditingController(
+      text: formState.confirmPassword,
     );
 
-    // Check if the widget is still mounted after the async operation
-    if (!mounted) return;
-
-    if (success) {
-      _uiNotifier.showSuccessSnackBar(
-        context,
-        'Registration successful. Please login.',
-      );
-
-      // Navigate back to login screen
-      Navigator.of(context).pop();
+    // Handle registration submission
+    Future<void> handleRegister() async {
+      final success = await formNotifier.submitRegistration();
+      if (success && context.mounted) {
+        NavigationHelper.clearStackAndGo(context, '/');
+      }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    final registerState = ref.watch(registerViewModelProvider);
-    final theme = Theme.of(context);
+    if (authState.isLoading) {
+      return SlLoadingStateWidget.fullScreen(
+        message: 'Creating your account...',
+      );
+    }
 
     return Scaffold(
-      appBar: const SltAppBar(
-        title: 'Create Account',
-        showBackButton: true,
-      ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
+      appBar: AppBar(title: const Text('Register')),
+      body: SafeArea(
         child: SingleChildScrollView(
-          padding: AppDimens.screenPadding,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo and title
-                Center(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Image.asset(
-                        AppAssets.logoLightMode,
-                        height: 60,
-                        width: 60,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Join Us',
-                        style: theme.textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Create a new account',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color:
-                              theme.colorScheme.onBackground.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Error message
-                if (registerState.errorMessage != null) ...[
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.error.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: theme.colorScheme.error.withOpacity(0.5),
-                      ),
-                    ),
-                    child: Text(
-                      registerState.errorMessage!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.error,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Name field
-                SltTextField(
-                  controller: _nameController,
-                  labelText: 'Full Name',
-                  hintText: 'Enter your full name',
-                  prefixIcon: Icons.person_outline,
-                  textInputAction: TextInputAction.next,
-                  validator:
-                      ref.read(registerViewModelProvider.notifier).validateName,
-                  onChanged: (_) =>
-                      ref.read(registerViewModelProvider.notifier).clearError(),
-                  enabled: !registerState.isLoading,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Email field
-                SltTextField(
-                  controller: _emailController,
-                  labelText: 'Email',
-                  hintText: 'Enter your email',
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: ref
-                      .read(registerViewModelProvider.notifier)
-                      .validateEmail,
-                  onChanged: (_) =>
-                      ref.read(registerViewModelProvider.notifier).clearError(),
-                  enabled: !registerState.isLoading,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Password field
-                SltPasswordTextField(
-                  controller: _passwordController,
-                  labelText: 'Password',
-                  hintText: 'Create a password',
-                  validator: ref
-                      .read(registerViewModelProvider.notifier)
-                      .validatePassword,
-                  onChanged: (_) =>
-                      ref.read(registerViewModelProvider.notifier).clearError(),
-                  textInputAction: TextInputAction.next,
-                  enabled: !registerState.isLoading,
-                  initiallyVisible: registerState.isPasswordVisible,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Confirm password field
-                SltPasswordTextField(
-                  controller: _confirmPasswordController,
-                  labelText: 'Confirm Password',
-                  hintText: 'Confirm your password',
-                  validator: (value) => ref
-                      .read(registerViewModelProvider.notifier)
-                      .validateConfirmPassword(value, _passwordController.text),
-                  onChanged: (_) =>
-                      ref.read(registerViewModelProvider.notifier).clearError(),
-                  textInputAction: TextInputAction.done,
-                  enabled: !registerState.isLoading,
-                  initiallyVisible: registerState.isConfirmPasswordVisible,
-                  onSubmitted: (_) => _register(),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Terms and conditions
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: true, // Should be a state variable in real app
-                        onChanged: (value) {
-                          // Implement terms agreement logic
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'I agree to the Terms of Service and Privacy Policy',
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 32),
-
-                // Register button
-                SltPrimaryButton(
-                  text: 'Create Account',
-                  onPressed: registerState.isLoading ? null : _register,
-                  expandToFillWidth: true,
-                  isLoading: registerState.isLoading,
-                  height: 50,
-                ),
-
-                const SizedBox(height: 24),
-
-                // Login option
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    TextButton(
-                      onPressed: registerState.isLoading
-                          ? null
-                          : () {
-                              // Navigate back to login screen
-                              Navigator.of(context).pop();
-                            },
-                      child: const Text('Login'),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 40),
-              ],
-            ),
+          padding: const EdgeInsets.all(AppDimens.paddingXL),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(theme),
+              if (authError != null) _buildErrorWidget(authError, theme, ref),
+              const SizedBox(height: AppDimens.spaceL),
+              _buildPersonalInfoFields(
+                theme,
+                formState,
+                formNotifier,
+                firstNameController,
+                lastNameController,
+              ),
+              const SizedBox(height: AppDimens.spaceL),
+              _buildAccountFields(
+                theme,
+                formState,
+                formNotifier,
+                usernameController,
+                emailController,
+                passwordController,
+                confirmPasswordController,
+              ),
+              const SizedBox(height: AppDimens.spaceXL),
+              _buildActions(context, theme, handleRegister),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(ThemeData theme) {
+    return Column(
+      children: [
+        Text(
+          AppConstants.appName,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppDimens.spaceS),
+        Text(
+          'Create your account',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorWidget(
+    String errorMessage,
+    ThemeData theme,
+    WidgetRef ref,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(top: AppDimens.paddingL),
+      child: SlErrorStateWidget(
+        title: 'Registration Failed',
+        message: errorMessage,
+        compact: true,
+        onRetry: () => ref.read(authErrorProvider.notifier).clearError(),
+        icon: Icons.person_add_alt_1_outlined,
+        accentColor: theme.colorScheme.error,
+      ),
+    );
+  }
+
+  Widget _buildPersonalInfoFields(
+    ThemeData theme,
+    RegisterFormModel formState,
+    RegisterFormState formNotifier,
+    TextEditingController firstNameController,
+    TextEditingController lastNameController,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Personal Information',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLTextField(
+          label: 'First Name',
+          hint: 'Enter your first name',
+          controller: firstNameController,
+          keyboardType: TextInputType.name,
+          errorText: formState.firstNameError,
+          prefixIcon: Icons.person,
+          onChanged: (value) => formNotifier.updateFirstName(value),
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLTextField(
+          label: 'Last Name',
+          hint: 'Enter your last name',
+          controller: lastNameController,
+          keyboardType: TextInputType.name,
+          errorText: formState.lastNameError,
+          prefixIcon: Icons.person,
+          onChanged: (value) => formNotifier.updateLastName(value),
+          textInputAction: TextInputAction.next,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountFields(
+    ThemeData theme,
+    RegisterFormModel formState,
+    RegisterFormState formNotifier,
+    TextEditingController usernameController,
+    TextEditingController emailController,
+    TextEditingController passwordController,
+    TextEditingController confirmPasswordController,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Account Information',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLTextField(
+          label: 'Username',
+          hint: 'Enter your username',
+          controller: usernameController,
+          keyboardType: TextInputType.text,
+          errorText: formState.usernameError,
+          prefixIcon: Icons.account_circle,
+          onChanged: (value) => formNotifier.updateUsername(value),
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLTextField(
+          label: 'Email',
+          hint: 'Enter your email',
+          controller: emailController,
+          keyboardType: TextInputType.emailAddress,
+          errorText: formState.emailError,
+          prefixIcon: Icons.email,
+          onChanged: (value) => formNotifier.updateEmail(value),
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLPasswordField(
+          label: 'Password',
+          hint: 'Enter your password',
+          controller: passwordController,
+          errorText: formState.passwordError,
+          prefixIconData: Icons.lock_outline,
+          onChanged: (value) => formNotifier.updatePassword(value),
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        SLPasswordField(
+          label: 'Confirm Password',
+          hint: 'Confirm your password',
+          controller: confirmPasswordController,
+          errorText: formState.confirmPasswordError,
+          prefixIconData: Icons.lock_outline,
+          onChanged: (value) => formNotifier.updateConfirmPassword(value),
+          textInputAction: TextInputAction.done,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActions(
+    BuildContext context,
+    ThemeData theme,
+    VoidCallback handleRegister,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SltPrimaryButton(
+          text: 'Register',
+          onPressed: handleRegister,
+          isFullWidth: true,
+          size: SltButtonSize.large,
+        ),
+        const SizedBox(height: AppDimens.spaceL),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Already have an account? ',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            SltTextButton(
+              text: 'Login',
+              onPressed: () => Navigator.of(context).pop(),
+              foregroundColor: theme.colorScheme.primary,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

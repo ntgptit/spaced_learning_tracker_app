@@ -1,117 +1,219 @@
 import 'package:flutter/material.dart';
-import 'package:slt_app/core/constants/app_assets.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-import '../../../core/theme/app_dimens.dart';
 import '../buttons/slt_primary_button.dart';
+import '../buttons/slt_text_button.dart';
 
-/// Empty state widget
-/// Displays empty state information with optional action button
-class SltEmptyStateWidget extends StatelessWidget {
-  /// Empty state message to display
-  final String message;
+enum SlEmptyStateType { general, noResults, noData, firstUse }
 
-  /// Title of the empty state
-  final String? title;
-
-  /// Icon to display
-  final IconData icon;
-
-  /// Icon color
+class SlEmptyStateWidget extends ConsumerWidget {
+  final String title;
+  final String? message;
+  final IconData? icon;
+  final String? buttonText;
+  final VoidCallback? onButtonPressed;
+  final IconData? buttonIcon;
+  final Widget? customImage;
   final Color? iconColor;
+  final bool showGradientBackground;
+  final SlEmptyStateType type;
 
-  /// Icon size
-  final double iconSize;
-
-  /// Action callback function
-  final VoidCallback? onAction;
-
-  /// Action button text
-  final String? actionText;
-
-  /// Whether to use an image instead of an icon
-  final bool useImage;
-
-  /// Image path to use if useImage is true
-  final String imagePath;
-
-  /// Image width
-  final double imageWidth;
-
-  /// Image height
-  final double imageHeight;
-
-  /// Whether to add extra padding at the bottom (useful when in a list)
-  final bool addBottomPadding;
-
-  const SltEmptyStateWidget({
-    Key? key,
-    this.message = AppStrings.emptyStateDescription,
-    this.title = AppStrings.emptyStateTitle,
+  const SlEmptyStateWidget({
+    super.key,
+    required this.title,
+    this.message,
     this.icon = Icons.inbox_outlined,
+    this.buttonText,
+    this.onButtonPressed,
+    this.buttonIcon,
+    this.customImage,
     this.iconColor,
-    this.iconSize = 64.0,
-    this.onAction,
-    this.actionText,
-    this.useImage = false,
-    this.imagePath = AppAssets.emptyState,
-    this.imageWidth = 150.0,
-    this.imageHeight = 150.0,
-    this.addBottomPadding = false,
-  }) : super(key: key);
+    this.showGradientBackground = false,
+    this.type = SlEmptyStateType.general,
+  });
+
+  factory SlEmptyStateWidget.noResults({
+    Key? key,
+    String? message,
+    VoidCallback? onResetFilters,
+  }) => SlEmptyStateWidget(
+    key: key,
+    title: 'No Results Found',
+    message:
+        message ?? 'We couldn\'t find any matches for your search or filters.',
+    icon: Icons.search_off_rounded,
+    buttonText: onResetFilters != null ? 'Reset Filters' : null,
+    onButtonPressed: onResetFilters,
+    buttonIcon: onResetFilters != null ? Icons.filter_alt_off_outlined : null,
+    type: SlEmptyStateType.noResults,
+  );
+
+  factory SlEmptyStateWidget.noData({
+    Key? key,
+    String title = 'No Data Available',
+    String? message,
+    String? buttonText,
+    VoidCallback? onButtonPressed,
+    IconData icon = Icons.dataset_outlined,
+    IconData? buttonIcon,
+  }) => SlEmptyStateWidget(
+    key: key,
+    title: title,
+    message:
+        message ??
+        'There\'s nothing here yet. Try adding some data or check back later.',
+    icon: icon,
+    buttonText: buttonText,
+    onButtonPressed: onButtonPressed,
+    buttonIcon: buttonText != null
+        ? (buttonIcon ?? Icons.add_circle_outline_rounded)
+        : null,
+    type: SlEmptyStateType.noData,
+  );
+
+  factory SlEmptyStateWidget.firstUse({
+    Key? key,
+    required String title,
+    required String message,
+    required String buttonText,
+    required VoidCallback onButtonPressed,
+    IconData icon = Icons.lightbulb_outline_rounded,
+    IconData buttonIcon = Icons.arrow_forward_rounded,
+    Color? iconColor,
+    bool showGradientBackground = true,
+  }) => SlEmptyStateWidget(
+    key: key,
+    title: title,
+    message: message,
+    icon: icon,
+    buttonText: buttonText,
+    onButtonPressed: onButtonPressed,
+    buttonIcon: buttonIcon,
+    showGradientBackground: showGradientBackground,
+    iconColor: iconColor,
+    type: SlEmptyStateType.firstUse,
+  );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+    final effectiveIconColor = iconColor ?? colorScheme.primary;
 
     return Center(
       child: Padding(
-        padding: AppDimens.screenPadding.add(
-          EdgeInsets.only(bottom: addBottomPadding ? AppDimens.paddingXL : 0),
-        ),
+        padding: const EdgeInsets.all(AppDimens.paddingXL),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (useImage) ...[
-              Image.asset(
-                imagePath,
-                width: imageWidth,
-                height: imageHeight,
-              ),
-            ] else ...[
-              Icon(
-                icon,
-                size: iconSize,
-                color: iconColor ??
-                    theme.colorScheme.primary.withValues(alpha: 0.7),
-              ),
-            ],
-            AppDimens.vGapL,
-            if (title != null) ...[
-              Text(
-                title!,
-                style: theme.textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              AppDimens.vGapM,
-            ],
+            _buildImageOrIcon(effectiveIconColor),
+            const SizedBox(height: AppDimens.spaceXL),
             Text(
-              message,
-              style: theme.textTheme.bodyMedium,
+              title,
               textAlign: TextAlign.center,
-            ),
-            if (onAction != null && actionText != null) ...[
-              AppDimens.vGapXL,
-              SltPrimaryButton(
-                text: actionText!,
-                onPressed: onAction,
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
               ),
-            ],
+            ),
+            _buildMessage(colorScheme, textTheme),
+            _buildButton(colorScheme),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildImageOrIcon(Color effectiveIconColor) {
+    if (customImage != null) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: AppDimens.spaceXL),
+        child: customImage!,
+      );
+    }
+
+    if (icon == null) return const SizedBox.shrink();
+
+    return Container(
+      width: AppDimens.iconXXL,
+      height: AppDimens.iconXXL,
+      decoration: BoxDecoration(
+        color: showGradientBackground
+            ? null
+            : effectiveIconColor.withOpacity(0.1),
+        gradient: showGradientBackground
+            ? LinearGradient(
+                colors: [
+                  effectiveIconColor.withOpacity(0.05),
+                  effectiveIconColor.withOpacity(0.15),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        size: AppDimens.iconXL,
+        color: effectiveIconColor.withOpacity(
+          showGradientBackground ? 1.0 : 0.8,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessage(ColorScheme colorScheme, TextTheme textTheme) {
+    if (message == null || message!.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      children: [
+        const SizedBox(height: AppDimens.spaceS),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingL),
+          child: Text(
+            message!,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButton(ColorScheme colorScheme) {
+    if (buttonText == null || onButtonPressed == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        const SizedBox(height: AppDimens.spaceXL),
+        _buildButtonWidget(colorScheme),
+      ],
+    );
+  }
+
+  Widget _buildButtonWidget(ColorScheme colorScheme) {
+    if (type == SlEmptyStateType.noResults) {
+      return SltTextButton(
+        text: buttonText!,
+        onPressed: onButtonPressed,
+        prefixIcon: buttonIcon,
+        foregroundColor: colorScheme.primary,
+      );
+    }
+
+    return SltPrimaryButton(
+      text: buttonText!,
+      onPressed: onButtonPressed,
+      prefixIcon: buttonIcon,
     );
   }
 }

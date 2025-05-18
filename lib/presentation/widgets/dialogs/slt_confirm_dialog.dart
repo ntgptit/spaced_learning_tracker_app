@@ -1,222 +1,266 @@
+// lib/presentation/widgets/common/dialog/slt_confirm_dialog.dart
 import 'package:flutter/material.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_primary_button.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_secondary_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
 
-import '../../../core/theme/app_dimens.dart';
-
-/// Confirm dialog
-/// A dialog that asks for confirmation with OK and Cancel buttons
-class SltConfirmDialog extends StatelessWidget {
-  /// Title of the dialog
+/// A confirmation dialog with customizable title, content, and action buttons,
+/// using SlButtonBase derivatives.
+class SlConfirmDialog extends ConsumerWidget {
   final String title;
-
-  /// Message to display
   final String message;
-
-  /// Confirm button text
   final String confirmText;
-
-  /// Cancel button text
   final String cancelText;
-
-  /// Whether the confirm action is destructive (e.g., delete)
-  final bool isDestructive;
-
-  /// Dialog border radius
-  final double borderRadius;
-
-  /// Whether to show the cancel button
-  final bool showCancelButton;
-
-  /// Icon to display above the title
+  final VoidCallback? onConfirm;
+  final VoidCallback? onCancel;
+  final bool isDangerAction; // True if the confirm action is destructive
+  final bool barrierDismissible;
   final IconData? icon;
-
-  /// Icon color
   final Color? iconColor;
+  final Color? confirmButtonColor; // Custom color for the confirm button
+  final Color? cancelButtonColor; // Custom color for the cancel button text
 
-  /// Icon background color
-  final Color? iconBackgroundColor;
-
-  /// Icon size
-  final double iconSize;
-
-  /// Confirm button color
-  final Color? confirmButtonColor;
-
-  /// Cancel button color
-  final Color? cancelButtonColor;
-
-  /// Dialog width
-  final double? width;
-
-  /// Dialog content padding
-  final EdgeInsetsGeometry contentPadding;
-
-  /// Dialog title padding
-  final EdgeInsetsGeometry titlePadding;
-
-  /// Dialog action buttons padding
-  final EdgeInsetsGeometry actionsPadding;
-
-  const SltConfirmDialog({
-    Key? key,
+  const SlConfirmDialog({
+    super.key,
     required this.title,
     required this.message,
-    this.confirmText = AppStrings.confirm,
-    this.cancelText = AppStrings.cancel,
-    this.isDestructive = false,
-    this.borderRadius = AppDimens.dialogBorderRadius,
-    this.showCancelButton = true,
+    this.confirmText = 'Confirm',
+    this.cancelText = 'Cancel',
+    this.onConfirm,
+    this.onCancel,
+    this.isDangerAction = false,
+    this.barrierDismissible = true,
     this.icon,
     this.iconColor,
-    this.iconBackgroundColor,
-    this.iconSize = 32.0,
     this.confirmButtonColor,
     this.cancelButtonColor,
-    this.width,
-    this.contentPadding = AppDimens.dialogContentPadding,
-    this.titlePadding = const EdgeInsets.only(
-      left: AppDimens.paddingL,
-      right: AppDimens.paddingL,
-      top: AppDimens.paddingL,
-    ),
-    this.actionsPadding = const EdgeInsets.all(AppDimens.paddingM),
-  }) : super(key: key);
+  });
 
-  /// Show the dialog
-  static Future<bool?> show({
-    required BuildContext context,
+  factory SlConfirmDialog._create({
     required String title,
     required String message,
-    String confirmText = AppStrings.confirm,
-    String cancelText = AppStrings.cancel,
-    bool isDestructive = false,
-    double borderRadius = AppDimens.dialogBorderRadius,
-    bool showCancelButton = true,
-    IconData? icon,
+    required String confirmText,
+    required String cancelText,
+    required VoidCallback? onConfirm,
+    required VoidCallback? onCancel,
+    required bool isDangerAction,
+    required IconData? icon,
     Color? iconColor,
-    Color? iconBackgroundColor,
-    double iconSize = 32.0,
     Color? confirmButtonColor,
-    Color? cancelButtonColor,
-    double? width,
-    EdgeInsetsGeometry contentPadding = AppDimens.dialogContentPadding,
-    EdgeInsetsGeometry titlePadding = const EdgeInsets.only(
-      left: AppDimens.paddingL,
-      right: AppDimens.paddingL,
-      top: AppDimens.paddingL,
-    ),
-    EdgeInsetsGeometry actionsPadding =
-        const EdgeInsets.all(AppDimens.paddingM),
   }) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => SltConfirmDialog(
-        title: title,
-        message: message,
-        confirmText: confirmText,
-        cancelText: cancelText,
-        isDestructive: isDestructive,
-        borderRadius: borderRadius,
-        showCancelButton: showCancelButton,
-        icon: icon,
-        iconColor: iconColor,
-        iconBackgroundColor: iconBackgroundColor,
-        iconSize: iconSize,
-        confirmButtonColor: confirmButtonColor,
-        cancelButtonColor: cancelButtonColor,
-        width: width,
-        contentPadding: contentPadding,
-        titlePadding: titlePadding,
-        actionsPadding: actionsPadding,
-      ),
+    return SlConfirmDialog(
+      title: title,
+      message: message,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
+      isDangerAction: isDangerAction,
+      icon: icon,
+      iconColor: iconColor,
+      confirmButtonColor: confirmButtonColor,
+    );
+  }
+
+  // Factory constructor for a standard confirmation
+  factory SlConfirmDialog.standard({
+    required String title,
+    required String message,
+    String confirmText = 'Confirm',
+    String cancelText = 'Cancel',
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+    IconData icon = Icons.help_outline_rounded,
+  }) {
+    return SlConfirmDialog._create(
+      title: title,
+      message: message,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
+      isDangerAction: false,
+      icon: icon,
+    );
+  }
+
+  // Factory constructor for a delete confirmation (dangerous action)
+  factory SlConfirmDialog.delete({
+    required String title,
+    required String message,
+    String confirmText = 'Delete',
+    String cancelText = 'Cancel',
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) {
+    return SlConfirmDialog._create(
+      title: title,
+      message: message,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
+      isDangerAction: true,
+      icon: Icons.delete_outline_rounded,
+    );
+  }
+
+  // Factory constructor for a warning confirmation
+  factory SlConfirmDialog.warning({
+    required String title,
+    required String message,
+    String confirmText = 'Continue',
+    String cancelText = 'Cancel',
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) {
+    return SlConfirmDialog._create(
+      title: title,
+      message: message,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
+      isDangerAction: false,
+      // Warning is not necessarily a "danger" action like delete
+      icon: Icons.warning_amber_rounded,
+      iconColor: Colors.orange,
+      // Default warning color
+      confirmButtonColor: Colors.orange, // Default warning color
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    final Widget dialogContent = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (icon != null) ...[
-          Container(
-            width: iconSize * 2,
-            height: iconSize * 2,
-            decoration: BoxDecoration(
-              color: iconBackgroundColor ??
-                  theme.colorScheme.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: iconSize,
-              color: iconColor ?? theme.colorScheme.primary,
-            ),
-          ),
-          AppDimens.vGapM,
-        ],
-        Text(
-          title,
-          style: theme.textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        AppDimens.vGapM,
-        Text(
-          message,
-          style: theme.textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
-      ],
+    final effectiveIconColor =
+        iconColor ?? (isDangerAction ? colorScheme.error : colorScheme.primary);
+
+    final effectiveConfirmButtonColor =
+        confirmButtonColor ??
+        (isDangerAction ? colorScheme.error : colorScheme.primary);
+
+    final effectiveConfirmButtonForegroundColor =
+        effectiveConfirmButtonColor.computeLuminance() > 0.5
+        ? colorScheme.onSurface
+        : colorScheme.surface;
+
+    final SltTextButton cancelAction = SltTextButton(
+      text: cancelText,
+      onPressed: () {
+        if (onCancel != null) {
+          onCancel!();
+        } else {
+          Navigator.of(context).pop(false);
+        }
+      },
+      foregroundColor: cancelButtonColor ?? colorScheme.onSurfaceVariant,
     );
 
-    final buttonColor = isDestructive
-        ? theme.colorScheme.error
-        : confirmButtonColor ?? theme.colorScheme.primary;
-
-    final actionButtons = Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (showCancelButton) ...[
-          SltSecondaryButton(
-            text: cancelText,
-            onPressed: () => Navigator.of(context).pop(false),
-            foregroundColor: cancelButtonColor,
-          ),
-          AppDimens.hGapM,
-        ],
-        SltPrimaryButton(
-          text: confirmText,
-          onPressed: () => Navigator.of(context).pop(true),
-          backgroundColor: buttonColor,
-        ),
-      ],
+    final SltPrimaryButton confirmAction = SltPrimaryButton(
+      text: confirmText,
+      onPressed: () {
+        if (onConfirm != null) {
+          onConfirm!();
+        } else {
+          Navigator.of(context).pop(true);
+        }
+      },
+      backgroundColor: effectiveConfirmButtonColor,
+      foregroundColor: effectiveConfirmButtonForegroundColor,
     );
 
-    return Dialog(
+    return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(AppDimens.radiusL),
       ),
-      child: Container(
-        width: width ?? AppDimens.dialogWidth,
-        padding: EdgeInsets.zero,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: titlePadding,
-              child: dialogContent,
-            ),
-            Padding(
-              padding: actionsPadding,
-              child: actionButtons,
-            ),
-          ],
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surfaceTint,
+      // M3 surface tint
+      iconPadding: const EdgeInsets.only(
+        top: AppDimens.paddingL,
+        bottom: AppDimens.paddingS,
+      ),
+      icon: icon != null
+          ? Icon(icon, color: effectiveIconColor, size: AppDimens.iconL)
+          : null,
+      titlePadding: const EdgeInsets.fromLTRB(
+        AppDimens.paddingL,
+        AppDimens.paddingM,
+        AppDimens.paddingL,
+        AppDimens.paddingS,
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(
+        AppDimens.paddingL,
+        AppDimens.paddingS,
+        AppDimens.paddingL,
+        AppDimens.paddingL,
+      ),
+      actionsPadding: const EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingL,
+        vertical: AppDimens.paddingM,
+      ),
+      actionsAlignment: MainAxisAlignment.end,
+      title: Text(
+        title,
+        style: theme.textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: isDangerAction ? colorScheme.error : colorScheme.onSurface,
         ),
+        textAlign: icon != null ? TextAlign.center : TextAlign.start,
+      ),
+      content: Text(
+        message,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        textAlign: icon != null ? TextAlign.center : TextAlign.start,
+      ),
+      actions: [
+        SlDialogButtonBar(
+          cancelButton: cancelAction,
+          confirmButton: confirmAction,
+        ),
+      ],
+    );
+  }
+
+  /// Show the confirmation dialog with the given parameters
+  static Future<bool?> show(
+    BuildContext context, {
+    required String title,
+    required String message,
+    String confirmText = 'Confirm',
+    String cancelText = 'Cancel',
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+    bool isDangerAction = false,
+    bool barrierDismissible = true,
+    IconData? icon,
+    Color? iconColor,
+    Color? confirmButtonColor,
+    Color? cancelButtonColor,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      builder: (context) => SlConfirmDialog(
+        title: title,
+        message: message,
+        confirmText: confirmText,
+        cancelText: cancelText,
+        onConfirm: onConfirm,
+        onCancel: onCancel,
+        isDangerAction: isDangerAction,
+        barrierDismissible: barrierDismissible,
+        icon: icon,
+        iconColor: iconColor,
+        confirmButtonColor: confirmButtonColor,
+        cancelButtonColor: cancelButtonColor,
       ),
     );
   }

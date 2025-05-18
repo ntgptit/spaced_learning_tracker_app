@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:slt_app/presentation/screens/auth/login_screen.dart';
-import 'package:slt_app/presentation/screens/auth/register_screen.dart';
-import 'package:slt_app/presentation/screens/home/home_screen.dart';
+
+import '../../presentation/screens/auth/login_screen.dart';
+import '../../presentation/screens/auth/register_screen.dart';
+import '../../presentation/screens/home/home_screen.dart';
 
 /// App routes
 /// All routes are defined here to ensure consistency across the app
@@ -35,42 +36,29 @@ class AppRoutes {
     debugLogDiagnostics: true,
     initialLocation: initial,
     routes: [
-      GoRoute(
-        path: initial,
-        redirect: (_, __) => home,
-      ),
+      GoRoute(path: initial, redirect: (_, __) => home),
       GoRoute(
         path: home,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const HomeScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            MaterialPage(key: state.pageKey, child: const HomeScreen()),
       ),
       GoRoute(
         path: login,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const LoginScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            MaterialPage(key: state.pageKey, child: const LoginScreen()),
       ),
       GoRoute(
         path: register,
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const RegisterScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            MaterialPage(key: state.pageKey, child: const RegisterScreen()),
       ),
       // Add more routes as needed
     ],
     errorPageBuilder: (context, state) => MaterialPage(
       key: state.pageKey,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Page Not Found'),
-        ),
-        body: Center(
-          child: Text('Page not found: ${state.uri.toString()}'),
-        ),
+        appBar: AppBar(title: const Text('Page Not Found')),
+        body: Center(child: Text('Page not found: ${state.uri.toString()}')),
       ),
     ),
   );
@@ -78,20 +66,29 @@ class AppRoutes {
   // Route utility methods
 
   /// Navigate to a named route
-  static void navigateTo(BuildContext context, String routeName,
-      {Object? arguments}) {
+  static void navigateTo(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
     context.go(routeName, extra: arguments);
   }
 
   /// Navigate to a named route and replace the current route
-  static void navigateReplacementTo(BuildContext context, String routeName,
-      {Object? arguments}) {
+  static void navigateReplacementTo(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
     context.goNamed(routeName, extra: arguments);
   }
 
   /// Navigate to a named route and clear the navigation stack
-  static void navigateAndRemoveUntil(BuildContext context, String routeName,
-      {Object? arguments}) {
+  static void navigateAndRemoveUntil(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
     context.go(routeName, extra: arguments);
   }
 

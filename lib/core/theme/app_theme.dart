@@ -1,546 +1,244 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:slt_app/core/theme/app_colors.dart';
-import 'package:slt_app/core/theme/app_dimens.dart';
-import 'package:slt_app/core/theme/app_typography.dart';
 
-/// App theme configuration
-/// This class provides theme data for light and dark modes
-class AppTheme {
-  // Light theme
-  static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      colorScheme: const ColorScheme(
-        brightness: Brightness.light,
-        primary: AppColors.primary,
-        onPrimary: Colors.white,
-        primaryContainer: AppColors.primaryLight,
-        onPrimaryContainer: AppColors.primaryDark,
-        secondary: AppColors.secondary,
-        onSecondary: Colors.white,
-        secondaryContainer: AppColors.secondaryLight,
-        onSecondaryContainer: AppColors.secondaryDark,
-        error: AppColors.error,
-        onError: Colors.white,
-        surface: AppColors.surface,
-        onSurface: AppColors.textPrimary,
-        surfaceContainerHighest: AppColors.backgroundLight,
-        onSurfaceVariant: AppColors.textSecondary,
-        outline: AppColors.divider,
-        shadow: AppColors.shadow,
-      ),
-      scaffoldBackgroundColor: AppColors.backgroundLight,
-      appBarTheme: AppBarTheme(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        toolbarHeight: AppDimens.appBarHeight,
-        centerTitle: false,
-      ),
-      cardTheme: CardThemeData(
-        elevation: AppDimens.elevationS,
-        color: AppColors.cardLight,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        ),
-      ),
-      listTileTheme: const ListTileThemeData(
-        contentPadding: AppDimens.listTilePadding,
-        dense: false,
-        horizontalTitleGap: AppDimens.gapS,
-        minLeadingWidth: 24,
-        tileColor: AppColors.surface,
-      ),
-      dialogTheme: DialogThemeData(
-        elevation: AppDimens.elevationM,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.dialogBorderRadius),
-        ),
-        backgroundColor: AppColors.surface,
-        titleTextStyle: AppTypography.titleLarge,
-        contentTextStyle: AppTypography.bodyMedium,
-      ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        elevation: AppDimens.elevationM,
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(AppDimens.bottomSheetBorderRadius),
-            topRight: Radius.circular(AppDimens.bottomSheetBorderRadius),
-          ),
-        ),
-      ),
-      textTheme: TextTheme(
-        displayLarge: AppTypography.displayLarge,
-        displayMedium: AppTypography.displayMedium,
-        displaySmall: AppTypography.displaySmall,
-        headlineLarge: AppTypography.headlineLarge,
-        headlineMedium: AppTypography.headlineMedium,
-        headlineSmall: AppTypography.headlineSmall,
-        titleLarge: AppTypography.titleLarge,
-        titleMedium: AppTypography.titleMedium,
-        titleSmall: AppTypography.titleSmall,
-        bodyLarge: AppTypography.bodyLarge,
-        bodyMedium: AppTypography.bodyMedium,
-        bodySmall: AppTypography.bodySmall,
-        labelLarge: AppTypography.labelLarge,
-        labelMedium: AppTypography.labelMedium,
-        labelSmall: AppTypography.labelSmall,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: AppDimens.inputPadding,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.divider),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.divider),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.error, width: 2),
-        ),
-        labelStyle:
-            AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
-        floatingLabelStyle:
-            AppTypography.bodyMedium.copyWith(color: AppColors.primary),
-        hintStyle:
-            AppTypography.bodyMedium.copyWith(color: AppColors.textDisabled),
-        errorStyle: AppTypography.bodySmall.copyWith(color: AppColors.error),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: AppDimens.elevationS,
-          padding: AppDimens.buttonPadding,
-          foregroundColor: Colors.white,
-          backgroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          minimumSize: const Size(88, AppDimens.buttonHeightM),
-          textStyle: AppTypography.labelLarge.copyWith(color: Colors.white),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          padding: AppDimens.buttonPadding,
-          foregroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          textStyle: AppTypography.labelLarge,
-        ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          padding: AppDimens.buttonPadding,
-          foregroundColor: AppColors.primary,
-          side: const BorderSide(color: AppColors.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          minimumSize: const Size(88, AppDimens.buttonHeightM),
-          textStyle: AppTypography.labelLarge,
-        ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          foregroundColor: AppColors.textPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusS),
-          ),
-        ),
-      ),
-      tabBarTheme: TabBarThemeData(
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.textSecondary,
-        indicatorColor: AppColors.primary,
-        labelStyle: AppTypography.labelLarge,
-        unselectedLabelStyle: AppTypography.labelLarge,
-        indicatorSize: TabBarIndicatorSize.tab,
-      ),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-            return Colors.transparent;
-          },
-        ),
-        checkColor: WidgetStateProperty.all(Colors.white),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusXS),
-        ),
-        side: const BorderSide(color: AppColors.textSecondary),
-      ),
-      radioTheme: RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-            return AppColors.textSecondary;
-          },
-        ),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-            return Colors.white;
-          },
-        ),
-        trackColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary.withValues(alpha: 0.5);
-            }
-            return Colors.grey.withValues(alpha: 0.5);
-          },
-        ),
-      ),
-      dividerTheme: const DividerThemeData(
-        color: AppColors.divider,
-        space: AppDimens.dividerHeight,
-        thickness: AppDimens.dividerHeight,
-      ),
-      chipTheme: ChipThemeData(
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-        deleteIconColor: AppColors.primary,
-        labelStyle:
-            AppTypography.labelMedium.copyWith(color: AppColors.primary),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimens.paddingS,
-          vertical: AppDimens.paddingXS,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusCircular),
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: AppTypography.labelSmall,
-        unselectedLabelStyle: AppTypography.labelSmall,
-        elevation: AppDimens.elevationM,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.textPrimary,
-        contentTextStyle:
-            AppTypography.bodyMedium.copyWith(color: Colors.white),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        ),
-      ),
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColors.primary,
-        circularTrackColor: AppColors.primaryLight.withValues(alpha: 0.2),
-        linearTrackColor: AppColors.primaryLight.withValues(alpha: 0.2),
-      ),
-      tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: AppColors.textPrimary.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(AppDimens.radiusS),
-        ),
-        textStyle: AppTypography.bodySmall.copyWith(color: Colors.white),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimens.paddingS,
-          vertical: AppDimens.paddingXS,
-        ),
-      ),
-    );
-  }
+/// App dimensions constants aligned with Material 3
+class AppDimens {
+  // Padding and margin (Material 3: multiples of 4 or 8)
+  static const double paddingXXS = 2.0;
+  static const double paddingXS = 4.0;
+  static const double paddingS = 8.0;
+  static const double paddingM = 16.0;
+  static const double paddingL = 24.0;
+  static const double paddingXL = 32.0;
+  static const double paddingXXL = 40.0;
+  static const double paddingXXXL = 48.0;
+  static const double paddingSection = 56.0;
+  static const double paddingPage = 64.0;
 
-  // Dark theme
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: const ColorScheme(
-        brightness: Brightness.dark,
-        primary: AppColors.primaryLight,
-        onPrimary: Colors.black,
-        primaryContainer: AppColors.primary,
-        onPrimaryContainer: Colors.white,
-        secondary: AppColors.secondaryLight,
-        onSecondary: Colors.black,
-        secondaryContainer: AppColors.secondary,
-        onSecondaryContainer: Colors.white,
-        error: AppColors.errorDark,
-        onError: Colors.black,
-        surface: AppColors.surfaceDark,
-        onSurface: AppColors.textPrimaryDark,
-        surfaceContainerHighest: AppColors.backgroundDark,
-        onSurfaceVariant: AppColors.textSecondaryDark,
-        outline: AppColors.dividerDark,
-        shadow: AppColors.shadowDark,
-      ),
-      scaffoldBackgroundColor: AppColors.backgroundDark,
-      appBarTheme: AppBarTheme(
-        elevation: 0,
-        backgroundColor: AppColors.surfaceDark,
-        foregroundColor: AppColors.textPrimaryDark,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: AppTypography.titleLargeDark,
-        toolbarHeight: AppDimens.appBarHeight,
-        centerTitle: false,
-      ),
-      cardTheme: CardThemeData(
-        elevation: AppDimens.elevationS,
-        color: AppColors.cardDark,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        ),
-      ),
-      listTileTheme: const ListTileThemeData(
-        contentPadding: AppDimens.listTilePadding,
-        dense: false,
-        horizontalTitleGap: AppDimens.gapS,
-        minLeadingWidth: 24,
-        tileColor: AppColors.surfaceDark,
-      ),
-      dialogTheme: DialogThemeData(
-        elevation: AppDimens.elevationM,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.dialogBorderRadius),
-        ),
-        backgroundColor: AppColors.surfaceDark,
-        titleTextStyle: AppTypography.titleLargeDark,
-        contentTextStyle: AppTypography.bodyMediumDark,
-      ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        elevation: AppDimens.elevationM,
-        backgroundColor: AppColors.surfaceDark,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(AppDimens.bottomSheetBorderRadius),
-            topRight: Radius.circular(AppDimens.bottomSheetBorderRadius),
-          ),
-        ),
-      ),
-      textTheme: TextTheme(
-        displayLarge: AppTypography.displayLargeDark,
-        displayMedium: AppTypography.displayMediumDark,
-        displaySmall: AppTypography.displaySmallDark,
-        headlineLarge: AppTypography.headlineLargeDark,
-        headlineMedium: AppTypography.headlineMediumDark,
-        headlineSmall: AppTypography.headlineSmallDark,
-        titleLarge: AppTypography.titleLargeDark,
-        titleMedium: AppTypography.titleMediumDark,
-        titleSmall: AppTypography.titleSmallDark,
-        bodyLarge: AppTypography.bodyLargeDark,
-        bodyMedium: AppTypography.bodyMediumDark,
-        bodySmall: AppTypography.bodySmallDark,
-        labelLarge: AppTypography.labelLargeDark,
-        labelMedium: AppTypography.labelMediumDark,
-        labelSmall: AppTypography.labelSmallDark,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: AppColors.surfaceDark,
-        contentPadding: AppDimens.inputPadding,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.dividerDark),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.dividerDark),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.primaryLight, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.errorDark),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          borderSide: const BorderSide(color: AppColors.errorDark, width: 2),
-        ),
-        labelStyle: AppTypography.bodyMediumDark
-            .copyWith(color: AppColors.textSecondaryDark),
-        floatingLabelStyle: AppTypography.bodyMediumDark
-            .copyWith(color: AppColors.primaryLight),
-        hintStyle: AppTypography.bodyMediumDark
-            .copyWith(color: AppColors.textDisabledDark),
-        errorStyle:
-            AppTypography.bodySmallDark.copyWith(color: AppColors.errorDark),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: AppDimens.elevationS,
-          padding: AppDimens.buttonPadding,
-          foregroundColor: Colors.black,
-          backgroundColor: AppColors.primaryLight,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          minimumSize: const Size(88, AppDimens.buttonHeightM),
-          textStyle: AppTypography.labelLarge.copyWith(color: Colors.black),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          padding: AppDimens.buttonPadding,
-          foregroundColor: AppColors.primaryLight,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          textStyle: AppTypography.labelLargeDark,
-        ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          padding: AppDimens.buttonPadding,
-          foregroundColor: AppColors.primaryLight,
-          side: const BorderSide(color: AppColors.primaryLight),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          minimumSize: const Size(88, AppDimens.buttonHeightM),
-          textStyle: AppTypography.labelLargeDark,
-        ),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          foregroundColor: AppColors.textPrimaryDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusS),
-          ),
-        ),
-      ),
-      tabBarTheme: TabBarThemeData(
-        labelColor: AppColors.primaryLight,
-        unselectedLabelColor: AppColors.textSecondaryDark,
-        indicatorColor: AppColors.primaryLight,
-        labelStyle: AppTypography.labelLargeDark,
-        unselectedLabelStyle: AppTypography.labelLargeDark,
-        indicatorSize: TabBarIndicatorSize.tab,
-      ),
-      checkboxTheme: CheckboxThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryLight;
-            }
-            return Colors.transparent;
-          },
-        ),
-        checkColor: WidgetStateProperty.all(Colors.black),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusXS),
-        ),
-        side: const BorderSide(color: AppColors.textSecondaryDark),
-      ),
-      radioTheme: RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryLight;
-            }
-            return AppColors.textSecondaryDark;
-          },
-        ),
-      ),
-      switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryLight;
-            }
-            return Colors.grey.shade400;
-          },
-        ),
-        trackColor: WidgetStateProperty.resolveWith<Color>(
-          (Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryLight.withValues(alpha: 0.5);
-            }
-            return Colors.grey.withValues(alpha: 0.3);
-          },
-        ),
-      ),
-      dividerTheme: const DividerThemeData(
-        color: AppColors.dividerDark,
-        space: AppDimens.dividerHeight,
-        thickness: AppDimens.dividerHeight,
-      ),
-      chipTheme: ChipThemeData(
-        backgroundColor: AppColors.primaryLight.withValues(alpha: 0.2),
-        deleteIconColor: AppColors.primaryLight,
-        labelStyle: AppTypography.labelMediumDark
-            .copyWith(color: AppColors.primaryLight),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimens.paddingS,
-          vertical: AppDimens.paddingXS,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusCircular),
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surfaceDark,
-        selectedItemColor: AppColors.primaryLight,
-        unselectedItemColor: AppColors.textSecondaryDark,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: AppTypography.labelSmallDark,
-        unselectedLabelStyle: AppTypography.labelSmallDark,
-        elevation: AppDimens.elevationM,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.textPrimaryDark,
-        contentTextStyle:
-            AppTypography.bodyMediumDark.copyWith(color: Colors.black),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-        ),
-      ),
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColors.primaryLight,
-        circularTrackColor: AppColors.primary.withValues(alpha: 0.2),
-        linearTrackColor: AppColors.primary.withValues(alpha: 0.2),
-      ),
-      tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: AppColors.textPrimaryDark.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(AppDimens.radiusS),
-        ),
-        textStyle: AppTypography.bodySmallDark.copyWith(color: Colors.black),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimens.paddingS,
-          vertical: AppDimens.paddingXS,
-        ),
-      ),
-    );
-  }
+  // Border radius (Material 3: 4, 8, 12, 16, 24)
+  static const double radiusXXS = 2.0;
+  static const double radiusXS = 4.0;
+  static const double radiusS = 8.0;
+  static const double radiusM = 12.0;
+  static const double radiusL = 16.0;
+  static const double radiusXL = 24.0;
+  static const double radiusXXL = 32.0;
+  static const double radiusXXXL = 40.0;
+  static const double radiusCircular = 100.0;
+  static const double dialogBorderRadius = 16.0;
+  static const double bottomSheetBorderRadius = 28.0;
+
+  // Icon sizes (Material 3: 18, 24, 36, 48)
+  static const double iconXXS = 10.0;
+  static const double iconXS = 12.0;
+  static const double iconS = 18.0;
+  static const double iconM = 24.0;
+  static const double iconL = 36.0;
+  static const double iconXL = 48.0;
+  static const double iconXXL = 64.0;
+
+  // Button heights (Material 3: 40, 48, 56)
+  static const double buttonHeightXS = 24.0;
+  static const double buttonHeightS = 40.0;
+  static const double buttonHeightM = 48.0;
+  static const double buttonHeightL = 56.0;
+  static const double buttonHeightXL = 64.0;
+
+  // Input field heights (Material 3: 56 for filled, 48 for outlined)
+  static const double textFieldHeightS = 36.0;
+  static const double textFieldHeight = 56.0;
+  static const double textFieldHeightL = 64.0;
+
+  // Other heights
+  static const double appBarHeight = 64.0;
+  static const double tabBarHeight = 48.0;
+  static const double bottomNavBarHeight = 80.0;
+  static const double listTileHeightS = 48.0;
+  static const double listTileHeight = 56.0;
+  static const double listTileHeightL = 72.0;
+  static const double bottomSheetMinHeight = 120.0;
+  static const double bottomSheetHeaderHeight = 56.0;
+  static const double badgeHeight = 24.0;
+  static const double chipHeight = 32.0;
+  static const double snackbarHeight = 48.0;
+  static const double fabSize = 56.0;
+  static const double fabSizeSmall = 40.0;
+  static const double dividerThickness = 1.0;
+  static const double thickDividerHeight = 4.0;
+
+  // Widths and thickness
+  static const double buttonMinWidth = 64.0;
+  static const double dialogMinWidth = 280.0;
+  static const double dialogMaxWidth = 400.0;
+  static const double menuMaxWidth = 320.0;
+  static const double tooltipMinWidth = 40.0;
+  static const double outlineButtonBorderWidth = 1.5;
+  static const double tabIndicatorThickness = 3.0;
+  static const double borderWidthFocused = 2.0;
+
+  // Elevation (Material 3: 0, 1, 3, 6, 8)
+  static const double elevationNone = 0.0;
+  static const double elevationXS = 1.0;
+  static const double elevationS = 3.0;
+  static const double elevationM = 6.0;
+  static const double elevationL = 8.0;
+  static const double elevationXL = 16.0;
+  static const double elevationXXL = 24.0;
+
+  // Shadows
+  static const double shadowRadiusS = 2.0;
+  static const double shadowRadiusM = 4.0;
+  static const double shadowRadiusL = 8.0;
+  static const double shadowOffsetS = 1.0;
+  static const double shadowOffsetM = 2.0;
+
+  // Font sizes (Material 3 type scale)
+  static const double fontDisplayL = 57.0;
+  static const double fontDisplayM = 45.0;
+  static const double fontDisplayS = 36.0;
+  static const double fontHeadlineL = 32.0;
+  static const double fontHeadlineM = 28.0;
+  static const double fontHeadlineS = 24.0;
+  static const double fontTitleL = 22.0;
+  static const double fontTitleM = 16.0;
+  static const double fontTitleS = 14.0;
+  static const double fontLabelL = 14.0;
+  static const double fontLabelM = 12.0;
+  static const double fontLabelS = 11.0;
+  static const double fontBodyL = 16.0;
+  static const double fontBodyM = 14.0;
+  static const double fontBodyS = 12.0;
+  static const double fontXXS = 8.0;
+  static const double fontXS = 10.0;
+  static const double fontS = 11.0;
+  static const double fontM = 12.0;
+  static const double fontL = 14.0;
+  static const double fontXL = 16.0;
+  static const double fontXXL = 18.0;
+  static const double fontXXXL = 20.0;
+  static const double fontMicro = 11.0;
+
+  // Spacing and gaps (Material 3: multiples of 4 or 8)
+  static const double gapXXS = 2.0;
+  static const double gapXS = 4.0;
+  static const double gapS = 8.0;
+  static const double gapM = 16.0;
+  static const double gapL = 24.0;
+  static const double gapXL = 32.0;
+  static const double gapXXL = 40.0;
+  static const double gapXXXL = 48.0;
+  static const double gapSection = 56.0;
+  static const double gapPage = 64.0;
+
+  // Gap widgets
+  static const SizedBox hGapXXS = SizedBox(width: gapXXS);
+  static const SizedBox hGapXS = SizedBox(width: gapXS);
+  static const SizedBox hGapS = SizedBox(width: gapS);
+  static const SizedBox hGapM = SizedBox(width: gapM);
+  static const SizedBox hGapL = SizedBox(width: gapL);
+  static const SizedBox hGapXL = SizedBox(width: gapXL);
+  static const SizedBox hGapXXL = SizedBox(width: gapXXL);
+  static const SizedBox vGapXXS = SizedBox(height: gapXXS);
+  static const SizedBox vGapXS = SizedBox(height: gapXS);
+  static const SizedBox vGapS = SizedBox(height: gapS);
+  static const SizedBox vGapM = SizedBox(height: gapM);
+  static const SizedBox vGapL = SizedBox(height: gapL);
+  static const SizedBox vGapXL = SizedBox(height: gapXL);
+  static const SizedBox vGapXXL = SizedBox(height: gapXXL);
+
+  // Grid
+  static const double gridSpacingXS = 2.0;
+  static const double gridSpacingS = 4.0;
+  static const double gridSpacingM = 8.0;
+  static const double gridSpacingL = 16.0;
+  static const double gridItemMinWidth = 120.0;
+  static const double gridItemMaxWidth = 180.0;
+  static const double gridGutter = 16.0;
+
+  // Avatar and thumbnail
+  static const double avatarSizeXS = 24.0;
+  static const double avatarSizeS = 32.0;
+  static const double avatarSizeM = 40.0;
+  static const double avatarSizeL = 56.0;
+  static const double avatarSizeXL = 64.0;
+  static const double avatarSizeXXL = 96.0;
+  static const double thumbnailSizeS = 80.0;
+  static const double thumbnailSizeM = 120.0;
+  static const double thumbnailSizeL = 160.0;
+
+  // Durations (Material 3: 100, 200, 300, 500)
+  static const int durationXXS = 50;
+  static const int durationXS = 100;
+  static const int durationS = 200;
+  static const int durationM = 300;
+  static const int durationL = 500;
+  static const int durationXL = 800;
+  static const int durationFade = 250;
+  static const int durationSlide = 400;
+
+  // Miscellaneous UI elements
+  static const double moduleIndicatorSize = 36.0;
+  static const double circularProgressSize = 24.0;
+  static const double circularProgressSizeL = 48.0;
+  static const double lineProgressHeight = 4.0;
+  static const double lineProgressHeightL = 8.0;
+  static const double badgeIconPadding = 2.0;
+  static const double shimmerHeight = 16.0;
+  static const double touchTargetMinSize = 48.0;
+
+  // Layout
+  static const double maxContentWidthSeveral = 1200.0;
+  static const double sideMenuWidth = 280.0;
+  static const double compactSideMenuWidth = 80.0;
+  static const double bannerHeight = 200.0;
+  static const double cardMinHeight = 80.0;
+
+  // Breakpoints (Material 3: 360, 600, 840, 1200)
+  static const double breakpointXS = 360.0;
+  static const double breakpointS = 600.0;
+  static const double breakpointM = 840.0;
+  static const double breakpointL = 1200.0;
+  static const double breakpointXL = 1440.0;
+
+  // Safe area and insets
+  static const double keyboardInset = 80.0;
+  static const double safeAreaTop = 44.0;
+  static const double safeAreaBottom = 34.0;
+
+  // Opacities (Material 3)
+  static const double opacityFull = 1.0;
+  static const double opacityTextSubtle = 0.9;
+  static const double opacityVeryHigh = 0.8;
+  static const double opacityHigh = 0.7;
+  static const double opacityUnselected = 0.6;
+  static const double opacityMediumHigh = 0.5;
+  static const double opacitySemi = 0.2;
+  static const double opacityMedium = 0.12;
+  static const double opacityLight = 0.04;
+  static const double opacityDisabled = 0.38;
+  static const double opacityNone = 0.0;
+  static const double opacityDisabledText = opacityDisabled;
+  static const double opacityHintText = opacityHigh;
+  static const double opacityDisabledOutline = opacityMedium;
+
+  // Responsive scaling
+  static const double scaleFactorSmall = 0.85;
+  static const double scaleFactorLarge = 1.15;
+
+  // Padding presets
+  static const EdgeInsets screenPadding = EdgeInsets.all(paddingM);
+  static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+    horizontal: paddingM,
+    vertical: paddingS,
+  );
+  static const EdgeInsets inputPadding = EdgeInsets.symmetric(
+    horizontal: paddingM,
+    vertical: paddingS,
+  );
+  static const EdgeInsets dialogPadding = EdgeInsets.all(paddingL);
+  static const EdgeInsets listTilePadding = EdgeInsets.symmetric(
+    horizontal: paddingM,
+    vertical: paddingS,
+  );
+
+  AppDimens._();
 }

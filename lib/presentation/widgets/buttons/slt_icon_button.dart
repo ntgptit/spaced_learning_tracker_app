@@ -4,7 +4,7 @@ import '../../../core/theme/app_dimens.dart';
 
 /// Icon button widget
 /// A button that displays only an icon
-class SltIconButton extends StatelessWidget {
+class SlttIconButton extends StatelessWidget {
   /// Icon data to display
   final IconData icon;
 
@@ -38,11 +38,11 @@ class SltIconButton extends StatelessWidget {
   /// Visual density of the button
   final VisualDensity visualDensity;
 
-  const SltIconButton({
-    Key? key,
+  const SlttIconButton({
+    super.key,
     required this.icon,
     this.onPressed,
-    this.iconSize = AppDimens.iconSizeM,
+    this.iconSize = AppDimens.iconM,
     this.iconColor,
     this.backgroundColor,
     this.borderRadius = AppDimens.radiusS,
@@ -51,7 +51,7 @@ class SltIconButton extends StatelessWidget {
     this.isEnabled = true,
     this.tooltip,
     this.visualDensity = VisualDensity.compact,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +72,7 @@ class SltIconButton extends StatelessWidget {
 
     final buttonContent = isLoading
         ? _buildLoadingContent(context)
-        : Icon(
-            icon,
-            size: iconSize,
-            color: buttonForeground,
-          );
+        : Icon(icon, size: iconSize, color: buttonForeground);
 
     return IconButton(
       icon: buttonContent,

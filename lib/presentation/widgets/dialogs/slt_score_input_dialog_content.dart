@@ -1,379 +1,357 @@
+// lib/presentation/widgets/common/dialog/sl_score_input_dialog_content.dart
 import 'package:flutter/material.dart';
-import 'package:slt_app/core/constants/app_strings.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_primary_button.dart';
-import 'package:slt_app/presentation/widgets/buttons/slt_secondary_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spaced_learning_app/core/extensions/color_extensions.dart';
+import 'package:spaced_learning_app/core/theme/app_dimens.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_primary_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/button/sl_text_button.dart';
+import 'package:spaced_learning_app/presentation/widgets/common/dialog/sl_dialog_button_bar.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_dimens.dart';
+part 'sl_score_input_dialog_content.g.dart';
 
-/// Score Input Dialog Content
-/// A specialized dialog content for inputting scores with a slider and text input
-class SltScoreInputDialogContent extends StatefulWidget {
-  /// Title of the dialog
+/// Provider for managing score value in the dialog
+@riverpod
+class ScoreValue extends _$ScoreValue {
+  @override
+  double build(String dialogId, {double initialValue = 70.0}) => initialValue;
+
+  void setScore(double value) {
+    state = value;
+  }
+}
+
+/// Content widget for the score input dialog.
+class SlScoreInputDialogContent extends ConsumerWidget {
+  final String dialogId;
+  final double initialValue;
+  final double minValue;
+  final double maxValue;
+  final int divisions;
   final String title;
+  final String? subtitle;
+  final String confirmText;
+  final String cancelText;
+  final IconData? titleIcon;
 
-  /// Maximum score possible
-  final double maxScore;
+  const SlScoreInputDialogContent({
+    super.key,
+    required this.dialogId,
+    this.initialValue = 70.0,
+    this.minValue = 0.0,
+    this.maxValue = 100.0,
+    this.divisions = 100,
+    this.title = 'Input Score',
+    this.subtitle,
+    this.confirmText = 'Submit',
+    this.cancelText = 'Cancel',
+    this.titleIcon = Icons.leaderboard_outlined,
+  });
 
-  /// Minimum score possible
-  final double minScore;
-
-  /// Initial score value
-  final double initialScore;
-
-  /// Divisions for the slider
-  final int? divisions;
-
-  /// Whether to show a text field for numeric input
-  final bool showTextField;
-
-  /// Whether to allow comments
-  final bool allowComments;
-
-  /// Initial comments
-  final String? initialComments;
-
-  /// Comments hint text
-  final String commentsHint;
-
-  /// Whether comments are required
-  final bool commentsRequired;
-
-  /// Callback when score is saved
-  final void Function(double score, String? comments)? onSave;
-
-  /// Save button text
-  final String saveButtonText;
-
-  /// Cancel button text
-  final String cancelButtonText;
-
-  /// Whether to show score indicators below slider
-  final bool showScoreIndicators;
-
-  /// Score indicators (from low to high)
-  final List<String> scoreIndicators;
-
-  /// Colors for score indicators
-  final List<Color>? scoreIndicatorColors;
-
-  SltScoreInputDialogContent({
-    Key? key,
-    this.title = AppStrings.enterScore,
-    required this.maxScore,
-    this.minScore = 0.0,
-    this.initialScore = 0.0,
-    this.divisions,
-    this.showTextField = true,
-    this.allowComments = true,
-    this.initialComments,
-    this.commentsHint = AppStrings.comments,
-    this.commentsRequired = false,
-    this.onSave,
-    this.saveButtonText = AppStrings.saveScore,
-    this.cancelButtonText = AppStrings.cancel,
-    this.showScoreIndicators = true,
-    this.scoreIndicators = const [
-      AppStrings.poor,
-      AppStrings.fair,
-      AppStrings.good,
-      AppStrings.excellent,
-    ],
-    this.scoreIndicatorColors,
-  })  : assert(maxScore > minScore, 'Max score must be greater than min score'),
-        assert(initialScore >= minScore && initialScore <= maxScore,
-            'Initial score must be between min and max score'),
-        assert(!showScoreIndicators || scoreIndicators.isNotEmpty,
-            'Score indicators must not be empty if shown'),
-        super(key: key);
-
-  /// Show the dialog
-  static Future<Map<String, dynamic>?> show({
-    required BuildContext context,
-    String title = AppStrings.enterScore,
-    required double maxScore,
-    double minScore = 0.0,
-    double initialScore = 0.0,
-    int? divisions,
-    bool showTextField = true,
-    bool allowComments = true,
-    String? initialComments,
-    String commentsHint = AppStrings.comments,
-    bool commentsRequired = false,
-    String saveButtonText = AppStrings.saveScore,
-    String cancelButtonText = AppStrings.cancel,
-    bool showScoreIndicators = true,
-    List<String> scoreIndicators = const [
-      AppStrings.poor,
-      AppStrings.fair,
-      AppStrings.good,
-      AppStrings.excellent,
-    ],
-    List<Color>? scoreIndicatorColors,
+  factory SlScoreInputDialogContent._create({
+    // Private factory
+    required String dialogId,
+    double initialValue = 70.0,
+    double minValue = 0.0,
+    double maxValue = 100.0,
+    int divisions = 100,
+    String title = 'Input Score',
+    String? subtitle,
+    String confirmText = 'Submit',
+    String cancelText = 'Cancel',
+    IconData? titleIcon = Icons.leaderboard_outlined,
   }) {
-    return showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.dialogBorderRadius),
-          ),
-          child: SltScoreInputDialogContent(
-            title: title,
-            maxScore: maxScore,
-            minScore: minScore,
-            initialScore: initialScore,
-            divisions: divisions,
-            showTextField: showTextField,
-            allowComments: allowComments,
-            initialComments: initialComments,
-            commentsHint: commentsHint,
-            commentsRequired: commentsRequired,
-            saveButtonText: saveButtonText,
-            cancelButtonText: cancelButtonText,
-            showScoreIndicators: showScoreIndicators,
-            scoreIndicators: scoreIndicators,
-            scoreIndicatorColors: scoreIndicatorColors,
-            onSave: (score, comments) {
-              Navigator.of(context).pop({
-                'score': score,
-                'comments': comments,
-              });
-            },
-          ),
-        );
-      },
+    return SlScoreInputDialogContent(
+      dialogId: dialogId,
+      initialValue: initialValue,
+      minValue: minValue,
+      maxValue: maxValue,
+      divisions: divisions,
+      title: title,
+      subtitle: subtitle,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      titleIcon: titleIcon,
     );
   }
 
-  @override
-  _SltScoreInputDialogContentState createState() =>
-      _SltScoreInputDialogContentState();
-}
-
-class _SltScoreInputDialogContentState
-    extends State<SltScoreInputDialogContent> {
-  late double _score;
-  late TextEditingController _scoreController;
-  late TextEditingController _commentsController;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _score = widget.initialScore;
-    _scoreController = TextEditingController(text: _score.toStringAsFixed(0));
-    _commentsController =
-        TextEditingController(text: widget.initialComments ?? '');
+  /// Factory for a standard score input dialog
+  factory SlScoreInputDialogContent.standard({
+    required String dialogId,
+    double initialValue = 70.0,
+    String title = 'Rate Your Experience',
+    String? subtitle = 'Drag the slider to rate',
+    IconData titleIcon = Icons.star_outline_rounded,
+  }) {
+    return SlScoreInputDialogContent._create(
+      dialogId: dialogId,
+      initialValue: initialValue,
+      title: title,
+      subtitle: subtitle,
+      titleIcon: titleIcon,
+    );
   }
 
-  @override
-  void dispose() {
-    _scoreController.dispose();
-    _commentsController.dispose();
-    super.dispose();
+  /// Factory for a feedback score dialog
+  factory SlScoreInputDialogContent.feedback({
+    required String dialogId,
+    double initialValue = 50.0,
+    String title = 'Provide Feedback',
+    String? subtitle = 'How would you rate this content?',
+  }) {
+    return SlScoreInputDialogContent._create(
+      dialogId: dialogId,
+      initialValue: initialValue,
+      title: title,
+      subtitle: subtitle,
+      titleIcon: Icons.feedback_outlined,
+      confirmText: 'Submit Feedback',
+    );
   }
 
-  void _updateScoreFromSlider(double value) {
-    setState(() {
-      _score = value;
-      _scoreController.text = _score.toStringAsFixed(0);
-    });
+  /// Factory for a quiz/test score input
+  factory SlScoreInputDialogContent.assessment({
+    required String dialogId,
+    double initialValue = 0.0,
+    double maxValue = 100.0,
+    String title = 'Input Test Score',
+    String? subtitle = 'Move the slider to set the score',
+  }) {
+    return SlScoreInputDialogContent._create(
+      dialogId: dialogId,
+      initialValue: initialValue,
+      maxValue: maxValue,
+      title: title,
+      subtitle: subtitle,
+      titleIcon: Icons.school_outlined,
+      confirmText: 'Record Score',
+    );
   }
 
-  void _updateScoreFromTextField(String value) {
-    final parsed = double.tryParse(value);
-    if (parsed != null &&
-        parsed >= widget.minScore &&
-        parsed <= widget.maxScore) {
-      setState(() {
-        _score = parsed;
-      });
-    }
-  }
-
-  Color _getSliderColor(double value) {
-    if (widget.scoreIndicatorColors == null ||
-        widget.scoreIndicatorColors!.isEmpty) {
-      // Default color logic if no colors provided
-      if (value <
-          widget.minScore + (widget.maxScore - widget.minScore) * 0.25) {
-        return AppColors.poor;
-      } else if (value <
-          widget.minScore + (widget.maxScore - widget.minScore) * 0.5) {
-        return AppColors.average;
-      } else if (value <
-          widget.minScore + (widget.maxScore - widget.minScore) * 0.75) {
-        return AppColors.good;
-      } else {
-        return AppColors.excellent;
-      }
-    } else {
-      // Use provided colors
-      final percentage =
-          (value - widget.minScore) / (widget.maxScore - widget.minScore);
-      final index = (percentage * widget.scoreIndicatorColors!.length).floor();
-      return widget.scoreIndicatorColors![
-          index.clamp(0, widget.scoreIndicatorColors!.length - 1)];
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Color _getScoreColor(
+    ColorScheme colorScheme,
+    BuildContext context,
+    double score,
+  ) {
+    final percentage = (score - minValue) / (maxValue - minValue);
     final theme = Theme.of(context);
+    if (theme.extension<SemanticColorExtension>() != null) {
+      return theme.getScoreColor(score);
+    }
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: AppDimens.dialogPadding,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    if (percentage >= 0.9) return colorScheme.primary;
+    if (percentage >= 0.7) return colorScheme.tertiary;
+    if (percentage >= 0.5) return colorScheme.secondary;
+    if (percentage >= 0.3) return Colors.orange.shade700;
+    return colorScheme.error;
+  }
+
+  Color _getContrastTextColor(Color backgroundColor, ColorScheme colorScheme) {
+    return backgroundColor.computeLuminance() > 0.5
+        ? colorScheme.onSurface
+        : colorScheme.surface;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(
+            scoreValueProvider(dialogId, initialValue: initialValue).notifier,
+          )
+          .setScore(initialValue.clamp(minValue, maxValue));
+    });
+
+    final scoreValue = ref.watch(
+      scoreValueProvider(dialogId, initialValue: initialValue),
+    );
+
+    final scoreColor = _getScoreColor(colorScheme, context, scoreValue);
+    final scoreDisplayBackgroundColor = scoreColor.withOpacity(0.1);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (titleIcon != null) ...[
+              Icon(
+                titleIcon,
+                color: colorScheme.primary,
+                size: AppDimens.iconL,
+              ),
+              const SizedBox(width: AppDimens.spaceS),
+            ],
+            Text(
+              title,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: AppDimens.spaceXS),
+          Text(
+            subtitle!,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+        const SizedBox(height: AppDimens.spaceXL),
+        Container(
+          width: AppDimens.iconXXXL * 1.8,
+          height: AppDimens.iconXXXL * 1.8,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: scoreDisplayBackgroundColor,
+            border: Border.all(color: scoreColor.withOpacity(0.5), width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: scoreColor.withOpacity(0.2),
+                blurRadius: AppDimens.shadowRadiusM,
+                spreadRadius: AppDimens.shadowOffsetS,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              scoreValue.round().toString(),
+              style: theme.textTheme.displayMedium?.copyWith(
+                color: scoreColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppDimens.spaceXL),
+        SliderTheme(
+          data: SliderThemeData(
+            activeTrackColor: scoreColor,
+            inactiveTrackColor: scoreColor.withOpacity(0.25),
+            thumbColor: scoreColor,
+            overlayColor: scoreColor.withOpacity(0.15),
+            trackHeight: AppDimens.lineProgressHeightL,
+            thumbShape: const RoundSliderThumbShape(
+              enabledThumbRadius: AppDimens.radiusM,
+            ),
+            overlayShape: const RoundSliderOverlayShape(
+              overlayRadius: AppDimens.paddingXL,
+            ),
+            valueIndicatorColor: colorScheme.primaryContainer,
+            valueIndicatorTextStyle: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onPrimaryContainer,
+            ),
+            valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
+          ),
+          child: Slider(
+            value: scoreValue,
+            min: minValue,
+            max: maxValue,
+            divisions: divisions,
+            label: '${scoreValue.round()}',
+            onChanged: (value) {
+              ref
+                  .read(
+                    scoreValueProvider(
+                      dialogId,
+                      initialValue: initialValue,
+                    ).notifier,
+                  )
+                  .setScore(value);
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingS),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.title,
-                style: theme.textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              AppDimens.vGapL,
-
-              // Score display
-              Center(
-                child: Text(
-                  '${AppStrings.score}: ${_score.toInt()} ${AppStrings.out} ${widget.maxScore.toInt()}',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: _getSliderColor(_score),
-                    fontWeight: FontWeight.bold,
-                  ),
+                minValue.round().toString(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              AppDimens.vGapM,
-
-              // Score slider
-              SliderTheme(
-                data: SliderThemeData(
-                  activeTrackColor: _getSliderColor(_score),
-                  thumbColor: _getSliderColor(_score),
-                  inactiveTrackColor:
-                      _getSliderColor(_score).withValues(alpha: 0.2),
+              Text(
+                maxValue.round().toString(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
-                child: Slider(
-                  value: _score,
-                  min: widget.minScore,
-                  max: widget.maxScore,
-                  divisions: widget.divisions ??
-                      (widget.maxScore - widget.minScore).toInt(),
-                  onChanged: _updateScoreFromSlider,
-                ),
-              ),
-
-              // Score indicators
-              if (widget.showScoreIndicators) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimens.paddingS),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      widget.scoreIndicators.length,
-                      (index) {
-                        final color = widget.scoreIndicatorColors != null &&
-                                index < widget.scoreIndicatorColors!.length
-                            ? widget.scoreIndicatorColors![index]
-                            : theme.colorScheme.primary;
-
-                        return Text(
-                          widget.scoreIndicators[index],
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: color,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                AppDimens.vGapM,
-              ],
-
-              // Score text field
-              if (widget.showTextField) ...[
-                TextFormField(
-                  controller: _scoreController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.score,
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: _updateScoreFromTextField,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return AppStrings.validationRequired;
-                    }
-                    final score = double.tryParse(value);
-                    if (score == null) {
-                      return AppStrings.validationNumbersOnly;
-                    }
-                    if (score < widget.minScore || score > widget.maxScore) {
-                      return 'Score must be between ${widget.minScore} and ${widget.maxScore}';
-                    }
-                    return null;
-                  },
-                ),
-                AppDimens.vGapM,
-              ],
-
-              // Comments
-              if (widget.allowComments) ...[
-                TextFormField(
-                  controller: _commentsController,
-                  decoration: InputDecoration(
-                    labelText: widget.commentsHint,
-                    hintText: AppStrings.addFeedback,
-                    border: const OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                  validator: widget.commentsRequired
-                      ? (value) {
-                          if (value == null || value.isEmpty) {
-                            return AppStrings.validationRequired;
-                          }
-                          return null;
-                        }
-                      : null,
-                ),
-                AppDimens.vGapL,
-              ],
-
-              // Action buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  SltSecondaryButton(
-                    text: widget.cancelButtonText,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  AppDimens.hGapM,
-                  SltPrimaryButton(
-                    text: widget.saveButtonText,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        widget.onSave?.call(
-                          _score,
-                          widget.allowComments
-                              ? _commentsController.text
-                              : null,
-                        );
-                      }
-                    },
-                  ),
-                ],
               ),
             ],
           ),
         ),
-      ),
+        const SizedBox(height: AppDimens.spaceXL),
+        SlDialogButtonBar(
+          cancelButton: SltTextButton(
+            text: cancelText,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          confirmButton: SltPrimaryButton(
+            text: confirmText,
+            onPressed: () => Navigator.of(context).pop(scoreValue),
+            backgroundColor: scoreColor,
+            foregroundColor: _getContrastTextColor(scoreColor, colorScheme),
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Future<double?> show(
+    BuildContext context,
+    WidgetRef ref, {
+    required String dialogId,
+    double initialValue = 70.0,
+    double minValue = 0.0,
+    double maxValue = 100.0,
+    int divisions = 100,
+    String title = 'Input Score',
+    String? subtitle,
+    String confirmText = 'Submit',
+    String cancelText = 'Cancel',
+    IconData? titleIcon = Icons.leaderboard_outlined,
+  }) {
+    ref
+        .read(scoreValueProvider(dialogId, initialValue: initialValue).notifier)
+        .setScore(initialValue.clamp(minValue, maxValue));
+
+    return showDialog<double>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.radiusXL),
+          ),
+          backgroundColor: Theme.of(dialogContext).colorScheme.surface,
+          surfaceTintColor: Theme.of(dialogContext).colorScheme.surfaceTint,
+          content: SlScoreInputDialogContent._create(
+            // Using private factory
+            dialogId: dialogId,
+            initialValue: initialValue,
+            minValue: minValue,
+            maxValue: maxValue,
+            divisions: divisions,
+            title: title,
+            subtitle: subtitle,
+            confirmText: confirmText,
+            cancelText: cancelText,
+            titleIcon: titleIcon,
+          ),
+          contentPadding: const EdgeInsets.all(AppDimens.paddingXL),
+        );
+      },
     );
   }
 }
