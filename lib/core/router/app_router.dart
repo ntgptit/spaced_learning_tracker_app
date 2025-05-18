@@ -1,4 +1,4 @@
-// lib/core/router/app_routes.dart
+// lib/core/router/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,56 +9,53 @@ import 'package:spaced_learning_app/presentation/screens/main/main_screen.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/bottom_navigation_provider.dart';
 
-part 'app_routes.g.dart';
+import '../../presentation/screens/books/book_detail_screen.dart';
+import '../../presentation/screens/learning/module_detail_screen.dart';
 
-/// App routes
+part 'app_router.g.dart';
+
 class AppRoutes {
-  static const String initial = '/';
-  static const String main = '/main';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String courseDetails = '/course/:id';
-  static const String lessonDetails = '/lesson/:id';
-  static const String quizDetails = '/quiz/:id';
-  static const String examDetails = '/exam/:id';
-  static const String assignmentDetails = '/assignment/:id';
-  static const String calendar = '/calendar';
-  static const String forgotPassword = '/forgot-password';
-  static const String resetPassword = '/reset-password';
-  static const String changePassword = '/change-password';
-  static const String about = '/about';
-  static const String help = '/help';
-  static const String termsOfService = '/terms-of-service';
-  static const String privacyPolicy = '/privacy-policy';
+  static const splash = '/splash';
+  static const login = '/login';
+  static const register = '/register';
+  static const main = '/main';
+  static const home = '/home';
+  static const books = '/books';
+  static const bookDetail = '/books/:id';
+  static const moduleDetail = '/modules/:id';
+  static const due = '/due';
+  static const stats = '/stats';
+  static const profile = '/profile';
+  static const settings = '/settings';
+}
+
+String? _authRedirect(bool isAuthenticated, String location) {
+  final isLoggingIn = location == AppRoutes.login;
+  final isRegistering = location == AppRoutes.register;
+
+  if (!isAuthenticated && !isLoggingIn && !isRegistering) {
+    return AppRoutes.login;
+  }
+
+  if (isAuthenticated && (isLoggingIn || isRegistering)) {
+    return AppRoutes.main;
+  }
+
+  return null;
 }
 
 @riverpod
-GoRouter goRouter(Ref ref) {
+GoRouter appRouter(Ref ref) {
   final authState = ref.watch(authStateProvider);
   final bottomNavTab = ref.watch(bottomNavigationStateProvider);
+  final isAuthenticated = authState.valueOrNull ?? false;
 
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: AppRoutes.initial,
-    redirect: (context, state) {
-      final isAuthenticated = authState.valueOrNull ?? false;
-      final isLoggingIn = state.matchedLocation == AppRoutes.login;
-      final isRegistering = state.matchedLocation == AppRoutes.register;
-
-      if (!isAuthenticated && !isLoggingIn && !isRegistering) {
-        return AppRoutes.login;
-      }
-
-      if (isAuthenticated && (isLoggingIn || isRegistering)) {
-        return AppRoutes.main;
-      }
-
-      return null;
-    },
+    initialLocation: AppRoutes.main,
+    redirect: (context, state) =>
+        _authRedirect(isAuthenticated, state.matchedLocation),
     routes: [
-      GoRoute(path: AppRoutes.initial, redirect: (_, __) => AppRoutes.main),
-
-      // Main screen with bottom navigation
       GoRoute(
         path: AppRoutes.main,
         pageBuilder: (context, state) => NoTransitionPage(
@@ -66,17 +63,35 @@ GoRouter goRouter(Ref ref) {
           child: MainScreen(tab: bottomNavTab),
         ),
       ),
-
-      // Auth routes
       GoRoute(
         path: AppRoutes.login,
         pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const LoginScreen()),
+            const MaterialPage(child: LoginScreen()),
       ),
       GoRoute(
         path: AppRoutes.register,
         pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const RegisterScreen()),
+            const MaterialPage(child: RegisterScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.bookDetail,
+        pageBuilder: (context, state) {
+          final bookId = state.pathParameters['id'] ?? '';
+          return MaterialPage(
+            key: state.pageKey,
+            child: BookDetailScreen(bookId: bookId),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.moduleDetail,
+        pageBuilder: (context, state) {
+          final moduleId = state.pathParameters['id'] ?? '';
+          return MaterialPage(
+            key: state.pageKey,
+            child: ModuleDetailScreen(moduleId: moduleId),
+          );
+        },
       ),
     ],
     errorPageBuilder: (context, state) => MaterialPage(
@@ -95,12 +110,12 @@ GoRouter goRouter(Ref ref) {
               ),
               const SizedBox(height: 8),
               Text(
-                'The page "${state.uri.toString()}" does not exist',
+                'The page "${state.uri}" does not exist',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => context.go(AppRoutes.initial),
+                onPressed: () => context.go(AppRoutes.main),
                 child: const Text('Go Home'),
               ),
             ],

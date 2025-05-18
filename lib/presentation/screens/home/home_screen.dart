@@ -1,6 +1,7 @@
 // lib/presentation/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/home_viewmodel.dart';
@@ -9,6 +10,7 @@ import 'package:spaced_learning_app/presentation/viewmodels/progress_viewmodel.d
 import 'package:spaced_learning_app/presentation/viewmodels/theme_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_insight_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_progress_card.dart';
+import 'package:spaced_learning_app/presentation/widgets/cards/slt_section_divider.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_stat_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_scaffold.dart';
@@ -16,8 +18,8 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../viewmodels/bottom_navigation_provider.dart';
-import '../../widgets/cards/slt_section_divider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -161,6 +163,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: [
         Text('Learning Statistics', style: theme.textTheme.titleLarge),
         const SizedBox(height: AppDimens.spaceM),
+
+        // Process learning stats state
         learningStats.when(
           data: (data) {
             if (data == null) {
@@ -237,29 +241,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Text('Learning Insights', style: theme.textTheme.titleLarge),
             IconButton(
               icon: const Icon(Icons.info_outline),
-              onPressed: () {
-                // Show info dialog about insights
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('About Insights'),
-                    content: const Text(
-                      'Insights provide personalized learning recommendations and feedback based on your study habits and progress.',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Got it'),
-                      ),
-                    ],
-                  ),
-                );
-              },
+              onPressed: () => _showInsightsInfoDialog(context),
               tooltip: 'About Insights',
             ),
           ],
         ),
         const SizedBox(height: AppDimens.spaceM),
+
+        // Process learning insights state
         learningInsights.when(
           data: (insights) {
             if (insights == null || insights.isEmpty) {
@@ -280,29 +269,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               itemBuilder: (context, index) {
                 final insight = insights[index];
                 return SltInsightCard(
-                  title: 'Learning Insight',
+                  title: _getInsightTitle(insight.type),
                   message: insight.message,
                   icon: _getInsightIcon(insight.type),
                   accentColor: _getInsightColor(
                     insight.type,
                     theme.colorScheme,
                   ),
-                  onTap: () {
-                    // Show full insight details
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text(_getInsightTitle(insight.type)),
-                        content: Text(insight.message),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  onTap: () => _showInsightDetailsDialog(context, insight),
                 );
               },
             );
@@ -318,6 +292,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             compact: true,
           ),
         ),
+
+        // View all insights button if there are more than 3
         if (learningInsights.hasValue &&
             learningInsights.value != null &&
             learningInsights.value.length > 3) ...[
@@ -339,8 +315,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   // Due tasks section with progress cards
   Widget _buildDueTasksSection(BuildContext context, List dueProgress) {
-    final theme = Theme.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -348,7 +322,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         SltSectionDivider(
           title: 'Due Today',
           icon: Icons.assignment_outlined,
-          color: theme.colorScheme.primary,
+          actionText: 'View All',
+          actionIcon: Icons.arrow_forward,
+          onActionPressed: () =>
+              ref.read(bottomNavigationStateProvider.notifier).goToDue(),
         ),
         const SizedBox(height: AppDimens.spaceM),
 
@@ -368,7 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             : ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: dueProgress.length,
+                itemCount: dueProgress.length > 3 ? 3 : dueProgress.length,
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: AppDimens.spaceM),
                 itemBuilder: (context, index) {
@@ -391,6 +368,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   );
                 },
               ),
+
+        // View all button if more than 3 due tasks
+        if (dueProgress.length > 3) ...[
+          const SizedBox(height: AppDimens.spaceM),
+          Center(
+            child: TextButton.icon(
+              onPressed: () =>
+                  ref.read(bottomNavigationStateProvider.notifier).goToDue(),
+              icon: const Icon(Icons.arrow_forward),
+              label: const Text('View All Due Tasks'),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -473,8 +463,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  // Show info dialog about insights
+  void _showInsightsInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('About Insights'),
+        content: const Text(
+          'Insights provide personalized learning recommendations and feedback based on your study habits and progress. They help you optimize your learning journey and maintain motivation.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Show individual insight details dialog
+  void _showInsightDetailsDialog(BuildContext context, dynamic insight) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_getInsightTitle(insight.type)),
+        content: Text(insight.message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Navigate to module details screen
   void _navigateToModuleDetails(String progressId) {
-    // context.push('${AppRoutes.moduleDetails}/$progressId');
+    context.push('${AppRoutes.moduleDetail}/$progressId');
   }
 }

@@ -1,8 +1,10 @@
 // lib/presentation/screens/due/due_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/domain/models/progress.dart';
+import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/progress_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/widgets/cards/slt_progress_card.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
@@ -11,7 +13,7 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
-import '../../viewmodels/auth_viewmodel.dart';
+import '../../../core/router/app_router.dart';
 
 class DueScreen extends ConsumerStatefulWidget {
   const DueScreen({super.key});
@@ -27,17 +29,24 @@ class _DueScreenState extends ConsumerState<DueScreen>
   @override
   void initState() {
     super.initState();
+
+    // Initialize tab controller
     _tabController = TabController(length: 3, vsync: this);
 
+    // Load due tasks when screen initializes
     Future.microtask(() {
-      // Load due tasks for the current user
-      final currentUser = ref.read(currentUserProvider);
-      if (currentUser != null) {
-        ref
-            .read(progressStateProvider.notifier)
-            .loadDueProgress(currentUser.id);
-      }
+      _loadDueTasks();
     });
+  }
+
+  // Load due tasks for the current user
+  Future<void> _loadDueTasks() async {
+    final currentUser = ref.read(currentUserProvider);
+    if (currentUser != null) {
+      await ref
+          .read(progressStateProvider.notifier)
+          .loadDueProgress(currentUser.id);
+    }
   }
 
   @override
@@ -68,54 +77,51 @@ class _DueScreenState extends ConsumerState<DueScreen>
           indicatorColor: colorScheme.primary,
         ),
       ),
-      body: progressState.when(
-        data: (progressList) {
-          if (progressList.isEmpty) {
-            return SltEmptyStateWidget.noData(
-              title: 'No Due Tasks',
-              message:
-                  'You\'re all caught up! You have no tasks due at the moment.',
-              icon: Icons.check_circle_outline,
-            );
-          }
-
-          // Filter progress items based on tab
-          final todayItems = _filterTodayItems(progressList);
-          final weekItems = _filterWeekItems(progressList);
-
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              // Today tab
-              _buildProgressList(todayItems, 'today'),
-
-              // This week tab
-              _buildProgressList(weekItems, 'this week'),
-
-              // All tab
-              _buildProgressList(progressList, 'in total'),
-            ],
-          );
-        },
-        loading: () =>
-            const SltLoadingStateWidget(message: 'Loading due tasks...'),
-        error: (error, stack) => SltErrorStateWidget(
-          title: 'Error Loading Tasks',
-          message: error.toString(),
-          onRetry: () {
-            final currentUser = ref.read(currentUserProvider);
-            if (currentUser != null) {
-              ref
-                  .read(progressStateProvider.notifier)
-                  .loadDueProgress(currentUser.id);
+      body: RefreshIndicator(
+        onRefresh: _loadDueTasks,
+        child: progressState.when(
+          data: (progressList) {
+            if (progressList.isEmpty) {
+              return SltEmptyStateWidget.noData(
+                title: 'No Due Tasks',
+                message:
+                    'You\'re all caught up! You have no tasks due at the moment.',
+                icon: Icons.check_circle_outline,
+              );
             }
+
+            // Filter progress items based on tab
+            final todayItems = _filterTodayItems(progressList);
+            final weekItems = _filterWeekItems(progressList);
+
+            return TabBarView(
+              controller: _tabController,
+              children: [
+                // Today tab
+                _buildProgressList(todayItems, 'today'),
+
+                // This week tab
+                _buildProgressList(weekItems, 'this week'),
+
+                // All tab
+                _buildProgressList(progressList, 'in total'),
+              ],
+            );
           },
+          loading: () =>
+              const SltLoadingStateWidget(message: 'Loading due tasks...'),
+          error: (error, stack) => SltErrorStateWidget(
+            title: 'Error Loading Tasks',
+            message: error.toString(),
+            onRetry: _loadDueTasks,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildProgressList(List<ProgressDetail> items, String timeLabel) {
+  // Build progress list for each tab
+  Widget _buildProgressList(List<dynamic> items, String timeLabel) {
     if (items.isEmpty) {
       return SltEmptyStateWidget.noData(
         title: 'No Tasks Due $timeLabel',
@@ -144,13 +150,70 @@ class _DueScreenState extends ConsumerState<DueScreen>
           progress: (progress.percentComplete) / 100,
           leadingIcon: Icons.book_outlined,
           onTap: () => _navigateToModuleDetails(progress.id),
+          trailing: _buildDueStatusChip(context, progress),
         );
       },
     );
   }
 
+  // Build status chip for due date
+  Widget _buildDueStatusChip(BuildContext context, dynamic progress) {
+    if (progress.nextStudyDate == null) {
+      return const SizedBox.shrink();
+    }
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final studyDate = DateTime(
+      progress.nextStudyDate!.year,
+      progress.nextStudyDate!.month,
+      progress.nextStudyDate!.day,
+    );
+
+    final isDue = !studyDate.isAfter(today);
+    final isToday = studyDate.isAtSameMomentAs(today);
+
+    final statusText = isDue && !isToday
+        ? 'Overdue'
+        : isToday
+        ? 'Today'
+        : _getDaysAwayText(studyDate, today);
+
+    final statusColor = isDue && !isToday
+        ? Colors.red
+        : isToday
+        ? Colors.green
+        : Colors.blue;
+
+    return Chip(
+      label: Text(
+        statusText,
+        style: TextStyle(fontSize: AppDimens.fontXS, color: statusColor),
+      ),
+      backgroundColor: statusColor.withOpacity(0.1),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
+  // Get days away text for future dates
+  String _getDaysAwayText(DateTime date, DateTime today) {
+    final difference = date.difference(today).inDays;
+
+    if (difference == 1) {
+      return 'Tomorrow';
+    }
+
+    if (difference < 7) {
+      return '$difference days';
+    }
+
+    final weeks = difference ~/ 7;
+    return weeks == 1 ? '1 week' : '$weeks weeks';
+  }
+
   // Filter methods for the tabs
-  List<ProgressDetail> _filterTodayItems(List<ProgressDetail> items) {
+  List<dynamic> _filterTodayItems(List<dynamic> items) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
@@ -169,7 +232,7 @@ class _DueScreenState extends ConsumerState<DueScreen>
     }).toList();
   }
 
-  List<ProgressDetail> _filterWeekItems(List<ProgressDetail> items) {
+  List<dynamic> _filterWeekItems(List<dynamic> items) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
@@ -208,6 +271,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
 
   // Navigate to module details screen
   void _navigateToModuleDetails(String progressId) {
-    // Navigation to be implemented
+    context.push('${AppRoutes.moduleDetail}/$progressId');
   }
 }

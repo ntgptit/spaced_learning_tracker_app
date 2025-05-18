@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spaced_learning_app/core/router/app_routes.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/core/utils/string_utils.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
@@ -16,6 +15,8 @@ import 'package:spaced_learning_app/presentation/widgets/common/slt_scaffold.dar
 import 'package:spaced_learning_app/presentation/widgets/inputs/slt_text_field.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
+
+import '../../../core/router/app_router.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -31,6 +32,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    // Load user data on screen initialization
     Future.microtask(() {
       ref.read(userStateProvider.notifier).loadCurrentUser();
     });
@@ -38,6 +40,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   void dispose() {
+    // Cleanup text controller
     _displayNameController.dispose();
     super.dispose();
   }
@@ -62,22 +65,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       body: userState.when(
         data: (user) {
           if (user == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Not logged in', style: theme.textTheme.titleLarge),
-                  const SizedBox(height: AppDimens.spaceM),
-                  SltPrimaryButton(
-                    text: 'Log In',
-                    prefixIcon: Icons.login,
-                    onPressed: () {
-                      context.go(AppRoutes.login);
-                    },
-                  ),
-                ],
-              ),
-            );
+            return _buildNotLoggedInState(context);
           }
 
           return SingleChildScrollView(
@@ -86,16 +74,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Profile avatar
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: colorScheme.primaryContainer,
-                  child: Text(
-                    StringUtils.getInitials(user.displayName ?? user.username),
-                    style: theme.textTheme.displayMedium?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ),
+                _buildProfileAvatar(user, theme, colorScheme),
                 const SizedBox(height: AppDimens.spaceM),
 
                 // Display name (editable)
@@ -122,37 +101,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: AppDimens.spaceM),
 
                 // Edit/Save button
-                _isEditing
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SltOutlinedButton(
-                            text: 'Cancel',
-                            onPressed: () {
-                              setState(() {
-                                _isEditing = false;
-                                _displayNameController.text =
-                                    user.displayName ?? user.username;
-                              });
-                            },
-                          ),
-                          const SizedBox(width: AppDimens.spaceM),
-                          SltPrimaryButton(
-                            text: 'Save',
-                            prefixIcon: Icons.save,
-                            onPressed: _saveProfile,
-                          ),
-                        ],
-                      )
-                    : SltOutlinedButton(
-                        text: 'Edit Profile',
-                        prefixIcon: Icons.edit,
-                        onPressed: () {
-                          setState(() {
-                            _isEditing = true;
-                          });
-                        },
-                      ),
+                _buildEditButtons(user),
 
                 // Display error if exists
                 if (userError != null) ...[
@@ -202,6 +151,76 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  // Build profile avatar with user initials
+  Widget _buildProfileAvatar(user, ThemeData theme, ColorScheme colorScheme) {
+    return CircleAvatar(
+      radius: 60,
+      backgroundColor: colorScheme.primaryContainer,
+      child: Text(
+        StringUtils.getInitials(user.displayName ?? user.username),
+        style: theme.textTheme.displayMedium?.copyWith(
+          color: colorScheme.onPrimaryContainer,
+        ),
+      ),
+    );
+  }
+
+  // Build edit/save buttons based on edit state
+  Widget _buildEditButtons(user) {
+    return _isEditing
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SltOutlinedButton(
+                text: 'Cancel',
+                onPressed: () {
+                  setState(() {
+                    _isEditing = false;
+                    _displayNameController.text =
+                        user.displayName ?? user.username;
+                  });
+                },
+              ),
+              const SizedBox(width: AppDimens.spaceM),
+              SltPrimaryButton(
+                text: 'Save',
+                prefixIcon: Icons.save,
+                onPressed: _saveProfile,
+              ),
+            ],
+          )
+        : SltOutlinedButton(
+            text: 'Edit Profile',
+            prefixIcon: Icons.edit,
+            onPressed: () {
+              setState(() {
+                _isEditing = true;
+              });
+            },
+          );
+  }
+
+  // Build "not logged in" state UI
+  Widget _buildNotLoggedInState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Not logged in', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: AppDimens.spaceM),
+          SltPrimaryButton(
+            text: 'Log In',
+            prefixIcon: Icons.login,
+            onPressed: () {
+              context.go(AppRoutes.login);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build settings section
   Widget _buildSettingsSection(BuildContext context, bool isDark) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -247,11 +266,74 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
 
-        // Other settings can be added here
+        // Notifications settings
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimens.paddingM),
+            child: Row(
+              children: [
+                const Icon(Icons.notifications_outlined),
+                const SizedBox(width: AppDimens.spaceM),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Notifications', style: textTheme.titleMedium),
+                      Text(
+                        'Configure learning reminders',
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: () {
+                    // Navigate to notifications settings
+                    // context.push(AppRoutes.notificationSettings);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Account settings
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimens.paddingM),
+            child: Row(
+              children: [
+                const Icon(Icons.security_outlined),
+                const SizedBox(width: AppDimens.spaceM),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Account Security', style: textTheme.titleMedium),
+                      Text(
+                        'Change password and security settings',
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: () {
+                    // Navigate to account settings
+                    // context.push(AppRoutes.accountSettings);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 
+  // Save profile changes
   Future<void> _saveProfile() async {
     if (_displayNameController.text.trim().isEmpty) {
       return;
