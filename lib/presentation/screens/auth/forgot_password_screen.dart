@@ -85,7 +85,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
         onPrimaryButtonPressed: () => context.go(AppRoutes.login),
         secondaryButtonText: 'Resend Email',
         onSecondaryButtonPressed: () => _handleResendEmail(context, ref),
-        icon: Icons.mark_email_sent_rounded,
+        icon: Icons.mark_email_read_rounded,
         accentColor: colorScheme.tertiary,
         showAppBar: true,
         appBarTitle: 'Password Reset',
@@ -520,7 +520,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
         .submitForgotPassword();
 
     if (success) {
-      HapticFeedback.successImpact();
+      HapticFeedback.heavyImpact();
     }
   }
 

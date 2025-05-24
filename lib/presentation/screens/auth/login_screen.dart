@@ -36,8 +36,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   void initState() {
     super.initState();
     _setupAnimations();
+    // ✅ Sử dụng mounted check và dispose-safe approach
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkBiometricAvailability();
+      if (mounted) {
+        _checkBiometricAvailability();
+      }
     });
   }
 
@@ -70,12 +73,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.dispose();
   }
 
+  // ✅ Sửa lỗi: Dispose-safe biometric availability check
   Future<void> _checkBiometricAvailability() async {
-    final availability = await ref.read(biometricAvailabilityProvider.future);
-    if (mounted && availability == BiometricAuthState.available) {
-      setState(() {
-        _showBiometricSection = true;
-      });
+    // Early return nếu widget đã bị dispose
+    if (!mounted) return;
+
+    try {
+      final availability = await ref.read(biometricAvailabilityProvider.future);
+
+      // Double-check mounted trước khi setState
+      if (!mounted) return;
+
+      if (availability == BiometricAuthState.available) {
+        setState(() {
+          _showBiometricSection = true;
+        });
+      }
+    } catch (e) {
+      // Handle error gracefully và không crash app
+      debugPrint('Biometric availability check failed: $e');
+
+      // Chỉ setState nếu widget vẫn mounted
+      if (mounted) {
+        setState(() {
+          _showBiometricSection = false;
+        });
+      }
     }
   }
 
@@ -140,7 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           children: [
                             // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             // Biometric Section
                             if (_showBiometricSection) ...[
@@ -149,9 +172,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 theme,
                                 colorScheme,
                               ),
-                              SizedBox(height: AppDimens.spaceXL),
+                              const SizedBox(height: AppDimens.spaceXL),
                               _buildDivider(context, theme, colorScheme),
-                              SizedBox(height: AppDimens.spaceXL),
+                              const SizedBox(height: AppDimens.spaceXL),
                             ],
 
                             // Error Display
@@ -162,7 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 compact: true,
                                 accentColor: colorScheme.error,
                               ),
-                              SizedBox(height: AppDimens.spaceL),
+                              const SizedBox(height: AppDimens.spaceL),
                             ],
 
                             // Login Form
@@ -172,11 +195,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               colorScheme,
                               loginForm,
                             ),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             // Action Buttons
-                            _buildActionButtons(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            // _buildActionButtons(context, theme, colorScheme),
+                            // const SizedBox(height: AppDimens.spaceXXL),
 
                             // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
@@ -221,13 +244,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ),
             ],
           ),
-          child: Icon(
+          child: const Icon(
             Icons.school_rounded,
             size: AppDimens.iconXL,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: AppDimens.spaceXL),
+        const SizedBox(height: AppDimens.spaceXL),
 
         // Welcome Text
         Text(
@@ -239,7 +262,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         Text(
           'Sign in to continue your learning journey',
@@ -259,7 +282,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     ColorScheme colorScheme,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -280,7 +303,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.paddingS),
+                padding: const EdgeInsets.all(AppDimens.paddingS),
                 decoration: BoxDecoration(
                   color: colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -291,7 +314,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   size: AppDimens.iconM,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +326,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         color: colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       'Use biometric authentication for faster login',
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -315,7 +338,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
           SltBiometricAuth(
             title: 'Biometric Login',
             subtitle: 'Authenticate with your fingerprint or face',
@@ -351,9 +374,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppDimens.paddingL),
+          padding: const EdgeInsets.symmetric(horizontal: AppDimens.paddingL),
           child: Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppDimens.paddingM,
               vertical: AppDimens.paddingS,
             ),
@@ -399,7 +422,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     LoginFormModel loginForm,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingM),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppDimens.radiusXL),
@@ -421,7 +444,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 .updateUsernameOrEmail(value),
             textInputAction: TextInputAction.next,
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           SltPasswordField(
             label: 'Password',
@@ -433,7 +456,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             onEditingComplete: () => _handleLogin(context, ref),
             textInputAction: TextInputAction.done,
           ),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
 
           // Forgot Password Link
           Align(
@@ -444,31 +467,57 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               foregroundColor: colorScheme.primary,
             ),
           ),
+
+          const SizedBox(height: AppDimens.spaceM),
+
+          SltPrimaryButton(
+            text: 'Sign In',
+            prefixIcon: Icons.login_rounded,
+            isFullWidth: true,
+            onPressed: () => _handleLogin(context, ref),
+            backgroundColor: colorScheme.primary,
+            foregroundColor: Colors.white,
+            elevation: AppDimens.elevationS,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButtons(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme colorScheme,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SltPrimaryButton(
-          text: 'Sign In',
-          prefixIcon: Icons.login_rounded,
-          isFullWidth: true,
-          onPressed: () => _handleLogin(context, ref),
-          backgroundColor: colorScheme.primary,
-          foregroundColor: Colors.white,
-          elevation: AppDimens.elevationS,
-        ),
-      ],
-    );
-  }
+  // Widget _buildActionButtons(
+  //   BuildContext context,
+  //   ThemeData theme,
+  //   ColorScheme colorScheme,
+  // ) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: AppDimens.paddingM,
+  //       vertical: AppDimens.paddingS,
+  //     ),
+  //     decoration: BoxDecoration(
+  //       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+  //       borderRadius: BorderRadius.circular(AppDimens.radiusM),
+  //       border: Border.all(
+  //         color: colorScheme.outline.withValues(alpha: 0.2),
+  //         width: 1,
+  //       ),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.stretch,
+  //       children: [
+  //         SltPrimaryButton(
+  //           text: 'Sign In',
+  //           prefixIcon: Icons.login_rounded,
+  //           isFullWidth: true,
+  //           onPressed: () => _handleLogin(context, ref),
+  //           backgroundColor: colorScheme.primary,
+  //           foregroundColor: Colors.white,
+  //           elevation: AppDimens.elevationS,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildFooterLinks(
     BuildContext context,
@@ -493,11 +542,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ],
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         // Additional Help
         Container(
-          padding: EdgeInsets.all(AppDimens.paddingM),
+          padding: const EdgeInsets.all(AppDimens.paddingM),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -513,7 +562,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 color: colorScheme.primary,
                 size: AppDimens.iconM,
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -525,7 +574,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         color: colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       'Contact our support team for assistance',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -542,8 +591,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     );
   }
 
+  // ✅ Sửa lỗi: Mounted-safe login handler
   Future<void> _handleLogin(BuildContext context, WidgetRef ref) async {
-    // Add haptic feedback
+    // Early return nếu widget đã bị dispose
+    if (!mounted) return;
+
     HapticFeedback.lightImpact();
 
     ref.read(authErrorProvider.notifier).clearError();
@@ -551,45 +603,70 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         .read(loginFormStateProvider.notifier)
         .submitLogin();
 
-    if (success && context.mounted) {
-      HapticFeedback.successImpact();
+    // Double-check mounted trước khi navigation
+    if (success && mounted && context.mounted) {
+      HapticFeedback.heavyImpact();
       context.go(AppRoutes.main);
     }
   }
 
+  // ✅ Sửa lỗi: Mounted-safe biometric success handler
   Future<void> _handleBiometricSuccess(
     BuildContext context,
     WidgetRef ref,
   ) async {
-    HapticFeedback.successImpact();
-    ref.read(authStateProvider.notifier).state = const AsyncValue.loading();
-    await Future.delayed(const Duration(milliseconds: 1500));
-    ref.read(authStateProvider.notifier).state = const AsyncValue.data(true);
+    // Early return nếu widget đã bị dispose
+    if (!mounted) return;
 
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: AppDimens.spaceS),
-              Text('Biometric authentication successful!'),
-            ],
+    HapticFeedback.heavyImpact();
+
+    try {
+      // ✅ Approach 1: Gọi method login của auth notifier
+      // Giả sử có stored credentials hoặc token từ biometric
+      // final success = await ref.read(authStateProvider.notifier).loginWithBiometric();
+
+      // ✅ Approach 2: Đơn giản hơn - Navigate trực tiếp sau biometric thành công
+      // Vì biometric đã verify identity, có thể navigate luôn
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Check mounted trước khi navigation
+      if (!mounted) return;
+
+      if (mounted && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                SizedBox(width: AppDimens.spaceS),
+                Text('Biometric authentication successful!'),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(AppDimens.paddingM),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimens.radiusM),
+            ),
+            duration: const Duration(milliseconds: AppDimens.durationMedium2),
           ),
-          backgroundColor: Theme.of(context).colorScheme.tertiary,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.all(AppDimens.paddingM),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimens.radiusM),
-          ),
-          duration: const Duration(milliseconds: AppDimens.durationMedium2),
-        ),
-      );
-      context.go(AppRoutes.main);
+        );
+
+        // Navigate trực tiếp vì biometric đã xác thực thành công
+        context.go(AppRoutes.main);
+      }
+    } catch (e) {
+      debugPrint('Biometric authentication error: $e');
+      if (mounted) {
+        _handleBiometricError(context);
+      }
     }
   }
 
   void _handleBiometricError(BuildContext context) {
-    HapticFeedback.errorImpact();
+    // Early return nếu widget đã bị dispose
+    if (!mounted) return;
+
+    HapticFeedback.heavyImpact();
   }
 }

@@ -128,7 +128,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                           children: [
                             // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             // Error Display
                             if (authError != null) ...[
@@ -141,7 +141,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                     .read(authErrorProvider.notifier)
                                     .clearError(),
                               ),
-                              SizedBox(height: AppDimens.spaceL),
+                              const SizedBox(height: AppDimens.spaceL),
                             ],
 
                             // Registration Form
@@ -151,7 +151,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                               colorScheme,
                               registerForm,
                             ),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             // Password Strength Indicator
                             _buildPasswordStrengthIndicator(
@@ -160,15 +160,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                               colorScheme,
                               registerForm,
                             ),
-                            SizedBox(height: AppDimens.spaceXL),
+                            const SizedBox(height: AppDimens.spaceXL),
 
                             // Terms and Conditions
                             _buildTermsSection(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXL),
+                            const SizedBox(height: AppDimens.spaceXL),
 
                             // Register Button
                             _buildActionButtons(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
@@ -213,13 +213,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
               ),
             ],
           ),
-          child: Icon(
+          child: const Icon(
             Icons.person_add_alt_rounded,
             size: AppDimens.iconXL,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: AppDimens.spaceXL),
+        const SizedBox(height: AppDimens.spaceXL),
 
         // Welcome Text
         Text(
@@ -231,7 +231,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         Text(
           'Create your account to start your learning journey and unlock endless possibilities',
@@ -252,7 +252,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     RegisterFormModel registerForm,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppDimens.radiusXL),
@@ -271,7 +271,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             colorScheme,
             'Personal Information',
           ),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
 
           // First Name and Last Name Row
           Row(
@@ -288,7 +288,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                   textInputAction: TextInputAction.next,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: SltTextField(
                   label: 'Last Name',
@@ -303,7 +303,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceXL),
+          const SizedBox(height: AppDimens.spaceXL),
 
           // Account Information Section
           _buildSectionHeader(
@@ -312,7 +312,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             colorScheme,
             'Account Information',
           ),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
 
           // Username
           SltTextField(
@@ -325,7 +325,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                 .updateUsername(value),
             textInputAction: TextInputAction.next,
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           // Email
           SltTextField(
@@ -338,11 +338,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                 ref.read(registerFormStateProvider.notifier).updateEmail(value),
             textInputAction: TextInputAction.next,
           ),
-          SizedBox(height: AppDimens.spaceXL),
+          const SizedBox(height: AppDimens.spaceXL),
 
           // Password Section
           _buildSectionHeader(context, theme, colorScheme, 'Password Setup'),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
 
           // Password
           SltPasswordField(
@@ -355,7 +355,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                 .updatePassword(value),
             textInputAction: TextInputAction.next,
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           // Confirm Password
           SltPasswordField(
@@ -394,7 +394,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             borderRadius: BorderRadius.circular(AppDimens.radiusXS),
           ),
         ),
-        SizedBox(width: AppDimens.spaceM),
+        const SizedBox(width: AppDimens.spaceM),
         Text(
           title,
           style: theme.textTheme.titleMedium?.copyWith(
@@ -416,7 +416,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     final strength = _calculatePasswordStrength(password);
 
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -438,7 +438,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.paddingS),
+                padding: const EdgeInsets.all(AppDimens.paddingS),
                 decoration: BoxDecoration(
                   color: _getStrengthColor(
                     strength,
@@ -452,7 +452,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                   size: AppDimens.iconM,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +464,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         color: colorScheme.onSurface,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       _getStrengthText(strength),
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -477,7 +477,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           // Strength Progress Bar
           Container(
@@ -506,7 +506,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
               ),
             ),
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           // Requirements
           Wrap(
@@ -556,7 +556,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     bool isMet,
   ) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingM,
         vertical: AppDimens.paddingS,
       ),
@@ -582,7 +582,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             size: AppDimens.iconS,
             color: isMet ? colorScheme.primary : colorScheme.onSurfaceVariant,
           ),
-          SizedBox(width: AppDimens.spaceS),
+          const SizedBox(width: AppDimens.spaceS),
           Text(
             requirement,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -601,7 +601,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     ColorScheme colorScheme,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -624,7 +624,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             color: colorScheme.primary,
             size: AppDimens.iconL,
           ),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -701,11 +701,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             ),
           ],
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         // Additional Help Section
         Container(
-          padding: EdgeInsets.all(AppDimens.paddingM),
+          padding: const EdgeInsets.all(AppDimens.paddingM),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -721,7 +721,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                 color: colorScheme.primary,
                 size: AppDimens.iconM,
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -733,7 +733,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         color: colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       'Contact our support team for assistance with account creation',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -799,7 +799,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
         .submitRegistration();
 
     if (success && context.mounted) {
-      HapticFeedback.successImpact();
+      HapticFeedback.heavyImpact();
       context.go(AppRoutes.main);
     }
   }

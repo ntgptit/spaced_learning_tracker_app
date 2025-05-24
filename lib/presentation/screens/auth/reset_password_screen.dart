@@ -555,7 +555,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
         .submitResetPassword(widget.resetToken);
 
     if (success) {
-      HapticFeedback.successImpact();
+      HapticFeedback.heavyImpact();
     }
   }
 }
