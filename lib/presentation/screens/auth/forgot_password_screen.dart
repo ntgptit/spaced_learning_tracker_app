@@ -1,5 +1,6 @@
 // lib/presentation/screens/auth/forgot_password_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -15,201 +16,516 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_success_stat
 
 import '../../../core/router/app_router.dart';
 
-class ForgotPasswordScreen extends ConsumerWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch forgot password state
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimations();
+  }
+
+  void _setupAnimations() {
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: AppDimens.durationMedium2),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: AppDimens.durationMedium4),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
+
+    _fadeController.forward();
+    _slideController.forward();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final forgotPasswordForm = ref.watch(forgotPasswordFormStateProvider);
     final authState = ref.watch(authStateProvider);
     final authError = ref.watch(authErrorProvider);
-
-    // Get theme data
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final size = MediaQuery.of(context).size;
 
     // Show success state if email was sent successfully
     if (forgotPasswordForm.isEmailSent) {
       return SltSuccessStateWidget(
-        title: 'Email Sent Successfully',
-        message: 'We have sent a password reset link to ${forgotPasswordForm.email}. Please check your email and follow the instructions.',
+        title: 'Reset Link Sent',
+        message:
+            'We\'ve sent a password reset link to ${forgotPasswordForm.email}. Please check your email and follow the instructions to reset your password.',
         primaryButtonText: 'Back to Login',
         onPrimaryButtonPressed: () => context.go(AppRoutes.login),
         secondaryButtonText: 'Resend Email',
         onSecondaryButtonPressed: () => _handleResendEmail(context, ref),
-        icon: Icons.email_outlined,
+        icon: Icons.mark_email_sent_rounded,
+        accentColor: colorScheme.tertiary,
         showAppBar: true,
         appBarTitle: 'Password Reset',
       );
     }
 
     return SltScaffold(
-      appBar: const SltAppBar(
-        title: 'Reset Password',
-        centerTitle: true,
-        showBackButton: true,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: theme.brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
+        systemNavigationBarColor: colorScheme.surface,
+        systemNavigationBarIconBrightness: theme.brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimens.paddingL),
-          child: authState.isLoading
-              ? const SltLoadingStateWidget(message: 'Sending reset email...')
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Icon and Title
-                      Center(
-                        child: Container(
-                          width: AppDimens.iconXXL,
-                          height: AppDimens.iconXXL,
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.lock_reset_rounded,
-                            size: AppDimens.iconXL,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: AppDimens.spaceL),
-                      
-                      Text(
-                        'Forgot Password?',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimens.spaceS),
-                      
-                      Text(
-                        'Don\'t worry! Enter your email address and we\'ll send you a link to reset your password.',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimens.spaceXL),
-
-                      // Display error if any
-                      if (authError != null) ...[
-                        SltErrorStateWidget(
-                          title: 'Reset Failed',
-                          message: authError,
-                          compact: true,
-                        ),
-                        const SizedBox(height: AppDimens.spaceL),
-                      ],
-
-                      // Email Form
-                      SltTextField(
-                        label: 'Email Address',
-                        hint: 'Enter your email address',
-                        prefixIcon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                        errorText: forgotPasswordForm.emailError,
-                        onChanged: (value) => ref
-                            .read(forgotPasswordFormStateProvider.notifier)
-                            .updateEmail(value),
-                        onSubmitted: (_) => _handleSendResetEmail(context, ref),
-                      ),
-                      const SizedBox(height: AppDimens.spaceXL),
-
-                      // Send Reset Email Button
-                      SltPrimaryButton(
-                        text: 'Send Reset Link',
-                        prefixIcon: Icons.send_rounded,
-                        isFullWidth: true,
-                        onPressed: () => _handleSendResetEmail(context, ref),
-                      ),
-                      const SizedBox(height: AppDimens.spaceL),
-
-                      // Back to Login Link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Remember your password?',
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          SltTextButton(
-                            text: 'Login',
-                            onPressed: () => context.go(AppRoutes.login),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: AppDimens.spaceXL),
-
-                      // Additional Help Text
-                      Container(
-                        padding: const EdgeInsets.all(AppDimens.paddingM),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(AppDimens.radiusM),
-                          border: Border.all(
-                            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                          ),
-                        ),
+      appBar: SltAppBar(
+        title: '',
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        showBackButton: true,
+        centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: theme.brightness == Brightness.light
+              ? Brightness.dark
+              : Brightness.light,
+        ),
+        onBackPressed: () => context.pop(),
+      ),
+      body: authState.isLoading
+          ? const SltLoadingStateWidget(
+              message: 'Sending reset email...',
+              type: LoadingIndicatorType.fadingCircle,
+            )
+          : SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        size.height -
+                        MediaQuery.of(context).padding.top -
+                        kToolbarHeight,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.responsivePadding.horizontal,
+                      vertical: AppDimens.paddingL,
+                    ),
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Icon(
-                              Icons.info_outline_rounded,
-                              color: colorScheme.primary,
-                              size: AppDimens.iconM,
-                            ),
-                            const SizedBox(height: AppDimens.spaceS),
-                            Text(
-                              'Need Help?',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.primary,
+                            // Hero Section
+                            _buildHeroSection(context, theme, colorScheme),
+                            SizedBox(height: AppDimens.spaceXXL),
+
+                            // Error Display
+                            if (authError != null) ...[
+                              SltErrorStateWidget(
+                                title: 'Reset Failed',
+                                message: authError,
+                                compact: true,
+                                accentColor: colorScheme.error,
                               ),
-                              textAlign: TextAlign.center,
+                              SizedBox(height: AppDimens.spaceL),
+                            ],
+
+                            // Email Form
+                            _buildEmailForm(
+                              context,
+                              theme,
+                              colorScheme,
+                              forgotPasswordForm,
                             ),
-                            const SizedBox(height: AppDimens.spaceXS),
-                            Text(
-                              'If you don\'t receive the email within a few minutes, please check your spam folder or contact our support team.',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                            SizedBox(height: AppDimens.spaceXXL),
+
+                            // Action Buttons
+                            _buildActionButtons(context, theme, colorScheme),
+                            SizedBox(height: AppDimens.spaceL),
+
+                            // Footer Links
+                            _buildFooterLinks(context, theme, colorScheme),
+                            SizedBox(height: AppDimens.spaceXXL),
+
+                            // Help Section
+                            _buildHelpSection(context, theme, colorScheme),
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
+              ),
+            ),
+    );
+  }
+
+  Widget _buildHeroSection(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Column(
+      children: [
+        // Icon with animated background
+        Container(
+          width: AppDimens.iconXXL * 1.3,
+          height: AppDimens.iconXXL * 1.3,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                colorScheme.tertiary,
+                colorScheme.tertiary.withValues(alpha: 0.8),
+                colorScheme.primary,
+              ],
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.tertiary.withValues(alpha: 0.3),
+                blurRadius: AppDimens.shadowRadiusL,
+                offset: const Offset(0, AppDimens.shadowOffsetM),
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.lock_reset_rounded,
+            size: AppDimens.iconXL,
+            color: Colors.white,
+          ),
         ),
+        SizedBox(height: AppDimens.spaceXL),
+
+        // Title and Description
+        Text(
+          'Forgot Password?',
+          style: theme.textTheme.displaySmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+            letterSpacing: -0.5,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: AppDimens.spaceM),
+
+        Text(
+          'Don\'t worry! It happens to the best of us. Enter your email address and we\'ll send you a link to reset your password.',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+            height: 1.5,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailForm(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    ForgotPasswordFormModel forgotPasswordForm,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppDimens.paddingL),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
+            colorScheme.tertiaryContainer.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppDimens.radiusXL),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Section Header
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(AppDimens.paddingS),
+                decoration: BoxDecoration(
+                  color: colorScheme.tertiary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusM),
+                ),
+                child: Icon(
+                  Icons.email_outlined,
+                  color: colorScheme.tertiary,
+                  size: AppDimens.iconM,
+                ),
+              ),
+              SizedBox(width: AppDimens.spaceM),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Email Address',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.tertiary,
+                      ),
+                    ),
+                    SizedBox(height: AppDimens.spaceXS),
+                    Text(
+                      'Enter the email associated with your account',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppDimens.spaceL),
+
+          // Email Input
+          SltTextField(
+            label: 'Email Address',
+            hint: 'Enter your email address',
+            prefixIcon: Icons.alternate_email_rounded,
+            keyboardType: TextInputType.emailAddress,
+            errorText: forgotPasswordForm.emailError,
+            onChanged: (value) => ref
+                .read(forgotPasswordFormStateProvider.notifier)
+                .updateEmail(value),
+            onSubmitted: (_) => _handleSendResetEmail(context, ref),
+            textInputAction: TextInputAction.send,
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _handleSendResetEmail(BuildContext context, WidgetRef ref) async {
-    // Clear any previous errors
-    ref.read(authErrorProvider.notifier).clearError();
+  Widget _buildActionButtons(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return SltPrimaryButton(
+      text: 'Send Reset Link',
+      prefixIcon: Icons.send_rounded,
+      isFullWidth: true,
+      onPressed: () => _handleSendResetEmail(context, ref),
+      backgroundColor: colorScheme.tertiary,
+      foregroundColor: Colors.white,
+      elevation: AppDimens.elevationS,
+    );
+  }
 
-    // Attempt to send reset email
+  Widget _buildFooterLinks(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Remember your password?',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        SltTextButton(
+          text: 'Sign In',
+          onPressed: () => context.go(AppRoutes.login),
+          foregroundColor: colorScheme.primary,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHelpSection(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppDimens.paddingL),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.primaryContainer.withValues(alpha: 0.2),
+            colorScheme.secondaryContainer.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppDimens.radiusL),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(AppDimens.paddingM),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.help_center_rounded,
+              color: colorScheme.primary,
+              size: AppDimens.iconL,
+            ),
+          ),
+          SizedBox(height: AppDimens.spaceM),
+
+          Text(
+            'Need Help?',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppDimens.spaceS),
+
+          Text(
+            'If you don\'t receive the email within a few minutes, please check your spam folder or contact our support team for assistance.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppDimens.spaceL),
+
+          // Help Action Cards
+          Row(
+            children: [
+              Expanded(
+                child: _buildHelpCard(
+                  context,
+                  theme,
+                  colorScheme,
+                  Icons.mail_outline_rounded,
+                  'Check Spam',
+                  'Look in your spam or junk folder',
+                ),
+              ),
+              SizedBox(width: AppDimens.spaceM),
+              Expanded(
+                child: _buildHelpCard(
+                  context,
+                  theme,
+                  colorScheme,
+                  Icons.support_agent_rounded,
+                  'Contact Support',
+                  'Get help from our team',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHelpCard(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppDimens.paddingM),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: colorScheme.primary, size: AppDimens.iconM),
+          SizedBox(height: AppDimens.spaceS),
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppDimens.spaceXS),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleSendResetEmail(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    HapticFeedback.lightImpact();
+    ref.read(authErrorProvider.notifier).clearError();
     final success = await ref
         .read(forgotPasswordFormStateProvider.notifier)
         .submitForgotPassword();
 
-    // Success state will be automatically shown by the widget rebuild
-    if (!success && context.mounted) {
-      // Error will be displayed automatically through authError provider
+    if (success) {
+      HapticFeedback.successImpact();
     }
   }
 
   Future<void> _handleResendEmail(BuildContext context, WidgetRef ref) async {
-    // Reset the form state to allow resending
     ref.read(forgotPasswordFormStateProvider.notifier).resetEmailSentState();
-    
-    // Send email again
     await _handleSendResetEmail(context, ref);
   }
 }

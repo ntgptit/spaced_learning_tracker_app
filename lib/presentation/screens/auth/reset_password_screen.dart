@@ -1,5 +1,6 @@
 // lib/presentation/screens/auth/reset_password_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -15,154 +16,353 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_success_stat
 
 import '../../../core/router/app_router.dart';
 
-class ResetPasswordScreen extends ConsumerWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String resetToken;
 
-  const ResetPasswordScreen({
-    super.key,
-    required this.resetToken,
-  });
+  const ResetPasswordScreen({super.key, required this.resetToken});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch reset password state
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimations();
+  }
+
+  void _setupAnimations() {
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: AppDimens.durationMedium2),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: AppDimens.durationMedium4),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
+
+    _fadeController.forward();
+    _slideController.forward();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final resetPasswordForm = ref.watch(resetPasswordFormStateProvider);
     final authState = ref.watch(authStateProvider);
     final authError = ref.watch(authErrorProvider);
-
-    // Get theme data
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final size = MediaQuery.of(context).size;
 
     // Show success state if password was reset successfully
     if (authState.hasValue && authState.value == true && !authState.isLoading) {
       return SltSuccessStateWidget(
         title: 'Password Reset Successfully',
-        message: 'Your password has been reset successfully. You can now login with your new password.',
-        primaryButtonText: 'Go to Login',
+        message:
+            'Your password has been reset successfully. You can now sign in with your new password.',
+        primaryButtonText: 'Sign In Now',
         onPrimaryButtonPressed: () => context.go(AppRoutes.login),
         icon: Icons.check_circle_outline_rounded,
+        accentColor: colorScheme.primary,
         showAppBar: true,
-        appBarTitle: 'Password Reset',
+        appBarTitle: 'Password Reset Complete',
       );
     }
 
     return SltScaffold(
-      appBar: const SltAppBar(
-        title: 'Reset Password',
-        centerTitle: true,
-        showBackButton: true,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: theme.brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
+        systemNavigationBarColor: colorScheme.surface,
+        systemNavigationBarIconBrightness: theme.brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimens.paddingL),
-          child: authState.isLoading
-              ? const SltLoadingStateWidget(message: 'Resetting your password...')
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Icon and Title
-                      Center(
-                        child: Container(
-                          width: AppDimens.iconXXL,
-                          height: AppDimens.iconXXL,
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.lock_person_rounded,
-                            size: AppDimens.iconXL,
-                            color: colorScheme.primary,
-                          ),
+      appBar: SltAppBar(
+        title: '',
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        showBackButton: true,
+        centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: theme.brightness == Brightness.light
+              ? Brightness.dark
+              : Brightness.light,
+        ),
+        onBackPressed: () => context.pop(),
+      ),
+      body: authState.isLoading
+          ? const SltLoadingStateWidget(
+              message: 'Resetting your password...',
+              type: LoadingIndicatorType.fadingCircle,
+            )
+          : SafeArea(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        size.height -
+                        MediaQuery.of(context).padding.top -
+                        kToolbarHeight,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.responsivePadding.horizontal,
+                      vertical: AppDimens.paddingL,
+                    ),
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Hero Section
+                            _buildHeroSection(context, theme, colorScheme),
+                            SizedBox(height: AppDimens.spaceXXL),
+
+                            // Error Display
+                            if (authError != null) ...[
+                              SltErrorStateWidget(
+                                title: 'Reset Failed',
+                                message: authError,
+                                compact: true,
+                                accentColor: colorScheme.error,
+                              ),
+                              SizedBox(height: AppDimens.spaceL),
+                            ],
+
+                            // Password Form
+                            _buildPasswordForm(
+                              context,
+                              theme,
+                              colorScheme,
+                              resetPasswordForm,
+                            ),
+                            SizedBox(height: AppDimens.spaceL),
+
+                            // Password Requirements
+                            _buildPasswordRequirements(
+                              context,
+                              theme,
+                              colorScheme,
+                              resetPasswordForm,
+                            ),
+                            SizedBox(height: AppDimens.spaceXXL),
+
+                            // Action Buttons
+                            _buildActionButtons(context, theme, colorScheme),
+                            SizedBox(height: AppDimens.spaceL),
+
+                            // Footer Links
+                            _buildFooterLinks(context, theme, colorScheme),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: AppDimens.spaceL),
-                      
-                      Text(
-                        'Create New Password',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimens.spaceS),
-                      
-                      Text(
-                        'Your new password must be different from your previous password and meet our security requirements.',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimens.spaceXL),
-
-                      // Display error if any
-                      if (authError != null) ...[
-                        SltErrorStateWidget(
-                          title: 'Reset Failed',
-                          message: authError,
-                          compact: true,
-                        ),
-                        const SizedBox(height: AppDimens.spaceL),
-                      ],
-
-                      // Password Form
-                      SltPasswordField(
-                        label: 'New Password',
-                        hint: 'Enter your new password',
-                        prefixIconData: Icons.lock_outline,
-                        errorText: resetPasswordForm.passwordError,
-                        onChanged: (value) => ref
-                            .read(resetPasswordFormStateProvider.notifier)
-                            .updatePassword(value),
-                      ),
-                      const SizedBox(height: AppDimens.spaceL),
-
-                      SltPasswordField(
-                        label: 'Confirm New Password',
-                        hint: 'Confirm your new password',
-                        prefixIconData: Icons.lock_outline,
-                        errorText: resetPasswordForm.confirmPasswordError,
-                        onChanged: (value) => ref
-                            .read(resetPasswordFormStateProvider.notifier)
-                            .updateConfirmPassword(value),
-                        onEditingComplete: () => _handleResetPassword(context, ref),
-                      ),
-                      const SizedBox(height: AppDimens.spaceM),
-
-                      // Password Requirements
-                      _buildPasswordRequirements(context, theme, colorScheme),
-                      const SizedBox(height: AppDimens.spaceXL),
-
-                      // Reset Password Button
-                      SltPrimaryButton(
-                        text: 'Reset Password',
-                        prefixIcon: Icons.lock_reset_rounded,
-                        isFullWidth: true,
-                        onPressed: () => _handleResetPassword(context, ref),
-                      ),
-                      const SizedBox(height: AppDimens.spaceL),
-
-                      // Back to Login Link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Remember your password?',
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          SltTextButton(
-                            text: 'Login',
-                            onPressed: () => context.go(AppRoutes.login),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
+              ),
+            ),
+    );
+  }
+
+  Widget _buildHeroSection(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Column(
+      children: [
+        // Animated Icon
+        Container(
+          width: AppDimens.iconXXL * 1.3,
+          height: AppDimens.iconXXL * 1.3,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                colorScheme.primary,
+                colorScheme.primary.withValues(alpha: 0.8),
+                colorScheme.tertiary,
+              ],
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withValues(alpha: 0.3),
+                blurRadius: AppDimens.shadowRadiusL,
+                offset: const Offset(0, AppDimens.shadowOffsetM),
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.lock_person_rounded,
+            size: AppDimens.iconXL,
+            color: Colors.white,
+          ),
         ),
+        SizedBox(height: AppDimens.spaceXL),
+
+        // Title and Description
+        Text(
+          'Create New Password',
+          style: theme.textTheme.displaySmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+            letterSpacing: -0.5,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: AppDimens.spaceM),
+
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppDimens.paddingL,
+            vertical: AppDimens.paddingM,
+          ),
+          decoration: BoxDecoration(
+            color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(AppDimens.radiusL),
+            border: Border.all(
+              color: colorScheme.primary.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            'Your new password must be different from your previous password and meet our security requirements.',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordForm(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    ResetPasswordFormModel resetPasswordForm,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppDimens.paddingL),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
+            colorScheme.primaryContainer.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppDimens.radiusXL),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Section Header
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(AppDimens.paddingS),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusM),
+                ),
+                child: Icon(
+                  Icons.lock_outline_rounded,
+                  color: colorScheme.primary,
+                  size: AppDimens.iconM,
+                ),
+              ),
+              SizedBox(width: AppDimens.spaceM),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'New Password',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    SizedBox(height: AppDimens.spaceXS),
+                    Text(
+                      'Create a strong and secure password',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppDimens.spaceL),
+
+          // New Password
+          SltPasswordField(
+            label: 'New Password',
+            hint: 'Enter your new password',
+            prefixIconData: Icons.lock_outline_rounded,
+            errorText: resetPasswordForm.passwordError,
+            onChanged: (value) => ref
+                .read(resetPasswordFormStateProvider.notifier)
+                .updatePassword(value),
+            textInputAction: TextInputAction.next,
+          ),
+          SizedBox(height: AppDimens.spaceL),
+
+          // Confirm Password
+          SltPasswordField(
+            label: 'Confirm New Password',
+            hint: 'Confirm your new password',
+            prefixIconData: Icons.lock_outline_rounded,
+            errorText: resetPasswordForm.confirmPasswordError,
+            onChanged: (value) => ref
+                .read(resetPasswordFormStateProvider.notifier)
+                .updateConfirmPassword(value),
+            onEditingComplete: () => _handleResetPassword(context, ref),
+            textInputAction: TextInputAction.done,
+          ),
+        ],
       ),
     );
   }
@@ -171,14 +371,25 @@ class ResetPasswordScreen extends ConsumerWidget {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    ResetPasswordFormModel resetPasswordForm,
   ) {
+    final password = resetPasswordForm.password;
+
     return Container(
-      padding: const EdgeInsets.all(AppDimens.paddingM),
+      padding: EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(AppDimens.radiusM),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.tertiaryContainer.withValues(alpha: 0.3),
+            colorScheme.secondaryContainer.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppDimens.radiusL),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: colorScheme.outline.withValues(alpha: 0.2),
+          width: 1,
         ),
       ),
       child: Column(
@@ -186,78 +397,110 @@ class ResetPasswordScreen extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: colorScheme.primary,
-                size: AppDimens.iconS,
+              Container(
+                padding: EdgeInsets.all(AppDimens.paddingS),
+                decoration: BoxDecoration(
+                  color: colorScheme.tertiary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppDimens.radiusS),
+                ),
+                child: Icon(
+                  Icons.security_rounded,
+                  color: colorScheme.tertiary,
+                  size: AppDimens.iconM,
+                ),
               ),
-              const SizedBox(width: AppDimens.spaceS),
+              SizedBox(width: AppDimens.spaceM),
               Text(
                 'Password Requirements',
-                style: theme.textTheme.titleSmall?.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
+                  color: colorScheme.tertiary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppDimens.spaceS),
-          _buildRequirementItem(
-            context,
-            theme,
-            colorScheme,
-            'At least 8 characters long',
-            Icons.check_circle_outline_rounded,
-          ),
-          _buildRequirementItem(
-            context,
-            theme,
-            colorScheme,
-            'Contains both uppercase and lowercase letters',
-            Icons.check_circle_outline_rounded,
-          ),
-          _buildRequirementItem(
-            context,
-            theme,
-            colorScheme,
-            'Contains at least one number',
-            Icons.check_circle_outline_rounded,
-          ),
-          _buildRequirementItem(
-            context,
-            theme,
-            colorScheme,
-            'Contains at least one special character',
-            Icons.check_circle_outline_rounded,
+          SizedBox(height: AppDimens.spaceL),
+
+          // Requirements Grid
+          Wrap(
+            spacing: AppDimens.spaceM,
+            runSpacing: AppDimens.spaceM,
+            children: [
+              _buildRequirementChip(
+                context,
+                theme,
+                colorScheme,
+                'At least 8 characters',
+                password.length >= 8,
+              ),
+              _buildRequirementChip(
+                context,
+                theme,
+                colorScheme,
+                'Uppercase letter',
+                password.contains(RegExp(r'[A-Z]')),
+              ),
+              _buildRequirementChip(
+                context,
+                theme,
+                colorScheme,
+                'Lowercase letter',
+                password.contains(RegExp(r'[a-z]')),
+              ),
+              _buildRequirementChip(
+                context,
+                theme,
+                colorScheme,
+                'Number',
+                password.contains(RegExp(r'[0-9]')),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildRequirementItem(
+  Widget _buildRequirementChip(
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    String text,
-    IconData icon,
+    String requirement,
+    bool isMet,
   ) {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppDimens.spaceXS),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppDimens.paddingM,
+        vertical: AppDimens.paddingS,
+      ),
+      decoration: BoxDecoration(
+        color: isMet
+            ? colorScheme.primary.withValues(alpha: 0.1)
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AppDimens.radiusL),
+        border: Border.all(
+          color: isMet
+              ? colorScheme.primary.withValues(alpha: 0.3)
+              : colorScheme.outline.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            icon,
-            size: AppDimens.iconXS,
-            color: colorScheme.onSurfaceVariant,
+            isMet
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_unchecked_rounded,
+            size: AppDimens.iconS,
+            color: isMet ? colorScheme.primary : colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: AppDimens.spaceS),
-          Expanded(
-            child: Text(
-              text,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+          SizedBox(width: AppDimens.spaceS),
+          Text(
+            requirement,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: isMet ? colorScheme.primary : colorScheme.onSurfaceVariant,
+              fontWeight: isMet ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
         ],
@@ -265,18 +508,54 @@ class ResetPasswordScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _handleResetPassword(BuildContext context, WidgetRef ref) async {
-    // Clear any previous errors
-    ref.read(authErrorProvider.notifier).clearError();
+  Widget _buildActionButtons(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return SltPrimaryButton(
+      text: 'Reset Password',
+      prefixIcon: Icons.lock_reset_rounded,
+      isFullWidth: true,
+      onPressed: () => _handleResetPassword(context, ref),
+      backgroundColor: colorScheme.primary,
+      foregroundColor: Colors.white,
+      elevation: AppDimens.elevationS,
+    );
+  }
 
-    // Attempt to reset password
+  Widget _buildFooterLinks(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Remember your password?',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        SltTextButton(
+          text: 'Sign In',
+          onPressed: () => context.go(AppRoutes.login),
+          foregroundColor: colorScheme.primary,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleResetPassword(BuildContext context, WidgetRef ref) async {
+    HapticFeedback.lightImpact();
+    ref.read(authErrorProvider.notifier).clearError();
     final success = await ref
         .read(resetPasswordFormStateProvider.notifier)
-        .submitResetPassword(resetToken);
+        .submitResetPassword(widget.resetToken);
 
-    // Success state will be automatically shown by the widget rebuild
-    if (!success && context.mounted) {
-      // Error will be displayed automatically through authError provider
+    if (success) {
+      HapticFeedback.successImpact();
     }
   }
 }
