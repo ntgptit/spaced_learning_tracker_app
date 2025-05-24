@@ -52,7 +52,7 @@ class SltUserCard extends ConsumerWidget {
       inkWellBorderRadius = effectiveBorderRadiusGeometry as BorderRadius?;
     }
 
-    Widget cardInnerContent = Row(
+    final Widget cardInnerContent = Row(
       children: [
         SltAvatarImage(
           // Correct usage of SltAvatarImage

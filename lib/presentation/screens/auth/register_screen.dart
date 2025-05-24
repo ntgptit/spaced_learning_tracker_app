@@ -1,195 +1,313 @@
+// lib/presentation/screens/auth/register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spaced_learning_app/core/router/app_router.dart';
-import 'package:spaced_learning_app/core/theme/app_dimens.dart';
-import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
-import 'package:spaced_learning_app/presentation/widgets/buttons/slt_primary_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/buttons/slt_text_button.dart';
-import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
-import 'package:spaced_learning_app/presentation/widgets/inputs/slt_text_field.dart';
-import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
-import 'package:spaced_learning_app/presentation/widgets/states/slt_loading_state_widget.dart';
 
+import '../../../core/constants/app_strings.dart';
+import '../../../core/router/app_router.dart';
+import '../../../core/theme/app_dimens.dart';
+import '../../viewmodels/auth_viewmodel.dart';
+import '../../widgets/buttons/slt_primary_button.dart';
+import '../../widgets/buttons/slt_text_button.dart';
+import '../../widgets/cards/slt_card.dart';
+import '../../widgets/common/slt_app_bar.dart';
 import '../../widgets/common/slt_scaffold.dart';
 import '../../widgets/inputs/slt_password_text_field.dart';
+import '../../widgets/inputs/slt_text_field.dart';
+import '../../widgets/states/slt_error_state_widget.dart';
+import '../../widgets/states/slt_loading_state_widget.dart';
 
-class RegisterScreen extends ConsumerWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch auth state for loading and error
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends ConsumerState<RegisterScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAnimations();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(authErrorProvider.notifier).clearError();
+      }
+    });
+  }
+
+  void _initializeAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 700),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleRegistration() async {
+    ref.read(authErrorProvider.notifier).clearError();
+    final success = await ref
+        .read(registerFormStateProvider.notifier)
+        .submitRegistration();
+    if (!success || !mounted) return; // Guard clause
+    context.go(AppRoutes.main);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final registerForm = ref.watch(registerFormStateProvider);
     final authError = ref.watch(authErrorProvider);
-
-    // Get theme data
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    if (authState.isLoading) {
+      // Check if authState is loading (during submission)
+      return const SltScaffold(
+        appBar: SltAppBar(
+          title: AppStrings.auth.appBarRegister, // Corrected
+          showBackButton: true,
+          centerTitle: true,
+        ),
+        body: SltLoadingStateWidget(
+          // This widget's constructor is const
+          message: AppStrings.auth.registeringAccount,
+          // Corrected & ensured this string is const
+          type: LoadingIndicatorType.fadingCircle,
+        ),
+      );
+    }
+
     return SltScaffold(
       appBar: const SltAppBar(
-        title: 'Register',
-        centerTitle: true,
+        title: AppStrings.auth.appBarRegister, // Corrected
         showBackButton: true,
+        centerTitle: true,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppDimens.paddingL),
-          child: authState.isLoading
-              ? const SltLoadingStateWidget(message: 'Creating your account...')
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Title and description
-                    Text(
-                      'Create Account',
-                      style: theme.textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppDimens.spaceS),
-                    Text(
-                      'Fill in the form to create your account',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppDimens.spaceXL),
-
-                    // Display error if any
-                    if (authError != null) ...[
-                      SltErrorStateWidget(
-                        title: 'Registration Failed',
-                        message: authError,
-                        compact: true,
-                      ),
-                      const SizedBox(height: AppDimens.spaceL),
-                    ],
-
-                    // Registration Form
-                    // First Name and Last Name row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SltTextField(
-                            label: 'First Name',
-                            hint: 'Enter first name',
-                            prefixIcon: Icons.person_outline,
-                            errorText: registerForm.firstNameError,
-                            onChanged: (value) => ref
-                                .read(registerFormStateProvider.notifier)
-                                .updateFirstName(value),
-                          ),
-                        ),
-                        const SizedBox(width: AppDimens.spaceM),
-                        Expanded(
-                          child: SltTextField(
-                            label: 'Last Name',
-                            hint: 'Enter last name',
-                            prefixIcon: Icons.person_outline,
-                            errorText: registerForm.lastNameError,
-                            onChanged: (value) => ref
-                                .read(registerFormStateProvider.notifier)
-                                .updateLastName(value),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppDimens.spaceL),
-
-                    // Username
-                    SltTextField(
-                      label: 'Username',
-                      hint: 'Choose a username',
-                      prefixIcon: Icons.account_circle_outlined,
-                      errorText: registerForm.usernameError,
-                      onChanged: (value) => ref
-                          .read(registerFormStateProvider.notifier)
-                          .updateUsername(value),
-                    ),
-                    const SizedBox(height: AppDimens.spaceL),
-
-                    // Email
-                    SltTextField(
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      prefixIcon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                      errorText: registerForm.emailError,
-                      onChanged: (value) => ref
-                          .read(registerFormStateProvider.notifier)
-                          .updateEmail(value),
-                    ),
-                    const SizedBox(height: AppDimens.spaceL),
-
-                    // Password
-                    SltPasswordField(
-                      label: 'Password',
-                      hint: 'Create a password',
-                      prefixIconData: Icons.lock_outline,
-                      errorText: registerForm.passwordError,
-                      onChanged: (value) => ref
-                          .read(registerFormStateProvider.notifier)
-                          .updatePassword(value),
-                    ),
-                    const SizedBox(height: AppDimens.spaceL),
-
-                    // Confirm Password
-                    SltPasswordField(
-                      label: 'Confirm Password',
-                      hint: 'Confirm your password',
-                      prefixIconData: Icons.lock_outline,
-                      errorText: registerForm.confirmPasswordError,
-                      onChanged: (value) => ref
-                          .read(registerFormStateProvider.notifier)
-                          .updateConfirmPassword(value),
-                    ),
-                    const SizedBox(height: AppDimens.spaceXL),
-
-                    // Register Button
-                    SltPrimaryButton(
-                      text: 'Create Account',
-                      prefixIcon: Icons.person_add_alt_1_rounded,
-                      isFullWidth: true,
-                      onPressed: () => _handleRegister(context, ref),
-                    ),
-                    const SizedBox(height: AppDimens.spaceL),
-
-                    // Login Link
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Already have an account?',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        SltTextButton(
-                          text: 'Login',
-                          onPressed: () => context.pop(),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) => FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: _buildRegisterForm(
+                theme,
+                colorScheme,
+                registerForm,
+                authError,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Future<void> _handleRegister(BuildContext context, WidgetRef ref) async {
-    // Clear any previous errors
-    ref.read(authErrorProvider.notifier).clearError();
+  Widget _buildRegisterForm(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    RegisterFormModel registerForm,
+    String? authError,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppDimens.paddingL),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(theme, colorScheme),
+          const SizedBox(height: AppDimens.spaceL),
+          _buildErrorDisplay(authError),
+          SltCard(
+            padding: const EdgeInsets.all(AppDimens.paddingXL),
+            child: Column(
+              children: [
+                SltTextField(
+                  label: AppStrings.auth.firstName,
+                  // Corrected
+                  hint: AppStrings.auth.enterFirstName,
+                  // Corrected
+                  prefixIcon: Icons.person_outline,
+                  initialValue: registerForm.firstName,
+                  // Will work with updated SltTextField
+                  errorText: registerForm.firstNameError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updateFirstName(value),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: AppDimens.spaceM),
+                SltTextField(
+                  label: AppStrings.auth.lastName,
+                  // Corrected
+                  hint: AppStrings.auth.enterLastName,
+                  // Corrected
+                  prefixIcon: Icons.person_outline,
+                  initialValue: registerForm.lastName,
+                  errorText: registerForm.lastNameError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updateLastName(value),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: AppDimens.spaceM),
+                SltTextField(
+                  label: AppStrings.auth.username,
+                  // Corrected
+                  hint: AppStrings.auth.enterUsername,
+                  // Corrected
+                  prefixIcon: Icons.account_circle_outlined,
+                  initialValue: registerForm.username,
+                  errorText: registerForm.usernameError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updateUsername(value),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: AppDimens.spaceM),
+                SltTextField(
+                  label: AppStrings.auth.email,
+                  // Corrected
+                  hint: AppStrings.auth.emailHint,
+                  // Corrected
+                  prefixIcon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                  initialValue: registerForm.email,
+                  errorText: registerForm.emailError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updateEmail(value),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: AppDimens.spaceM),
+                SltPasswordField(
+                  label: AppStrings.auth.password,
+                  // Corrected
+                  hint: AppStrings.auth.enterPassword,
+                  // Corrected
+                  errorText: registerForm.passwordError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updatePassword(value),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: AppDimens.spaceM),
+                SltPasswordField(
+                  label: AppStrings.auth.confirmPassword,
+                  // Corrected
+                  hint: AppStrings.auth.enterConfirmPassword,
+                  // Corrected
+                  errorText: registerForm.confirmPasswordError,
+                  onChanged: (value) => ref
+                      .read(registerFormStateProvider.notifier)
+                      .updateConfirmPassword(value),
+                  onEditingComplete: _handleRegistration,
+                  textInputAction: TextInputAction.done,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppDimens.spaceXL),
+          SltPrimaryButton(
+            text: AppStrings.auth.registerButton,
+            // Corrected
+            prefixIcon: Icons.person_add_alt_1_rounded,
+            isFullWidth: true,
+            size: SltButtonSize.large,
+            onPressed: _handleRegistration,
+          ),
+          const SizedBox(height: AppDimens.spaceL),
+          _buildLoginLink(theme, colorScheme),
+        ],
+      ),
+    );
+  }
 
-    // Attempt registration
-    final success = await ref
-        .read(registerFormStateProvider.notifier)
-        .submitRegistration();
+  Widget _buildHeader(ThemeData theme, ColorScheme colorScheme) {
+    return Column(
+      children: [
+        Icon(
+          Icons.app_registration_rounded,
+          size: AppDimens.iconXXL,
+          color: colorScheme.primary,
+        ),
+        const SizedBox(height: AppDimens.spaceM),
+        Text(
+          AppStrings.auth.registerTitle, // Corrected (User's existing)
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppDimens.spaceS),
+        Text(
+          AppStrings.auth.registerSubtitle, // Corrected (User's existing)
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
 
-    // Navigate to home if successful
-    if (success && context.mounted) {
-      context.go(AppRoutes.home);
-    }
+  Widget _buildErrorDisplay(String? authError) {
+    if (authError == null || authError.isEmpty)
+      return const SizedBox.shrink(); // Guard clause
+    return Column(
+      children: [
+        SltErrorStateWidget(
+          title: AppStrings.errors.registrationFailed, // Corrected
+          message: authError,
+          compact: true,
+          onRetry: () => ref.read(authErrorProvider.notifier).clearError(),
+        ),
+        const SizedBox(height: AppDimens.spaceL),
+      ],
+    );
+  }
+
+  Widget _buildLoginLink(ThemeData theme, ColorScheme colorScheme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          AppStrings.auth.alreadyHaveAccount, // Corrected
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        SltTextButton(
+          text: AppStrings.auth.logInButton,
+          // Corrected (using explicit button text)
+          onPressed: () {
+            if (!context.mounted) return; // Guard clause
+            context.go(AppRoutes.login);
+          },
+        ),
+      ],
+    );
   }
 }

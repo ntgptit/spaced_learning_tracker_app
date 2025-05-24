@@ -100,7 +100,7 @@ class SltActionCard extends ConsumerWidget {
                           ? AppDimens.paddingM
                           : 0,
                     ),
-                    child: content!,
+                    child: content,
                   ),
               ],
             ),

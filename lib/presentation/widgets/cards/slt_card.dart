@@ -88,7 +88,7 @@ class SltCard extends ConsumerWidget {
       actualBorderSide = BorderSide.none;
     }
 
-    Widget cardContent = Padding(padding: effectivePadding, child: child);
+    final Widget cardContent = Padding(padding: effectivePadding, child: child);
 
     final ShapeBorder cardShape = RoundedRectangleBorder(
       borderRadius: effectiveBorderRadiusGeometry,

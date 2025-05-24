@@ -1,9 +1,8 @@
-// lib/presentation/widgets/common/input/sl_text_field.dart
+// lib/presentation/widgets/inputs/slt_text_field.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-// Define the enum for text field sizes
 enum SltTextFieldSize {
   small,
   medium, // Default
@@ -14,6 +13,7 @@ class SltTextField extends StatefulWidget {
   final String? hint;
   final String? errorText;
   final String? helperText;
+  final String? initialValue; // <<--- ADDED: New parameter
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool obscureText;
@@ -59,6 +59,7 @@ class SltTextField extends StatefulWidget {
     this.hint,
     this.errorText,
     this.helperText,
+    this.initialValue, // <<--- ADDED: Initialize
     this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
@@ -102,9 +103,9 @@ class SltTextField extends StatefulWidget {
   @override
   State<SltTextField> createState() => _SltTextFieldState();
 
-  // Factory constructor for a search field
   factory SltTextField.search({
     TextEditingController? controller,
+    String? initialValue, // <<--- ADDED
     String? hint = 'Search...',
     ValueChanged<String>? onChanged,
     VoidCallback? onClear,
@@ -114,6 +115,8 @@ class SltTextField extends StatefulWidget {
   }) {
     return SltTextField(
       controller: controller,
+      initialValue: initialValue,
+      // <<--- ADDED
       hint: hint,
       prefixIcon: Icons.search,
       keyboardType: TextInputType.text,
@@ -126,9 +129,9 @@ class SltTextField extends StatefulWidget {
     );
   }
 
-  // Factory constructor for a number field
   factory SltTextField.number({
     TextEditingController? controller,
+    String? initialValue, // <<--- ADDED
     String? label,
     String? hint,
     ValueChanged<String>? onChanged,
@@ -138,6 +141,8 @@ class SltTextField extends StatefulWidget {
   }) {
     return SltTextField(
       controller: controller,
+      initialValue: initialValue,
+      // <<--- ADDED
       label: label,
       hint: hint,
       keyboardType: allowDecimal
@@ -155,9 +160,9 @@ class SltTextField extends StatefulWidget {
     );
   }
 
-  // Factory constructor for a multiline text field
   factory SltTextField.multiline({
     TextEditingController? controller,
+    String? initialValue, // <<--- ADDED
     String? label,
     String? hint,
     int minLines = 3,
@@ -167,6 +172,8 @@ class SltTextField extends StatefulWidget {
   }) {
     return SltTextField(
       controller: controller,
+      initialValue: initialValue,
+      // <<--- ADDED
       label: label,
       hint: hint,
       minLines: minLines,
@@ -183,11 +190,10 @@ class _SltTextFieldState extends State<SltTextField> {
   late FocusNode _focusNode;
   bool _passwordVisible = false;
   bool _hasFocus = false;
-
-  // Biến để lưu trữ vị trí con trỏ hiện tại
   TextSelection? _previousSelection;
   String _previousText = '';
 
+  // (Các phương thức _getEffectiveContentPadding, _getEffectiveIconSize, etc. giữ nguyên)
   EdgeInsetsGeometry _getEffectiveContentPadding() {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
@@ -224,13 +230,13 @@ class _SltTextFieldState extends State<SltTextField> {
           theme.textTheme.bodyMedium ??
           theme.textTheme.bodyLarge!.copyWith(fontSize: 14);
     }
+    // Use a slightly more visible disabled color if possible, or stick to a standard opacity.
+    final disabledTextColor = colorScheme.onSurface.withOpacity(
+      0.38,
+    ); // Standard disabled opacity
 
     return baseStyle.copyWith(
-      color: widget.enabled
-          ? colorScheme.onSurface
-          : colorScheme.onSurface.withValues(
-              alpha: AppDimens.opacityDisabledText,
-            ),
+      color: widget.enabled ? colorScheme.onSurface : disabledTextColor,
     );
   }
 
@@ -244,67 +250,71 @@ class _SltTextFieldState extends State<SltTextField> {
           theme.textTheme.bodyLarge!.copyWith(fontSize: 12);
     }
 
-    if (widget.errorText != null) {
+    if (widget.errorText != null && widget.errorText!.isNotEmpty) {
+      // Check if errorText is not empty
       defaultLabelColor = widget.errorColor ?? colorScheme.error;
     }
 
     return baseStyle.copyWith(color: defaultLabelColor);
   }
 
-  void _onControllerChanged() {
-    // Nếu phát hiện vị trí con trỏ đã bị di chuyển đến index 0 một cách không mong muốn
-    // và văn bản đã thay đổi, thì khôi phục lại vị trí con trỏ
-    if (mounted && _controller.text != _previousText) {
-      // Kiểm tra xem văn bản mới có phải là phần được chèn vào đầu không
-      final currentText = _controller.text;
-      final previousText = _previousText;
-
-      if (currentText.length > previousText.length &&
-          _controller.selection.baseOffset == 1 &&
-          !currentText.startsWith(previousText) &&
-          currentText.length - 1 == previousText.length) {
-        // Có vẻ như một ký tự đã được chèn vào đầu văn bản
-        // Ta cần di chuyển ký tự này đến cuối văn bản
-        final insertedChar = currentText[0];
-        final correctText = previousText + insertedChar;
-
-        // Cập nhật controller text với vị trí con trỏ phù hợp
-        _controller.value = TextEditingValue(
-          text: correctText,
-          selection: TextSelection.collapsed(offset: correctText.length),
-        );
-      }
-
-      // Lưu lại văn bản hiện tại và vị trí con trỏ để kiểm tra ở lần thay đổi tiếp theo
-      _previousText = _controller.text;
-      _previousSelection = _controller.selection;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController();
+    // <<--- MODIFIED: Use initialValue if controller is not provided
+    _controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
     _focusNode = widget.focusNode ?? FocusNode();
-
-    // Lưu trữ giá trị text ban đầu
     _previousText = _controller.text;
-
-    // Thêm listener theo dõi thay đổi trong controller
     _controller.addListener(_onControllerChanged);
-
-    // Theo dõi trạng thái focus
     _focusNode.addListener(_onFocusChange);
-
-    // Initialize password visibility based on obscureText
     _passwordVisible = !widget.obscureText;
+  }
+
+  void _onControllerChanged() {
+    // Guard clause: if not mounted, do nothing.
+    if (!mounted) return;
+
+    final currentText = _controller.text;
+    final currentSelection = _controller.selection;
+
+    // Check for unexpected cursor jump to the beginning when typing fast (common on some platforms/IDEs)
+    // This attempts to mitigate it by restoring previous selection if text changed and cursor is at 0.
+    if (currentText != _previousText &&
+        currentText.isNotEmpty &&
+        currentSelection.baseOffset == 0 &&
+        currentSelection.extentOffset == 0 &&
+        _previousSelection != null &&
+        _previousSelection!.baseOffset != 0) {
+      // More specific check: if a single character was prepended (often due to IME issues or fast typing)
+      if (_previousText.isNotEmpty &&
+          currentText.length == _previousText.length + 1 &&
+          currentText.substring(1) == _previousText) {
+        // Likely an erroneous prepend, try to correct it by moving the char to the end
+        final charPrepended = currentText[0];
+        final correctedText = _previousText + charPrepended;
+        _controller.value = TextEditingValue(
+          text: correctedText,
+          selection: TextSelection.collapsed(offset: correctedText.length),
+        );
+      } else if (_previousSelection!.isValid &&
+          _previousSelection!.baseOffset <= currentText.length) {
+        // Fallback to restoring previous valid selection if the specific prepend case isn't met
+        // _controller.selection = _previousSelection!; // This can cause loop, be careful
+      }
+    }
+
+    _previousText = _controller.text;
+    _previousSelection = _controller.selection;
+
+    // Propagate onChanged if it exists
+    widget.onChanged?.call(currentText);
   }
 
   void _onFocusChange() {
     if (mounted) {
       setState(() {
         _hasFocus = _focusNode.hasFocus;
-        // Khi nhận focus, lưu lại vị trí con trỏ
         if (_hasFocus) {
           _previousSelection = _controller.selection;
         }
@@ -316,60 +326,51 @@ class _SltTextFieldState extends State<SltTextField> {
   void didUpdateWidget(SltTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Handle controller changes
     if (widget.controller != oldWidget.controller) {
-      // Remove listener from old controller
       _controller.removeListener(_onControllerChanged);
-
       if (oldWidget.controller == null) {
-        // We created the controller, so we need to dispose it
-        _controller.dispose();
+        _controller.dispose(); // Dispose internally created controller
       }
-
-      // Use the new controller or create one
-      _controller = widget.controller ?? TextEditingController();
-
-      // Update previous text and add listener to new controller
-      _previousText = _controller.text;
+      _controller =
+          widget.controller ?? TextEditingController(text: widget.initialValue);
+      _previousText =
+          _controller.text; // Update previous text for the new controller
       _controller.addListener(_onControllerChanged);
+    } else if (widget.controller == null &&
+        widget.initialValue != oldWidget.initialValue) {
+      // If using internal controller and initialValue changes, update controller text
+      // This ensures declarative updates to initialValue are reflected
+      _controller.text = widget.initialValue ?? '';
+      _previousText = _controller.text;
     }
 
-    // Handle focus node changes
     if (widget.focusNode != oldWidget.focusNode) {
+      _focusNode.removeListener(_onFocusChange);
       if (oldWidget.focusNode == null) {
-        // We created the focus node, so we need to remove listener and dispose
-        _focusNode.removeListener(_onFocusChange);
-        _focusNode.dispose();
+        _focusNode.dispose(); // Dispose internally created focus node
       }
-
-      // Use the new focus node or create one
       _focusNode = widget.focusNode ?? FocusNode();
       _focusNode.addListener(_onFocusChange);
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = _focusNode.hasFocus; // Update focus state
     }
 
-    // Update password visibility if obscureText changed
     if (widget.obscureText != oldWidget.obscureText && !widget.obscureText) {
+      // If obscureText is turned off, make password visible.
+      // If it's turned on, _passwordVisible remains as is (controlled by toggle).
       _passwordVisible = true;
     }
   }
 
   @override
   void dispose() {
-    // Remove controller listener
     _controller.removeListener(_onControllerChanged);
-
-    // Only dispose controller if we created it
     if (widget.controller == null) {
       _controller.dispose();
     }
-
-    // Only dispose focus node if we created it
+    _focusNode.removeListener(_onFocusChange);
     if (widget.focusNode == null) {
-      _focusNode.removeListener(_onFocusChange);
       _focusNode.dispose();
     }
-
     super.dispose();
   }
 
@@ -388,44 +389,22 @@ class _SltTextFieldState extends State<SltTextField> {
     final Color activeIconColor = widget.iconColor ?? colorScheme.primary;
     final Color errorStateIconColor = widget.errorColor ?? colorScheme.error;
 
+    final bool hasError =
+        widget.errorText != null && widget.errorText!.isNotEmpty;
+
     final Color currentPrefixIconColor =
         widget.prefixIconColor ??
-        (widget.errorText != null
+        (hasError
             ? errorStateIconColor
             : (_hasFocus ? activeIconColor : defaultIconColor));
 
-    final Color currentSuffixIconColor =
-        widget.suffixIconColor ??
-        (widget.errorText != null
-            ? errorStateIconColor
-            : (_hasFocus ? activeIconColor : defaultIconColor));
-
-    Widget? finalSuffixIconWidget;
-
-    if (widget.suffixIcon != null) {
-      finalSuffixIconWidget = InkWell(
-        onTap: widget.onSuffixIconTap,
-        borderRadius: BorderRadius.circular(AppDimens.radiusXXL),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimens.paddingS / 2),
-          child: Icon(
-            widget.suffixIcon,
-            color:
-                widget.suffixIconColor ??
-                (widget.errorText != null
-                    ? errorStateIconColor
-                    : _hasFocus
-                    ? activeIconColor
-                    : defaultIconColor),
-            size: effectiveIconSize,
-          ),
-        ),
-      );
-    }
+    // Suffix icon logic
+    Widget? finalSuffixWidget;
 
     if (widget.obscureText) {
-      finalSuffixIconWidget = InkWell(
+      finalSuffixWidget = InkWell(
         onTap: () {
+          if (!mounted) return;
           setState(() {
             _passwordVisible = !_passwordVisible;
           });
@@ -439,19 +418,32 @@ class _SltTextFieldState extends State<SltTextField> {
                 : Icons.visibility_outlined,
             color:
                 widget.suffixIconColor ??
-                (widget.errorText != null
+                (hasError
                     ? errorStateIconColor
-                    : _hasFocus
-                    ? activeIconColor
-                    : defaultIconColor),
+                    : (_hasFocus ? activeIconColor : defaultIconColor)),
             size: effectiveIconSize,
           ),
         ),
       );
-    }
-
-    if (widget.suffix != null) {
-      finalSuffixIconWidget = widget.suffix;
+    } else if (widget.suffixIcon != null) {
+      finalSuffixWidget = InkWell(
+        onTap: widget.onSuffixIconTap, // Ensure onSuffixIconTap is used
+        borderRadius: BorderRadius.circular(AppDimens.radiusXXL),
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimens.paddingS / 2),
+          child: Icon(
+            widget.suffixIcon,
+            color:
+                widget.suffixIconColor ??
+                (hasError
+                    ? errorStateIconColor
+                    : (_hasFocus ? activeIconColor : defaultIconColor)),
+            size: effectiveIconSize,
+          ),
+        ),
+      );
+    } else if (widget.suffix != null) {
+      finalSuffixWidget = widget.suffix;
     }
 
     return Container(
@@ -466,28 +458,15 @@ class _SltTextFieldState extends State<SltTextField> {
         readOnly: widget.readOnly,
         enabled: widget.enabled,
         obscureText: widget.obscureText && !_passwordVisible,
+        // Use combined state
         maxLength: widget.maxLength,
         maxLines: widget.obscureText ? 1 : widget.maxLines,
+        // Password fields are single line
         minLines: widget.minLines,
         autofocus: widget.autofocus,
-        onChanged: (value) {
-          // Lưu lại vị trí con trỏ sau khi text thay đổi
-          _previousSelection = _controller.selection;
-
-          // Gọi callback onChanged của widget nếu có
-          if (widget.onChanged != null) {
-            widget.onChanged!(value);
-          }
-        },
-        onTap: () {
-          // Lưu vị trí con trỏ khi người dùng tap
-          _previousSelection = _controller.selection;
-
-          // Gọi callback onTap của widget nếu có
-          if (widget.onTap != null) {
-            widget.onTap!();
-          }
-        },
+        onChanged: widget.onChanged,
+        // Direct pass-through, internal logic handled by listener
+        onTap: widget.onTap,
         inputFormatters: widget.inputFormatters,
         onEditingComplete: widget.onEditingComplete,
         onFieldSubmitted: widget.onSubmitted,
@@ -517,7 +496,7 @@ class _SltTextFieldState extends State<SltTextField> {
                   ),
                 )
               : widget.prefix,
-          suffixIcon: finalSuffixIconWidget,
+          suffixIcon: finalSuffixWidget,
           counterText: widget.showCounter ? null : '',
           labelStyle: currentLabelStyle,
           hintStyle:
@@ -527,20 +506,22 @@ class _SltTextFieldState extends State<SltTextField> {
                   ?.copyWith(
                     color:
                         widget.hintColor ??
-                        colorScheme.onSurfaceVariant.withValues(
-                          alpha: AppDimens.opacityHintText,
-                        ),
+                        colorScheme.onSurfaceVariant.withOpacity(
+                          AppDimens.opacityHintText,
+                        ), // Use opacity from Dimens
                   ),
           errorStyle: TextStyle(
             color: widget.errorColor ?? colorScheme.error,
             fontSize: widget.size == SltTextFieldSize.small
-                ? AppDimens.fontMicro
-                : null,
+                ? AppDimens.fontS
+                : AppDimens.fontBodyS, // Use AppDimens for font size
           ),
           helperStyle:
               (widget.size == SltTextFieldSize.small
-                      ? theme.textTheme.bodySmall
-                      : theme.textTheme.bodyMedium)
+                      ? theme
+                            .textTheme
+                            .labelSmall // Usually helper text is smaller
+                      : theme.textTheme.bodySmall)
                   ?.copyWith(color: colorScheme.onSurfaceVariant),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -577,9 +558,9 @@ class _SltTextFieldState extends State<SltTextField> {
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
             borderSide: BorderSide(
-              color: (widget.borderColor ?? colorScheme.outline).withValues(
-                alpha: AppDimens.opacityDisabledOutline,
-              ),
+              color: (widget.borderColor ?? colorScheme.outline).withOpacity(
+                AppDimens.opacityDisabledOutline,
+              ), // Use opacity from Dimens
             ),
           ),
         ),

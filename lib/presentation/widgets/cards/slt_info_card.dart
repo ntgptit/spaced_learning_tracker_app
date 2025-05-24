@@ -51,7 +51,7 @@ class SltInfoCard extends ConsumerWidget {
       inkWellBorderRadius = effectiveBorderRadiusGeometry as BorderRadius?;
     }
 
-    Widget cardInnerContent = Column(
+    final Widget cardInnerContent = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -95,7 +95,7 @@ class SltInfoCard extends ConsumerWidget {
         if (content != null)
           Padding(
             padding: const EdgeInsets.only(top: AppDimens.paddingM),
-            child: content!,
+            child: content,
           ),
       ],
     );

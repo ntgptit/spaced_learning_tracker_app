@@ -99,7 +99,7 @@ class SltNotificationCard extends ConsumerWidget {
       color: colorScheme.onSurfaceVariant.withOpacity(0.6),
     );
 
-    Widget cardContent = Padding(
+    final Widget cardContent = Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingM,
         vertical: AppDimens.paddingS,

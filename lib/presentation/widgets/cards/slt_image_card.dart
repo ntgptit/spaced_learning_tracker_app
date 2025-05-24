@@ -85,7 +85,7 @@ class SltImageCard extends ConsumerWidget {
       imageWidget = AspectRatio(aspectRatio: aspectRatio!, child: imageWidget);
     }
 
-    Widget cardBody = Stack(
+    final Widget cardBody = Stack(
       children: [
         Positioned.fill(child: imageWidget),
         if (overlayColor != null)
