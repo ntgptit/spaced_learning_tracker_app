@@ -89,11 +89,11 @@ class SltNotificationCard extends ConsumerWidget {
     );
     final messageStyle = AppTypography.bodySmall.copyWith(
       color: isRead
-          ? colorScheme.onSurfaceVariant.withOpacity(0.7)
+          ? colorScheme.onSurfaceVariant.withValues(alpha: 0.7)
           : colorScheme.onSurfaceVariant,
     );
     final timeStyle = AppTypography.labelSmall.copyWith(
-      color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
     );
 
     final Widget cardContent = Padding(
@@ -184,8 +184,8 @@ class SltNotificationCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppDimens.radiusM),
           side: BorderSide(
             color: isRead
-                ? colorScheme.outlineVariant.withOpacity(0.3)
-                : typeColor.withOpacity(0.5),
+                ? colorScheme.outlineVariant.withValues(alpha: 0.3)
+                : typeColor.withValues(alpha: 0.5),
             width: 0.5,
           ),
         ),
@@ -207,8 +207,8 @@ class SltNotificationCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
         side: BorderSide(
           color: isRead
-              ? colorScheme.outlineVariant.withOpacity(0.3)
-              : typeColor.withOpacity(0.5),
+              ? colorScheme.outlineVariant.withValues(alpha: 0.3)
+              : typeColor.withValues(alpha: 0.5),
           width: 0.5,
         ),
       ),

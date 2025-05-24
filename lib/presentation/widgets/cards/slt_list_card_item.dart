@@ -44,7 +44,7 @@ class SltListCardItem extends ConsumerWidget {
         backgroundColor ?? colorScheme.surfaceContainerLow;
     final effectiveSelectedBackgroundColor =
         selectedBackgroundColor ??
-        colorScheme.primaryContainer.withOpacity(0.2);
+        colorScheme.primaryContainer.withValues(alpha: 0.2);
     final effectiveElevation =
         elevation ??
         (isSelected ? AppDimens.elevationXS : AppDimens.elevationNone);
@@ -60,14 +60,16 @@ class SltListCardItem extends ConsumerWidget {
     final titleStyle = AppTypography.titleMedium.copyWith(
       color: enabled
           ? (isSelected ? colorScheme.primary : colorScheme.onSurface)
-          : colorScheme.onSurface.withOpacity(AppDimens.opacityDisabledText),
+          : colorScheme.onSurface.withValues(
+              alpha: AppDimens.opacityDisabledText,
+            ),
       fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
     );
     final subtitleStyle = AppTypography.bodyMedium.copyWith(
       color: enabled
           ? colorScheme.onSurfaceVariant
-          : colorScheme.onSurfaceVariant.withOpacity(
-              AppDimens.opacityDisabledText,
+          : colorScheme.onSurfaceVariant.withValues(
+              alpha: AppDimens.opacityDisabledText,
             ),
     );
 
@@ -80,8 +82,8 @@ class SltListCardItem extends ConsumerWidget {
         borderRadius: effectiveBorderRadius,
         side: BorderSide(
           color: isSelected
-              ? colorScheme.primary.withOpacity(0.5)
-              : colorScheme.outlineVariant.withOpacity(0.3),
+              ? colorScheme.primary.withValues(alpha: 0.5)
+              : colorScheme.outlineVariant.withValues(alpha: 0.3),
           width: isSelected ? 1.0 : 0.5,
         ),
       ),
@@ -103,8 +105,8 @@ class SltListCardItem extends ConsumerWidget {
                           ? (isSelected
                                 ? colorScheme.primary
                                 : colorScheme.onSurfaceVariant)
-                          : colorScheme.onSurfaceVariant.withOpacity(
-                              AppDimens.opacityDisabledText,
+                          : colorScheme.onSurfaceVariant.withValues(
+                              alpha: AppDimens.opacityDisabledText,
                             ),
                       size: AppDimens.iconL, // Consistent icon size
                     ),
@@ -144,8 +146,8 @@ class SltListCardItem extends ConsumerWidget {
                     data: IconThemeData(
                       color: enabled
                           ? colorScheme.onSurfaceVariant
-                          : colorScheme.onSurfaceVariant.withOpacity(
-                              AppDimens.opacityDisabledText,
+                          : colorScheme.onSurfaceVariant.withValues(
+                              alpha: AppDimens.opacityDisabledText,
                             ),
                       size: AppDimens.iconM, // Consistent icon size
                     ),

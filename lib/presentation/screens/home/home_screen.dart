@@ -168,8 +168,8 @@ class _HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final username = user?.displayName ?? user?.firstName ?? 'Learner';
 
     return SltAppBar(
-      leading: Padding(
-        padding: const EdgeInsets.all(AppDimens.paddingS),
+      leading: const Padding(
+        padding: EdgeInsets.all(AppDimens.paddingS),
         child: SltAvatarImage(
           imageUrl: null,
           radius: AppDimens.avatarSizeS / 2,
@@ -231,7 +231,7 @@ class _HomeSkeletonLoader extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(
           context,
-        ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
       ),
       margin: const EdgeInsets.only(bottom: AppDimens.spaceM),

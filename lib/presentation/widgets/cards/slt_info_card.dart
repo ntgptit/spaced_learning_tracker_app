@@ -120,7 +120,7 @@ class SltInfoCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: effectiveBorderRadiusGeometry,
         side: BorderSide(
-          color: colorScheme.outlineVariant.withOpacity(0.5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           width: 0.5,
         ),
       ),

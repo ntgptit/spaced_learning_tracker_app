@@ -143,7 +143,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _buildHeroSection(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             if (authError != null) ...[
                               SltErrorStateWidget(
@@ -152,7 +152,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                                 compact: true,
                                 accentColor: colorScheme.error,
                               ),
-                              SizedBox(height: AppDimens.spaceL),
+                              const SizedBox(height: AppDimens.spaceL),
                             ],
 
                             _buildEmailForm(
@@ -161,13 +161,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                               colorScheme,
                               forgotPasswordForm,
                             ),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             _buildActionButtons(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             _buildFooterLinks(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             _buildHelpSection(context, theme, colorScheme),
                           ],
@@ -210,13 +210,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
               ),
             ],
           ),
-          child: Icon(
+          child: const Icon(
             Icons.lock_reset_rounded,
             size: AppDimens.iconXL,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: AppDimens.spaceXL),
+        const SizedBox(height: AppDimens.spaceXL),
 
         Text(
           'Forgot Password?',
@@ -227,7 +227,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         Text(
           'Don\'t worry! It happens to the best of us. Enter your email address and we\'ll send you a link to reset your password.',
@@ -248,7 +248,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
     ForgotPasswordFormModel forgotPasswordForm,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -270,7 +270,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.paddingS),
+                padding: const EdgeInsets.all(AppDimens.paddingS),
                 decoration: BoxDecoration(
                   color: colorScheme.tertiary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -281,7 +281,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                   size: AppDimens.iconM,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +293,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                         color: colorScheme.tertiary,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       'Enter the email associated with your account',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -305,7 +305,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           SltTextField(
             label: 'Email Address',
@@ -369,7 +369,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
     ColorScheme colorScheme,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -388,7 +388,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(AppDimens.paddingM),
+            padding: const EdgeInsets.all(AppDimens.paddingM),
             decoration: BoxDecoration(
               color: colorScheme.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
@@ -399,7 +399,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
               size: AppDimens.iconL,
             ),
           ),
-          SizedBox(height: AppDimens.spaceM),
+          const SizedBox(height: AppDimens.spaceM),
 
           Text(
             'Need Help?',
@@ -409,7 +409,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppDimens.spaceS),
+          const SizedBox(height: AppDimens.spaceS),
 
           Text(
             'If you don\'t receive the email within a few minutes, please check your spam folder or contact our support team for assistance.',
@@ -419,7 +419,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           Row(
             children: [
@@ -433,7 +433,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                   'Look in your spam or junk folder',
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: _buildHelpCard(
                   context,
@@ -460,7 +460,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
     String subtitle,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingM),
+      padding: const EdgeInsets.all(AppDimens.paddingM),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -472,7 +472,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
       child: Column(
         children: [
           Icon(icon, color: colorScheme.primary, size: AppDimens.iconM),
-          SizedBox(height: AppDimens.spaceS),
+          const SizedBox(height: AppDimens.spaceS),
           Text(
             title,
             style: theme.textTheme.titleSmall?.copyWith(
@@ -481,7 +481,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: AppDimens.spaceXS),
+          const SizedBox(height: AppDimens.spaceXS),
           Text(
             subtitle,
             style: theme.textTheme.bodySmall?.copyWith(

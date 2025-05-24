@@ -45,7 +45,7 @@ class SltNetworkImage extends ConsumerWidget {
     final Widget defaultPlaceholder = Container(
       width: width,
       height: height,
-      color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       child: const Center(
         child: Icon(
           Icons.image_search_rounded,
@@ -58,7 +58,7 @@ class SltNetworkImage extends ConsumerWidget {
     final Widget defaultErrorWidget = Container(
       width: width,
       height: height,
-      color: colorScheme.errorContainer.withOpacity(0.3),
+      color: colorScheme.errorContainer.withValues(alpha: 0.3),
       child: Center(
         child: Icon(
           Icons.broken_image_outlined,

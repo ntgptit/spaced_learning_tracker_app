@@ -67,7 +67,7 @@ class SltExpandableCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: effectiveBorderRadius,
         side: BorderSide(
-          color: colorScheme.outlineVariant.withOpacity(0.5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           width: 0.5,
         ),
       ),

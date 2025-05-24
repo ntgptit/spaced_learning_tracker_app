@@ -107,8 +107,8 @@ class SltImageCard extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black.withOpacity(0.0),
-                    Colors.black.withOpacity(0.6),
+                    Colors.black.withValues(alpha: 0.0),
+                    Colors.black.withValues(alpha: 0.6),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -138,7 +138,7 @@ class SltImageCard extends ConsumerWidget {
                     Text(
                       subtitle!,
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

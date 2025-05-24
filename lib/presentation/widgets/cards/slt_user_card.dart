@@ -100,7 +100,7 @@ class SltUserCard extends ConsumerWidget {
     final cardShape = RoundedRectangleBorder(
       borderRadius: effectiveBorderRadiusGeometry,
       side: BorderSide(
-        color: colorScheme.outlineVariant.withOpacity(0.3),
+        color: colorScheme.outlineVariant.withValues(alpha: 0.3),
         width: 0.5,
       ),
     );

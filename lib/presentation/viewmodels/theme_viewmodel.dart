@@ -28,8 +28,8 @@ class ThemeState extends _$ThemeState {
     try {
       await ref.read(storageServiceProvider).saveDarkMode(newIsDarkMode);
       state = newIsDarkMode ? ThemeMode.dark : ThemeMode.light;
-    } catch (e) {
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> setDarkMode(bool isDarkMode) async {
@@ -38,8 +38,8 @@ class ThemeState extends _$ThemeState {
     try {
       await ref.read(storageServiceProvider).saveDarkMode(isDarkMode);
       state = isDarkMode ? ThemeMode.dark : ThemeMode.light;
-    } catch (e) {
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 }
 

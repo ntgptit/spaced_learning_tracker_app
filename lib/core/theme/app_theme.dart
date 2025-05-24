@@ -175,10 +175,12 @@ class AppTheme {
       minLeadingWidth: AppDimens.iconM,
       tileColor: isLight ? AppColors.surface : AppColors.surfaceDark,
       selectedTileColor: isLight
-          ? colorScheme.primaryContainer.withOpacity(
-              AppDimens.opacitySemi,
+          ? colorScheme.primaryContainer.withValues(
+              alpha: AppDimens.opacitySemi,
             ) // Sử dụng opacitySemi từ AppDimens
-          : colorScheme.primaryContainer.withOpacity(AppDimens.opacitySemi),
+          : colorScheme.primaryContainer.withValues(
+              alpha: AppDimens.opacitySemi,
+            ),
       iconColor: isLight ? colorScheme.primary : colorScheme.primary,
       textColor: isLight ? colorScheme.onSurface : colorScheme.onSurface,
       selectedColor: isLight ? colorScheme.primary : colorScheme.primary,

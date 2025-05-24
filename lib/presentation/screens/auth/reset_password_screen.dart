@@ -143,7 +143,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _buildHeroSection(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             if (authError != null) ...[
                               SltErrorStateWidget(
@@ -152,7 +152,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                                 compact: true,
                                 accentColor: colorScheme.error,
                               ),
-                              SizedBox(height: AppDimens.spaceL),
+                              const SizedBox(height: AppDimens.spaceL),
                             ],
 
                             _buildPasswordForm(
@@ -161,7 +161,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                               colorScheme,
                               resetPasswordForm,
                             ),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             _buildPasswordRequirements(
                               context,
@@ -169,10 +169,10 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                               colorScheme,
                               resetPasswordForm,
                             ),
-                            SizedBox(height: AppDimens.spaceXXL),
+                            const SizedBox(height: AppDimens.spaceXXL),
 
                             _buildActionButtons(context, theme, colorScheme),
-                            SizedBox(height: AppDimens.spaceL),
+                            const SizedBox(height: AppDimens.spaceL),
 
                             _buildFooterLinks(context, theme, colorScheme),
                           ],
@@ -215,13 +215,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
               ),
             ],
           ),
-          child: Icon(
+          child: const Icon(
             Icons.lock_person_rounded,
             size: AppDimens.iconXL,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: AppDimens.spaceXL),
+        const SizedBox(height: AppDimens.spaceXL),
 
         Text(
           'Create New Password',
@@ -232,10 +232,10 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: AppDimens.spaceM),
+        const SizedBox(height: AppDimens.spaceM),
 
         Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: AppDimens.paddingL,
             vertical: AppDimens.paddingM,
           ),
@@ -267,7 +267,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
     ResetPasswordFormModel resetPasswordForm,
   ) {
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -289,7 +289,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.paddingS),
+                padding: const EdgeInsets.all(AppDimens.paddingS),
                 decoration: BoxDecoration(
                   color: colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -300,7 +300,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                   size: AppDimens.iconM,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +312,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                         color: colorScheme.primary,
                       ),
                     ),
-                    SizedBox(height: AppDimens.spaceXS),
+                    const SizedBox(height: AppDimens.spaceXS),
                     Text(
                       'Create a strong and secure password',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -324,7 +324,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           SltPasswordField(
             label: 'New Password',
@@ -336,7 +336,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                 .updatePassword(value),
             textInputAction: TextInputAction.next,
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           SltPasswordField(
             label: 'Confirm New Password',
@@ -363,7 +363,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
     final password = resetPasswordForm.password;
 
     return Container(
-      padding: EdgeInsets.all(AppDimens.paddingL),
+      padding: const EdgeInsets.all(AppDimens.paddingL),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -385,7 +385,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppDimens.paddingS),
+                padding: const EdgeInsets.all(AppDimens.paddingS),
                 decoration: BoxDecoration(
                   color: colorScheme.tertiary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppDimens.radiusS),
@@ -396,7 +396,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                   size: AppDimens.iconM,
                 ),
               ),
-              SizedBox(width: AppDimens.spaceM),
+              const SizedBox(width: AppDimens.spaceM),
               Text(
                 'Password Requirements',
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -406,7 +406,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
               ),
             ],
           ),
-          SizedBox(height: AppDimens.spaceL),
+          const SizedBox(height: AppDimens.spaceL),
 
           Wrap(
             spacing: AppDimens.spaceM,
@@ -455,7 +455,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
     bool isMet,
   ) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppDimens.paddingM,
         vertical: AppDimens.paddingS,
       ),
@@ -481,7 +481,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
             size: AppDimens.iconS,
             color: isMet ? colorScheme.primary : colorScheme.onSurfaceVariant,
           ),
-          SizedBox(width: AppDimens.spaceS),
+          const SizedBox(width: AppDimens.spaceS),
           Text(
             requirement,
             style: theme.textTheme.bodySmall?.copyWith(

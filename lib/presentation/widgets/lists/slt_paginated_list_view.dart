@@ -119,7 +119,6 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
 
     try {
       await widget.onLoadMore!();
-    } catch (e) {
     } finally {
       if (mounted) {
         setState(() {

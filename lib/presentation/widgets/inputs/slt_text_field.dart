@@ -225,8 +225,8 @@ class _SltTextFieldState extends State<SltTextField> {
           theme.textTheme.bodyMedium ??
           theme.textTheme.bodyLarge!.copyWith(fontSize: 14);
     }
-    final disabledTextColor = colorScheme.onSurface.withOpacity(
-      0.38,
+    final disabledTextColor = colorScheme.onSurface.withValues(
+      alpha: 0.38,
     ); // Standard disabled opacity
 
     return baseStyle.copyWith(
@@ -285,8 +285,7 @@ class _SltTextFieldState extends State<SltTextField> {
           selection: TextSelection.collapsed(offset: correctedText.length),
         );
       } else if (_previousSelection!.isValid &&
-          _previousSelection!.baseOffset <= currentText.length) {
-      }
+          _previousSelection!.baseOffset <= currentText.length) {}
     }
 
     _previousText = _controller.text;
@@ -482,8 +481,8 @@ class _SltTextFieldState extends State<SltTextField> {
                   ?.copyWith(
                     color:
                         widget.hintColor ??
-                        colorScheme.onSurfaceVariant.withOpacity(
-                          AppDimens.opacityHintText,
+                        colorScheme.onSurfaceVariant.withValues(
+                          alpha: AppDimens.opacityHintText,
                         ), // Use opacity from Dimens
                   ),
           errorStyle: TextStyle(
@@ -534,8 +533,8 @@ class _SltTextFieldState extends State<SltTextField> {
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimens.radiusM),
             borderSide: BorderSide(
-              color: (widget.borderColor ?? colorScheme.outline).withOpacity(
-                AppDimens.opacityDisabledOutline,
+              color: (widget.borderColor ?? colorScheme.outline).withValues(
+                alpha: AppDimens.opacityDisabledOutline,
               ), // Use opacity from Dimens
             ),
           ),

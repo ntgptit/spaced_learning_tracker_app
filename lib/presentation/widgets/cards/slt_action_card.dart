@@ -55,7 +55,7 @@ class SltActionCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: effectiveBorderRadius,
         side: BorderSide(
-          color: colorScheme.outlineVariant.withOpacity(0.5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           width: 0.5,
         ),
       ),
@@ -103,7 +103,7 @@ class SltActionCard extends ConsumerWidget {
             Divider(
               height: 1,
               thickness: 0.5,
-              color: colorScheme.outlineVariant.withOpacity(0.5),
+              color: colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
           Padding(
             padding: effectiveActionsPadding,
