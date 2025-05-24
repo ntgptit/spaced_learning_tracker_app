@@ -1,4 +1,3 @@
-// lib/presentation/screens/profile/profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,7 +31,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Load user data on screen initialization
     Future.microtask(() {
       ref.read(userStateProvider.notifier).loadCurrentUser();
     });
@@ -40,7 +38,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   void dispose() {
-    // Cleanup text controller
     _displayNameController.dispose();
     super.dispose();
   }
@@ -53,7 +50,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userError = ref.watch(userErrorProvider);
     final isDark = ref.watch(isDarkModeProvider);
 
-    // Set text field value when user data is loaded
     userState.whenData((user) {
       if (user != null && !_isEditing) {
         _displayNameController.text = user.displayName ?? user.username;
@@ -73,11 +69,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Profile avatar
                 _buildProfileAvatar(user, theme, colorScheme),
                 const SizedBox(height: AppDimens.spaceM),
 
-                // Display name (editable)
                 _isEditing
                     ? SltTextField(
                         controller: _displayNameController,
@@ -91,7 +85,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                 const SizedBox(height: AppDimens.spaceXS),
 
-                // Email
                 Text(
                   user.email,
                   style: theme.textTheme.bodyLarge?.copyWith(
@@ -100,10 +93,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 const SizedBox(height: AppDimens.spaceM),
 
-                // Edit/Save button
                 _buildEditButtons(user),
 
-                // Display error if exists
                 if (userError != null) ...[
                   const SizedBox(height: AppDimens.spaceM),
                   Text(
@@ -115,18 +106,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ],
 
-                // Divider
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: AppDimens.paddingL),
                   child: Divider(),
                 ),
 
-                // Settings section
                 _buildSettingsSection(context, isDark),
 
                 const SizedBox(height: AppDimens.spaceXL),
 
-                // Logout button
                 SltPrimaryButton(
                   text: 'Logout',
                   prefixIcon: Icons.logout,
@@ -151,7 +139,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Build profile avatar with user initials
   Widget _buildProfileAvatar(user, ThemeData theme, ColorScheme colorScheme) {
     return CircleAvatar(
       radius: 60,
@@ -165,7 +152,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Build edit/save buttons based on edit state
   Widget _buildEditButtons(user) {
     return _isEditing
         ? Row(
@@ -200,7 +186,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           );
   }
 
-  // Build "not logged in" state UI
   Widget _buildNotLoggedInState(BuildContext context) {
     return Center(
       child: Column(
@@ -220,7 +205,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Build settings section
   Widget _buildSettingsSection(BuildContext context, bool isDark) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -234,7 +218,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Dark mode toggle
         Card(
           child: Padding(
             padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -266,7 +249,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
 
-        // Notifications settings
         Card(
           child: Padding(
             padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -289,8 +271,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: () {
-                    // Navigate to notifications settings
-                    // context.push(AppRoutes.notificationSettings);
                   },
                 ),
               ],
@@ -298,7 +278,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
 
-        // Account settings
         Card(
           child: Padding(
             padding: const EdgeInsets.all(AppDimens.paddingM),
@@ -321,8 +300,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: () {
-                    // Navigate to account settings
-                    // context.push(AppRoutes.accountSettings);
                   },
                 ),
               ],
@@ -333,7 +310,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Save profile changes
   Future<void> _saveProfile() async {
     if (_displayNameController.text.trim().isEmpty) {
       return;
@@ -350,7 +326,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  // Handle logout with confirmation dialog
   Future<void> _handleLogout() async {
     final shouldLogout = await showDialog<bool>(
       context: context,

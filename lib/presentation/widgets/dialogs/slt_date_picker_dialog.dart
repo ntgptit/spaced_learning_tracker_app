@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_date_picker_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,7 +16,6 @@ class SelectedDate extends _$SelectedDate {
   }
 }
 
-/// A date picker dialog with Material 3 design and customizable options.
 class SltDatePickerDialog extends ConsumerWidget {
   final DateTime initialDate;
   final DateTime firstDate;
@@ -49,7 +47,6 @@ class SltDatePickerDialog extends ConsumerWidget {
   });
 
   factory SltDatePickerDialog._create({
-    // Private factory
     required DateTime initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
@@ -79,7 +76,6 @@ class SltDatePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking a generic date
   factory SltDatePickerDialog.pickDate({
     required DateTime initialDate,
     required DateTime firstDate,
@@ -94,7 +90,6 @@ class SltDatePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking a birth date (past dates)
   factory SltDatePickerDialog.pickBirthDate({
     DateTime? initialDate,
     String title = 'Select Date of Birth',
@@ -109,7 +104,6 @@ class SltDatePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking a future date
   factory SltDatePickerDialog.pickFutureDate({
     DateTime? initialDate,
     String title = 'Select Future Date',
@@ -129,11 +123,6 @@ class SltDatePickerDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    // This build method is for wrapping Flutter's DatePickerDialog
-    // The direct styling of buttons inside DatePickerDialog is limited.
-    // We rely on the global theme passed to showDatePicker's builder.
-    // For direct use of SltDatePickerDialog as a widget (less common for pickers),
-    // this internal DatePickerDialog will inherit theme.
     return DatePickerDialog(
       initialDate: initialDate,
       firstDate: firstDate,
@@ -146,7 +135,6 @@ class SltDatePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Show the date picker dialog
   static Future<DateTime?> show(
     BuildContext context,
     WidgetRef ref, {
@@ -184,7 +172,6 @@ class SltDatePickerDialog extends ConsumerWidget {
               primary: colorScheme.primary,
               onPrimary: colorScheme.onPrimary,
               surface: colorScheme.surfaceContainerHigh,
-              // M3 dialog surface
               onSurface: colorScheme.onSurface,
             ),
             datePickerTheme: DatePickerThemeData(
@@ -197,7 +184,6 @@ class SltDatePickerDialog extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(AppDimens.radiusL),
               ),
               elevation: AppDimens.elevationM,
-              // Button styles for the native dialog
               cancelButtonStyle: TextButton.styleFrom(
                 foregroundColor: colorScheme.primary,
                 textStyle: theme.textTheme.labelLarge,
@@ -223,7 +209,6 @@ class SltDatePickerDialog extends ConsumerWidget {
               ),
             ),
             textButtonTheme: TextButtonThemeData(
-              // Fallback for dialog actions if not picked up by DatePickerTheme
               style: TextButton.styleFrom(
                 foregroundColor: colorScheme.primary,
                 textStyle: theme.textTheme.labelLarge,
@@ -237,7 +222,6 @@ class SltDatePickerDialog extends ConsumerWidget {
               ),
             ),
             dialogTheme: DialogThemeData(
-              // General dialog theming
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimens.radiusL),
               ),

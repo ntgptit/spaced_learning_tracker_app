@@ -1,14 +1,9 @@
-// lib/presentation/widgets/cards/slt_action_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/core/theme/app_typography.dart';
 import 'package:spaced_learning_app/presentation/widgets/buttons/slt_dialog_button_bar.dart'; // To arrange buttons
 
-/// A card that includes a main content area and a row of action buttons.
-///
-/// This widget is ideal for scenarios requiring user interaction, such as confirmations,
-/// calls to action, or navigation.
 class SltActionCard extends ConsumerWidget {
   final String? title;
   final String? subtitle;
@@ -40,7 +35,6 @@ class SltActionCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Determine effective styles
     final effectiveBackgroundColor =
         backgroundColor ?? colorScheme.surfaceContainerLow;
     final effectiveElevation = elevation ?? AppDimens.elevationS;
@@ -105,7 +99,6 @@ class SltActionCard extends ConsumerWidget {
               ],
             ),
           ),
-          // Separator before actions if there's content above
           if (title != null || subtitle != null || content != null)
             Divider(
               height: 1,
@@ -115,7 +108,6 @@ class SltActionCard extends ConsumerWidget {
           Padding(
             padding: effectiveActionsPadding,
             child: SltDialogButtonBar(
-              // Using SltDialogButtonBar to arrange actions
               buttons: actions,
               alignment: actionsAlignment,
               spacing: AppDimens.paddingS,

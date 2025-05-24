@@ -1,1 +1,0 @@
-// Typing animation placeholder 

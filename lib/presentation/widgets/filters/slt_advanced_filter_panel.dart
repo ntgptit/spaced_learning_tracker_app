@@ -1,1 +1,0 @@
-// Advanced filter panel placeholder 

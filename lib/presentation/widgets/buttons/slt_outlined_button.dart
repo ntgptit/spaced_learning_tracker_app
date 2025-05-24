@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_outlined_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/presentation/widgets/buttons/slt_button_base.dart';

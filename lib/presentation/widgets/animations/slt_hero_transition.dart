@@ -1,1 +1,0 @@
-// Hero transition placeholder 

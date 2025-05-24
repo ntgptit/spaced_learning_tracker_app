@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_score_input_dialog_content.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,7 +10,6 @@ import '../buttons/slt_text_button.dart';
 
 part 'slt_score_input_dialog_content.g.dart';
 
-/// Provider for managing score value in the dialog
 @riverpod
 class ScoreValue extends _$ScoreValue {
   @override
@@ -22,7 +20,6 @@ class ScoreValue extends _$ScoreValue {
   }
 }
 
-/// Content widget for the score input dialog.
 class SltScoreInputDialogContent extends ConsumerWidget {
   final String dialogId;
   final double initialValue;
@@ -50,7 +47,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
   });
 
   factory SltScoreInputDialogContent._create({
-    // Private factory
     required String dialogId,
     double initialValue = 70.0,
     double minValue = 0.0,
@@ -76,7 +72,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
     );
   }
 
-  /// Factory for a standard score input dialog
   factory SltScoreInputDialogContent.standard({
     required String dialogId,
     double initialValue = 70.0,
@@ -93,7 +88,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
     );
   }
 
-  /// Factory for a feedback score dialog
   factory SltScoreInputDialogContent.feedback({
     required String dialogId,
     double initialValue = 50.0,
@@ -110,7 +104,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
     );
   }
 
-  /// Factory for a quiz/test score input
   factory SltScoreInputDialogContent.assessment({
     required String dialogId,
     double initialValue = 0.0,
@@ -341,7 +334,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
           backgroundColor: Theme.of(dialogContext).colorScheme.surface,
           surfaceTintColor: Theme.of(dialogContext).colorScheme.surfaceTint,
           content: SltScoreInputDialogContent._create(
-            // Using private factory
             dialogId: dialogId,
             initialValue: initialValue,
             minValue: minValue,
@@ -360,8 +352,6 @@ class SltScoreInputDialogContent extends ConsumerWidget {
   }
 }
 
-/// Extension method for ThemeData to get score color
-/// This extension should exist or be created in 'color_extensions.dart'
 extension ScoreColorExtension on ThemeData {
   Color getScoreColor(double score) {
     final colorScheme = this.colorScheme;

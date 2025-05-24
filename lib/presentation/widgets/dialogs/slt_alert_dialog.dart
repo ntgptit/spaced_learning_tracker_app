@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_alert_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,7 +15,6 @@ enum AlertType { info, success, warning, error }
 class AlertDialogState extends _$AlertDialogState {
   @override
   Map<String, bool> build() {
-    // Map of dialog IDs to visibility states
     return {};
   }
 
@@ -33,7 +31,6 @@ class AlertDialogState extends _$AlertDialogState {
   }
 }
 
-/// An alert dialog with Material 3 design principles and customizable options.
 class SltAlertDialog extends ConsumerWidget {
   final String title;
   final String message;
@@ -68,7 +65,6 @@ class SltAlertDialog extends ConsumerWidget {
     this.dialogId = 'default',
   });
 
-  // Factory constructor for a generic info alert
   factory SltAlertDialog.info({
     required String title,
     required String message,
@@ -89,7 +85,6 @@ class SltAlertDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for a success alert
   factory SltAlertDialog.success({
     required String title,
     required String message,
@@ -112,7 +107,6 @@ class SltAlertDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for a warning alert
   factory SltAlertDialog.warning({
     required String title,
     required String message,
@@ -137,7 +131,6 @@ class SltAlertDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for an error alert
   factory SltAlertDialog.error({
     required String title,
     required String message,
@@ -304,7 +297,6 @@ class SltAlertDialog extends ConsumerWidget {
     );
   }
 
-  /// Show the alert dialog
   static Future<void> show(
     BuildContext context,
     WidgetRef ref, {
@@ -323,10 +315,8 @@ class SltAlertDialog extends ConsumerWidget {
     VoidCallback? onCancel,
     String dialogId = 'default_alert',
   }) {
-    // Register dialog as visible
     ref.read(alertDialogStateProvider.notifier).showDialog(dialogId);
 
-    // Determine default button text if not provided for custom actions
     String effectiveConfirmButtonText = confirmButtonText ?? 'OK';
     if (customActions == null &&
         onConfirm == null &&
@@ -355,7 +345,6 @@ class SltAlertDialog extends ConsumerWidget {
         );
       },
     ).then((_) {
-      // When dialog is closed, update state
       ref.read(alertDialogStateProvider.notifier).hideDialog(dialogId);
     });
   }

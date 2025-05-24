@@ -1,4 +1,3 @@
-// lib/presentation/screens/due/due_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,16 +29,13 @@ class _DueScreenState extends ConsumerState<DueScreen>
   void initState() {
     super.initState();
 
-    // Initialize tab controller
     _tabController = TabController(length: 3, vsync: this);
 
-    // Load due tasks when screen initializes
     Future.microtask(() {
       _loadDueTasks();
     });
   }
 
-  // Load due tasks for the current user
   Future<void> _loadDueTasks() async {
     final currentUser = ref.read(currentUserProvider);
     if (currentUser != null) {
@@ -90,20 +86,16 @@ class _DueScreenState extends ConsumerState<DueScreen>
               );
             }
 
-            // Filter progress items based on tab
             final todayItems = _filterTodayItems(progressList);
             final weekItems = _filterWeekItems(progressList);
 
             return TabBarView(
               controller: _tabController,
               children: [
-                // Today tab
                 _buildProgressList(todayItems, 'today'),
 
-                // This week tab
                 _buildProgressList(weekItems, 'this week'),
 
-                // All tab
                 _buildProgressList(progressList, 'in total'),
               ],
             );
@@ -120,7 +112,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     );
   }
 
-  // Build progress list for each tab
   Widget _buildProgressList(List<dynamic> items, String timeLabel) {
     if (items.isEmpty) {
       return SltEmptyStateWidget.noData(
@@ -138,7 +129,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
       itemBuilder: (context, index) {
         final progress = items[index];
 
-        // Get cycle info
         String cycleInfo = '';
         if (progress.cyclesStudied != null) {
           cycleInfo = _getCycleInfo(progress.cyclesStudied);
@@ -156,7 +146,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     );
   }
 
-  // Build status chip for due date
   Widget _buildDueStatusChip(BuildContext context, dynamic progress) {
     if (progress.nextStudyDate == null) {
       return const SizedBox.shrink();
@@ -196,7 +185,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     );
   }
 
-  // Get days away text for future dates
   String _getDaysAwayText(DateTime date, DateTime today) {
     final difference = date.difference(today).inDays;
 
@@ -212,7 +200,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     return weeks == 1 ? '1 week' : '$weeks weeks';
   }
 
-  // Filter methods for the tabs
   List<dynamic> _filterTodayItems(List<dynamic> items) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -253,7 +240,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     }).toList();
   }
 
-  // Get cycle info text based on cycle type
   String _getCycleInfo(CycleStudied cycleStudied) {
     switch (cycleStudied) {
       case CycleStudied.firstTime:
@@ -269,7 +255,6 @@ class _DueScreenState extends ConsumerState<DueScreen>
     }
   }
 
-  // Navigate to module details screen
   void _navigateToModuleDetails(String progressId) {
     context.push('${AppRoutes.moduleDetail}/$progressId');
   }

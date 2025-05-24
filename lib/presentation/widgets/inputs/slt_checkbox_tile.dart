@@ -88,7 +88,6 @@ class SltCheckboxTile extends StatelessWidget {
     );
   }
 
-  // Helper methods for size-dependent styling
   TextStyle? _getTitleStyle(ThemeData theme, ColorScheme colorScheme) {
     final color = enabled
         ? colorScheme.onSurface

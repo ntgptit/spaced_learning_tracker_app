@@ -10,7 +10,6 @@ class LearningRepositoryImpl implements LearningRepository {
 
   LearningRepositoryImpl(this._apiClient);
 
-  // Implement các phương thức từ LearningProgressRepository
 
   @override
   Future<List<LearningModule>> getAllModules() async {
@@ -33,8 +32,6 @@ class LearningRepositoryImpl implements LearningRepository {
     }
   }
 
-  // QUAN TRỌNG: Phương thức getModules() được giữ nguyên để đảm bảo
-  // tính tương thích với LearningProgressViewModel
   @override
   Future<List<LearningModule>> getModules() async {
     if (_cachedModules != null) {
@@ -99,7 +96,6 @@ class LearningRepositoryImpl implements LearningRepository {
     }
   }
 
-  // Implement các phương thức từ LearningDataService
 
   @override
   List<LearningModule> filterByBook(List<LearningModule> modules, String book) {

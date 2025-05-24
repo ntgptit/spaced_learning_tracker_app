@@ -52,15 +52,12 @@ class SltPasswordField extends StatefulWidget {
 class _SltPasswordFieldState extends State<SltPasswordField> {
   @override
   Widget build(BuildContext context) {
-    // Sửa lỗi - Không dùng dynamic mà xử lý đúng theo kiểu
     return SltTextField(
       label: widget.label,
       hint: widget.hint,
       controller: widget.controller,
       errorText: widget.errorText,
-      // Sử dụng đúng typesafe: prefixIcon dùng cho IconData
       prefixIcon: widget.prefixIconData,
-      // prefix dùng cho Widget
       prefix: widget.prefixIcon ?? widget.prefixWidget,
       obscureText: true,
       keyboardType: TextInputType.visiblePassword,

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/cards/slt_insight_card.dart
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
@@ -54,7 +53,6 @@ class SltInsightCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icon container
               Container(
                 width: 48,
                 height: 48,
@@ -70,7 +68,6 @@ class SltInsightCard extends StatelessWidget {
               ),
               const SizedBox(width: AppDimens.spaceM),
 
-              // Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +92,6 @@ class SltInsightCard extends StatelessWidget {
                 ),
               ),
 
-              // Arrow icon
               Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
             ],
           ),

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_input_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +25,6 @@ class DialogInputValue extends _$DialogInputValue {
   }
 }
 
-/// A dialog that allows the user to input text with various customization options.
 class SltInputDialog extends ConsumerStatefulWidget {
   final String dialogId;
   final String title;
@@ -115,7 +113,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for generic text input
   factory SltInputDialog.text({
     required String dialogId,
     required String title,
@@ -136,7 +133,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for number input
   factory SltInputDialog.number({
     required String dialogId,
     required String title,
@@ -170,7 +166,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for password input
   factory SltInputDialog.password({
     required String dialogId,
     required String title,
@@ -201,7 +196,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for multiline text input
   factory SltInputDialog.multiline({
     required String dialogId,
     required String title,
@@ -224,7 +218,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for email input
   factory SltInputDialog.email({
     required String dialogId,
     required String title,
@@ -261,7 +254,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
   @override
   ConsumerState<SltInputDialog> createState() => _SltInputDialogState();
 
-  /// Show the input dialog with the given parameters
   static Future<String?> show(
     BuildContext context,
     WidgetRef ref, {
@@ -285,7 +277,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
     TextCapitalization textCapitalization = TextCapitalization.none,
     AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
   }) {
-    // Set initial value in provider if present
     final notifier = ref.read(dialogInputValueProvider(dialogId).notifier);
     if (initialValue != null && initialValue.isNotEmpty) {
       notifier.setValue(initialValue);
@@ -297,7 +288,6 @@ class SltInputDialog extends ConsumerStatefulWidget {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (context) => SltInputDialog._create(
-        // Using private factory
         dialogId: dialogId,
         title: title,
         message: message,

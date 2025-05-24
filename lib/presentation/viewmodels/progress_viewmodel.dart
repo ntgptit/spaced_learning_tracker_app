@@ -1,4 +1,3 @@
-// lib/presentation/viewmodels/progress_viewmodel.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -85,11 +84,6 @@ class ProgressState extends _$ProgressState {
             percentComplete: percentComplete,
           );
 
-      // if (userId != null) {
-      //   ref
-      //       .read(eventBusProvider)
-      //       .fire(ProgressChangedEvent(userId: userId, hasDueTasks: true));
-      // }
 
       debugPrint('Progress created successfully: ${progress.id}');
       return progress;
@@ -123,18 +117,6 @@ class ProgressState extends _$ProgressState {
             percentComplete: percentComplete,
           );
 
-      // final userData = await ref.read(storageServiceProvider).getUserData();
-      // final userId = userData?['id'];
-      // if (userId != null) {
-      //   ref
-      //       .read(eventBusProvider)
-      //       .fire(
-      //         TaskCompletedEvent(
-      //           userId: userId.toString(),
-      //           progressId: sanitizedId,
-      //         ),
-      //       );
-      // }
 
       debugPrint('Progress updated successfully');
       return progress;
@@ -243,16 +225,11 @@ List<ProgressDetail> todayDueTasks(Ref ref) {
   return dueTasks;
 }
 
-// @riverpod
-// int todayDueTasksCount(Ref ref) {
-//   return ref.watch(todayDueTasksProvider).length;
-// }
 
 @riverpod
 Future<List<ProgressDetail>> trackedProgressState(Ref ref) {
   debugPrint(
     '[TrackedProgressState] >>> Triggered build() at ${DateTime.now()}',
   );
-  // debugPrint(StackTrace.current.toString());
   return ref.watch(progressStateProvider.future);
 }

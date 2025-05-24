@@ -1,1 +1,0 @@
-// Crop image view placeholder 

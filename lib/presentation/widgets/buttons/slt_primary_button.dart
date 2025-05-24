@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_primary_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/presentation/widgets/buttons/slt_button_base.dart';
@@ -35,13 +34,8 @@ class SltPrimaryButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    // Đảm bảo màu chữ luôn dễ đọc trên nền button
-    // Nếu đã chỉ định foregroundColor, sử dụng giá trị đó
-    // Nếu không, sử dụng màu trắng mặc định
     final effectiveForegroundColor = foregroundColor ?? Colors.white;
 
-    // Nếu backgroundColor được chỉ định, kiểm tra độ tương phản
-    // Nếu nền quá sáng, chuyển chữ sang màu tối
     final effectiveBackgroundColor =
         backgroundColor ?? theme.colorScheme.primary;
 

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/cards/slt_notification_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -9,7 +8,6 @@ import '../../../core/theme/app_theme.dart'; // Alias to avoid conflict with Flu
 
 enum SltNotificationType { info, success, warning, error, custom }
 
-/// A card designed to display notifications with various types and actions.
 class SltNotificationCard extends ConsumerWidget {
   final String title;
   final String? message;
@@ -44,7 +42,6 @@ class SltNotificationCard extends ConsumerWidget {
     if (type == SltNotificationType.custom && customColor != null) {
       return customColor!;
     }
-    // Accessing semantic colors from theme extension
     final semanticColors = Theme.of(
       context,
     ).extension<SemanticColorExtension>();
@@ -183,7 +180,6 @@ class SltNotificationCard extends ConsumerWidget {
         color: isRead
             ? colorScheme.surfaceContainer
             : colorScheme.surfaceContainerLow,
-        // Slightly different bg for unread
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusM),
           side: BorderSide(

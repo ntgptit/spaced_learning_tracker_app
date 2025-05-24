@@ -1,1 +1,0 @@
-// Sticky header list placeholder 

@@ -1,1 +1,0 @@
-// Animated progress bar placeholder 

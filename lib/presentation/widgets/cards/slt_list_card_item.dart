@@ -1,11 +1,8 @@
-// lib/presentation/widgets/cards/slt_list_card_item.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import 'package:spaced_learning_app/core/theme/app_typography.dart';
 
-/// A card item designed for use within lists, offering a ListTile-like structure
-/// with card styling.
 class SltListCardItem extends ConsumerWidget {
   final Widget? leading;
   final String title;
@@ -43,7 +40,6 @@ class SltListCardItem extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Determine effective styles
     final effectiveBackgroundColor =
         backgroundColor ?? colorScheme.surfaceContainerLow;
     final effectiveSelectedBackgroundColor =
@@ -90,7 +86,6 @@ class SltListCardItem extends ConsumerWidget {
         ),
       ),
       margin: const EdgeInsets.symmetric(vertical: AppDimens.paddingXS / 2),
-      // Small margin between items
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: enabled ? onTap : null,

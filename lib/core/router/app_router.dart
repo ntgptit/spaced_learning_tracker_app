@@ -1,10 +1,7 @@
-// lib/core/router/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-// Ensure riverpod_annotation is imported if @riverpod is used, otherwise not needed for this file itself.
-// import 'package:riverpod_annotation/riverpod_annotation.dart'; // Not needed if @riverpod isn't in this file.
 import 'package:spaced_learning_app/presentation/screens/auth/forgot_password_screen.dart'; // <<--- ADDED Import
 import 'package:spaced_learning_app/presentation/screens/auth/login_screen.dart';
 import 'package:spaced_learning_app/presentation/screens/auth/register_screen.dart';
@@ -12,7 +9,6 @@ import 'package:spaced_learning_app/presentation/screens/main/main_screen.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:spaced_learning_app/presentation/viewmodels/bottom_navigation_provider.dart';
 import 'package:spaced_learning_app/presentation/widgets/common/slt_app_bar.dart';
-// Import common widgets for error page & examples
 import 'package:spaced_learning_app/presentation/widgets/common/slt_scaffold.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_empty_state_widget.dart';
 import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_widget.dart';
@@ -43,7 +39,6 @@ class AppRoutes {
   static const settings = '/settings';
   static const cardsExample = '/examples/cards';
 
-  // Routes for state widget examples
   static const exampleEmptyState = '/examples/states/empty';
   static const exampleErrorState = '/examples/states/error';
   static const exampleLoadingState = '/examples/states/loading';
@@ -54,7 +49,6 @@ class AppRoutes {
   static const exampleGenericError = '/examples/states/generic-error';
 }
 
-// Auth redirect logic
 String? _authRedirect(bool isAuthenticated, String locationPath) {
   final isAuthRoute =
       locationPath == AppRoutes.login ||
@@ -63,14 +57,11 @@ String? _authRedirect(bool isAuthenticated, String locationPath) {
   final isSplash = locationPath == AppRoutes.splash;
   final isExampleRoute = locationPath.startsWith('/examples');
 
-  // Allow access to splash, example routes, and auth routes if not authenticated
   if (isSplash || isExampleRoute) return null;
   if (isAuthRoute && !isAuthenticated) return null;
 
-  // If authenticated and on an auth route (login, register, forgot_password), redirect to main
   if (isAuthenticated && isAuthRoute) return AppRoutes.main;
 
-  // If not authenticated and not on an allowed route, redirect to login
   if (!isAuthenticated && !isAuthRoute) return AppRoutes.login;
 
   return null; // No redirect needed
@@ -85,7 +76,6 @@ GoRouter appRouter(Ref ref) {
     bottomNavigationStateProvider,
   ); // Used for MainScreen key
 
-  // Determine authentication status from authStateProvider
   final isAuthenticated = authState.maybeWhen(
     data: (authenticated) => authenticated,
     orElse: () => false, // Assume not authenticated if loading or error
@@ -93,18 +83,14 @@ GoRouter appRouter(Ref ref) {
 
   return GoRouter(
     debugLogDiagnostics: true,
-    // Useful for debugging navigation
     initialLocation: AppRoutes.main,
-    // Or AppRoutes.splash if you have one
     redirect: (context, state) {
-      // Use state.uri.path for matching to avoid issues with query parameters
       return _authRedirect(isAuthenticated, state.uri.path);
     },
     routes: [
       GoRoute(
         path: AppRoutes.main,
         pageBuilder: (context, state) => NoTransitionPage(
-          // Or MaterialPage/CustomPage
           key: ValueKey('main-${bottomNavTab.index}'),
           child: MainScreen(tab: bottomNavTab),
         ),
@@ -120,7 +106,6 @@ GoRouter appRouter(Ref ref) {
             const MaterialPage(child: RegisterScreen()),
       ),
       GoRoute(
-        // <<--- ADDED Route Definition
         path: AppRoutes.forgotPassword,
         pageBuilder: (context, state) =>
             const MaterialPage(child: ForgotPasswordScreen()),
@@ -146,7 +131,6 @@ GoRouter appRouter(Ref ref) {
         },
       ),
 
-      // --- State Widget Example Routes (from user's file) ---
       GoRoute(
         path: AppRoutes.exampleEmptyState,
         pageBuilder: (context, state) => MaterialPage(
@@ -249,7 +233,6 @@ GoRouter appRouter(Ref ref) {
       return MaterialPage(
         key: state.pageKey,
         child: SltErrorStateWidget.custom(
-          // Using SltErrorStateWidget for error page
           title: 'Oops! Something Went Wrong',
           message:
               'We encountered an unexpected issue. The page at "${state.uri}" might be broken or doesn\'t exist. \n\nError: ${state.error?.toString() ?? 'Unknown error'}',
@@ -257,7 +240,6 @@ GoRouter appRouter(Ref ref) {
           retryText: 'Go to Home',
           onRetry: () => context.go(AppRoutes.main),
           showAppBar: true,
-          // Ensure AppBar is shown for navigation
           appBarTitle: 'Page Error',
           onNavigateBack: () => context.go(AppRoutes.main),
         ),

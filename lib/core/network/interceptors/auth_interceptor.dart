@@ -1,4 +1,3 @@
-// Cập nhật để sử dụng Riverpod thay vì ServiceLocator
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

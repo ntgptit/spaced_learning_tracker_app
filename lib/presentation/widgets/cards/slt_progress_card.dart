@@ -1,4 +1,3 @@
-// lib/presentation/widgets/cards/slt_progress_card.dart
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
@@ -38,7 +37,6 @@ class SltProgressCard extends StatelessWidget {
         backgroundColor ??
         (elevated ? colorScheme.surface : colorScheme.surfaceContainerLow);
 
-    // Format progress as percentage
     final progressPercent = (progress * 100).toInt();
 
     return Card(
@@ -109,7 +107,6 @@ class SltProgressCard extends StatelessWidget {
                 ],
               ),
             ),
-            // Progress indicator
             LinearProgressIndicator(
               value: progress.clamp(0.0, 1.0),
               backgroundColor: effectiveProgressColor.withValues(alpha: 0.1),

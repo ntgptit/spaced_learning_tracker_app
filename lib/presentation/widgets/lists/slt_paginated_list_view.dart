@@ -5,64 +5,43 @@ import '../states/slt_empty_state_widget.dart';
 import '../states/slt_error_state_widget.dart';
 import '../states/slt_loading_state_widget.dart';
 
-/// Paginated list view widget
-/// A list view that supports pagination with loading, error, and empty states
 class SltPaginatedListView<T> extends StatefulWidget {
-  /// List of items to display
   final List<T> items;
 
-  /// Builder function for list items
   final Widget Function(BuildContext context, T item, int index) itemBuilder;
 
-  /// Callback function to load more items
   final Future<void> Function()? onLoadMore;
 
-  /// Whether more items can be loaded
   final bool hasMoreItems;
 
-  /// Whether items are currently loading
   final bool isLoading;
 
-  /// Error message if loading failed
   final String? errorMessage;
 
-  /// Callback function to retry loading
   final VoidCallback? onRetry;
 
-  /// Empty state widget
   final Widget? emptyWidget;
 
-  /// Loading state widget
   final Widget? loadingWidget;
 
-  /// Error state widget
   final Widget? errorWidget;
 
-  /// Separator widget
   final Widget? separatorWidget;
 
-  /// Scroll controller
   final ScrollController? scrollController;
 
-  /// Scroll physics
   final ScrollPhysics? scrollPhysics;
 
-  /// Whether to show the loading indicator at the bottom
   final bool showLoadingIndicatorAtBottom;
 
-  /// Number of items to load before triggering onLoadMore
   final int loadMoreThreshold;
 
-  /// Padding around the list
   final EdgeInsetsGeometry? padding;
 
-  /// Whether the list is shrink wrapped
   final bool shrinkWrap;
 
-  /// Empty state message
   final String emptyStateMessage;
 
-  /// Primary flag for list view
   final bool primary;
 
   const SltPaginatedListView({
@@ -141,7 +120,6 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
     try {
       await widget.onLoadMore!();
     } catch (e) {
-      // Error handling is delegated to the parent widget
     } finally {
       if (mounted) {
         setState(() {
@@ -153,7 +131,6 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
 
   @override
   Widget build(BuildContext context) {
-    // If there are no items, show empty state
     if (widget.items.isEmpty) {
       if (widget.isLoading) {
         return widget.loadingWidget ??
@@ -200,7 +177,6 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
                 ),
         ),
 
-        // Loading indicator at the bottom
         if (widget.isLoading &&
             widget.showLoadingIndicatorAtBottom &&
             widget.items.isNotEmpty)
@@ -210,7 +186,6 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
             child: const CircularProgressIndicator(),
           ),
 
-        // Error indicator at the bottom
         if (widget.errorMessage != null && widget.items.isNotEmpty)
           Container(
             padding: const EdgeInsets.all(AppDimens.paddingM),

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_floating_action_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +49,6 @@ class SltFloatingActionButton extends ConsumerWidget {
     final effectiveBackgroundColor = backgroundColor ?? colorScheme.primary;
     final effectiveForegroundColor = foregroundColor ?? colorScheme.onPrimary;
 
-    // For extended FAB
     if (size == SltFabSize.extended && label != null) {
       return FloatingActionButton.extended(
         onPressed: isLoading || onPressed == null ? null : onPressed,
@@ -72,7 +70,6 @@ class SltFloatingActionButton extends ConsumerWidget {
       );
     }
 
-    // For small, regular, and large FABs
     final Widget content = isLoading
         ? SizedBox(
             width: _getLoadingSize(),
@@ -109,7 +106,6 @@ class SltFloatingActionButton extends ConsumerWidget {
           child: content,
         );
       case SltFabSize.extended:
-        // Fallback for extended FAB without a label
         return FloatingActionButton(
           onPressed: isLoading || onPressed == null ? null : onPressed,
           backgroundColor: effectiveBackgroundColor,

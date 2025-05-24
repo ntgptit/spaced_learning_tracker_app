@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_toggle_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,14 +47,12 @@ class SltToggleButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Initialize toggle state with initial value
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(toggleStateProvider(id: toggleId).notifier)
           .setValue(initialValue);
     });
 
-    // Get current toggle state
     final value = ref.watch(toggleStateProvider(id: toggleId));
 
     final effectiveActiveColor = activeColor ?? colorScheme.primary;
@@ -71,7 +68,6 @@ class SltToggleButton extends ConsumerWidget {
       }
     }
 
-    // lib/presentation/widgets/common/button/slt_toggle_button.dart (continued)
 
     return InkWell(
       onTap: isDisabled ? null : handleToggle,

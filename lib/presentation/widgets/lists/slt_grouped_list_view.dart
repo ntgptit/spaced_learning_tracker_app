@@ -1,1 +1,0 @@
-// Grouped list view placeholder 

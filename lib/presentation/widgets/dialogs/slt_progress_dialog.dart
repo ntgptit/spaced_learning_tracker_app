@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_progress_dialog.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -24,8 +23,6 @@ class ProgressDialogState extends _$ProgressDialogState {
   }
 }
 
-/// A dialog that shows a loading indicator with an optional message.
-/// It can be customized with different indicator types, colors, and a timeout.
 class SltProgressDialog extends ConsumerStatefulWidget {
   final String message;
   final bool barrierDismissible;
@@ -55,7 +52,6 @@ class SltProgressDialog extends ConsumerStatefulWidget {
   @override
   ConsumerState<SltProgressDialog> createState() => _SltProgressDialogState();
 
-  /// Show the progress dialog
   static Future<void> show(
     BuildContext context,
     WidgetRef ref, {
@@ -92,7 +88,6 @@ class SltProgressDialog extends ConsumerStatefulWidget {
     });
   }
 
-  /// Hide the currently displayed progress dialog
   static void hide(
     BuildContext context,
     WidgetRef ref, {
@@ -105,7 +100,6 @@ class SltProgressDialog extends ConsumerStatefulWidget {
     }
   }
 
-  /// Factory for a basic loading dialog
   factory SltProgressDialog.loading({
     required String dialogId,
     String message = 'Loading...',
@@ -121,7 +115,6 @@ class SltProgressDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for a processing dialog with a longer timeout
   factory SltProgressDialog.processing({
     required String dialogId,
     String message = 'Processing...',
@@ -137,7 +130,6 @@ class SltProgressDialog extends ConsumerStatefulWidget {
     );
   }
 
-  /// Factory for a saving dialog
   factory SltProgressDialog.saving({
     required String dialogId,
     String message = 'Saving changes...',

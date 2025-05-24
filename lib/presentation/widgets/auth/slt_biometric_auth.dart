@@ -1,4 +1,3 @@
-// lib/presentation/widgets/auth/slt_biometric_auth.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +15,6 @@ enum BiometricType { fingerprint, face, none }
 
 enum BiometricAuthState { available, unavailable, notEnrolled, disabled }
 
-// Biometric availability provider
 @riverpod
 class BiometricAvailability extends _$BiometricAvailability {
   final LocalAuthentication _localAuth = LocalAuthentication();
@@ -50,7 +48,6 @@ class BiometricAvailability extends _$BiometricAvailability {
   }
 }
 
-// Biometric type provider
 @riverpod
 class AvailableBiometricTypes extends _$AvailableBiometricTypes {
   final LocalAuthentication _localAuth = LocalAuthentication();
@@ -281,7 +278,6 @@ class SltBiometricAuth extends ConsumerWidget {
   ) {
     final colorScheme = theme.colorScheme;
 
-    // Auto prompt if enabled
     if (autoPrompt) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _authenticateWithBiometrics(context);
@@ -483,7 +479,6 @@ class SltBiometricAuth extends ConsumerWidget {
   }
 }
 
-// Enhanced BiometricAuth Dialog
 class SltBiometricAuthDialog extends StatelessWidget {
   final String title;
   final String subtitle;

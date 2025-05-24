@@ -5,7 +5,6 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
 part 'slt_radio_group.g.dart';
 
-// Option model for SltRadioGroup
 class SltRadioOption<T> {
   final String label;
   final T value;
@@ -22,7 +21,6 @@ class SltRadioOption<T> {
   });
 }
 
-// Provider for radio group state
 @riverpod
 class RadioGroupState extends _$RadioGroupState {
   @override
@@ -76,14 +74,12 @@ class SltRadioGroup<T> extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Set initial value if provided
     if (value != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(radioGroupStateProvider(groupId).notifier).setValue(value);
       });
     }
 
-    // Get current value from provider
     final currentValue = ref.watch(radioGroupStateProvider(groupId));
 
     return FormField<T>(
@@ -91,7 +87,6 @@ class SltRadioGroup<T> extends ConsumerWidget {
       validator: validator,
       autovalidateMode: autovalidateMode,
       builder: (FormFieldState<T> field) {
-        // Handle field value changes
         void handleValueChange(dynamic newValue) {
           if (newValue != null) {
             field.didChange(newValue as T);
@@ -127,7 +122,6 @@ class SltRadioGroup<T> extends ConsumerWidget {
               ),
             ],
             if (isVertical) ...[
-              // Vertical layout
               ...options.map(
                 (option) => _buildRadioTile(
                   context,
@@ -139,7 +133,6 @@ class SltRadioGroup<T> extends ConsumerWidget {
                 ),
               ),
             ] else ...[
-              // Horizontal layout
               Wrap(
                 spacing: spacing,
                 children: options

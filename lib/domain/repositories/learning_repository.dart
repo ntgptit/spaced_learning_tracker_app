@@ -1,9 +1,7 @@
 import 'package:spaced_learning_app/domain/models/learning_module.dart';
 
 abstract class LearningRepository {
-  // Các phương thức từ cả hai service/repository
 
-  // Từ LearningProgressRepository
   Future<List<LearningModule>> getAllModules();
 
   Future<Map<String, dynamic>> getDashboardStats({
@@ -13,7 +11,6 @@ abstract class LearningRepository {
 
   Future<Map<String, dynamic>> exportData();
 
-  // Từ LearningDataService - với tên phương thức gốc để đảm bảo tương thích
   Future<List<LearningModule>>
   getModules(); // <-- QUAN TRỌNG: Giữ lại phương thức này
   List<LearningModule> filterByBook(List<LearningModule> modules, String book);

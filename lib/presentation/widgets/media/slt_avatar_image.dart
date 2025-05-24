@@ -1,4 +1,3 @@
-// lib/presentation/widgets/media/slt_avatar_image.dart
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,19 +89,16 @@ class SltAvatarImage extends ConsumerWidget {
       );
     }
 
-    // Apply border if borderWidth is greater than 0
     if (borderWidth > 0) {
       return Container(
         padding: EdgeInsets.all(borderWidth),
         decoration: BoxDecoration(
           color: effectiveBorderColor,
-          // Border color acts as a background for the padding
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(
           radius: radius,
           backgroundColor: Colors.transparent,
-          // Inner avatar transparent if border acts as background
           child: ClipOval(
             child: avatarContent,
           ), // Clip the content within the bordered circle
@@ -110,7 +106,6 @@ class SltAvatarImage extends ConsumerWidget {
       );
     }
 
-    // Return avatarContent directly if no border
     return SizedBox(
       width: radius * 2,
       height: radius * 2,

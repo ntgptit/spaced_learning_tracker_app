@@ -1,4 +1,3 @@
-// lib/presentation/widgets/buttons/slt_progress_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,11 +19,8 @@ class ProgressButtonState extends _$ProgressButtonState {
 class SltProgressButton extends ConsumerWidget {
   final String text;
 
-  /// Asynchronous function executed on press.
-  /// SltProgressButton automatically manages loading state for the `loadingId`.
   final Future<void> Function()? onPressed;
 
-  /// Unique ID to link with `progressButtonStateProvider` for loading state management.
   final String loadingId;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
@@ -54,7 +50,6 @@ class SltProgressButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Check loading state from Riverpod provider
     final isLoading = ref.watch(progressButtonStateProvider(id: loadingId));
 
     return SltButtonBase(
@@ -69,7 +64,6 @@ class SltProgressButton extends ConsumerWidget {
                 progressButtonStateProvider(id: loadingId).notifier,
               );
               try {
-                // Check if the widget is still mounted before updating state
                 if (!ref.exists(progressButtonStateProvider(id: loadingId))) {
                   return;
                 }
@@ -77,10 +71,8 @@ class SltProgressButton extends ConsumerWidget {
 
                 await onPressed!();
               } catch (e) {
-                // You can add error handling here or use a global error handler
                 rethrow;
               } finally {
-                // Ensure setLoading(false) is called, even if an error occurred
                 if (ref.exists(progressButtonStateProvider(id: loadingId))) {
                   notifier.setLoading(false);
                 }

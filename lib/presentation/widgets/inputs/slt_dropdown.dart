@@ -71,7 +71,6 @@ class SltDropdown<T> extends StatelessWidget {
           vertical: AppDimens.paddingM,
         );
 
-    // Build prefix widgets
     if (prefixIcon != null) {
     } else if (prefix != null) {}
 

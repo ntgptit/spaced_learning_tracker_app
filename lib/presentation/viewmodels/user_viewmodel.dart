@@ -1,4 +1,3 @@
-// lib/presentation/viewmodels/user_viewmodel.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/domain/models/user.dart';
 
@@ -48,10 +47,7 @@ class UserState extends _$UserState {
     }
   }
 
-  // Thêm phương thức clearError để xử lý lỗi
   void clearError() {
-    // Nếu state hiện tại đang có lỗi, chuyển về trạng thái loading
-    // và sau đó gọi lại loadCurrentUser để refresh
     if (state.hasError) {
       state = const AsyncValue.loading();
       loadCurrentUser();
@@ -90,7 +86,6 @@ class ProfileUIState extends _$ProfileUIState {
   }
 }
 
-// Immutable data class for UI state
 class ProfileUIData {
   final bool isEditing;
   final String displayName;

@@ -1,4 +1,3 @@
-// lib/presentation/screens/books/book_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,13 +26,11 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
   void initState() {
     super.initState();
 
-    // Load book details and modules when screen initializes
     Future.microtask(() {
       _loadData();
     });
   }
 
-  // Load book details and modules
   Future<void> _loadData() async {
     await ref
         .read(selectedBookProvider.notifier)
@@ -48,7 +45,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Watch book details and modules state
     final bookState = ref.watch(selectedBookProvider);
     final modulesState = ref.watch(modulesStateProvider);
 
@@ -71,18 +67,15 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     );
   }
 
-  // Build the main content based on states
   Widget _buildContent(
     BuildContext context,
     AsyncValue bookState,
     AsyncValue modulesState,
   ) {
-    // Show loading state if either book or modules are loading
     if (bookState.isLoading || modulesState.isLoading) {
       return const SltLoadingStateWidget(message: 'Loading book details...');
     }
 
-    // Show error state if either has an error
     if (bookState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Book',
@@ -99,7 +92,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
       );
     }
 
-    // Get book data
     final book = bookState.valueOrNull;
 
     if (book == null) {
@@ -110,17 +102,14 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
       );
     }
 
-    // Get modules data
     final modules = modulesState.valueOrNull ?? [];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Book header
         _buildBookHeader(context, book),
         const SizedBox(height: AppDimens.spaceXL),
 
-        // Book description
         if (book.description != null && book.description!.isNotEmpty) ...[
           Text('Description', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: AppDimens.spaceM),
@@ -131,14 +120,12 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
           const SizedBox(height: AppDimens.spaceXL),
         ],
 
-        // Modules list
         Text(
           'Modules (${modules.length})',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Show empty state if no modules
         if (modules.isEmpty)
           const SltEmptyStateWidget(
             title: 'No Modules Available',
@@ -151,7 +138,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     );
   }
 
-  // Book header with metadata
   Widget _buildBookHeader(BuildContext context, dynamic book) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -163,7 +149,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Book title
             Text(
               book.name,
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -172,12 +157,10 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
             ),
             const SizedBox(height: AppDimens.spaceM),
 
-            // Book metadata
             Wrap(
               spacing: AppDimens.spaceM,
               runSpacing: AppDimens.spaceS,
               children: [
-                // Difficulty level chip
                 Chip(
                   label: Text(_getDifficultyText(book.difficultyLevel)),
                   avatar: const Icon(Icons.signal_cellular_alt),
@@ -187,7 +170,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                   ),
                 ),
 
-                // Category chip if available
                 if (book.category != null && book.category!.isNotEmpty)
                   Chip(
                     label: Text(book.category!),
@@ -195,7 +177,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                     backgroundColor: colorScheme.surfaceContainerHigh,
                   ),
 
-                // Status chip
                 Chip(
                   label: Text(_getStatusText(book.status)),
                   avatar: Icon(_getStatusIcon(book.status)),
@@ -209,7 +190,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     );
   }
 
-  // Modules list
   Widget _buildModulesList(BuildContext context, List modules) {
     return ListView.separated(
       shrinkWrap: true,
@@ -241,7 +221,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     );
   }
 
-  // Helper methods to format difficulty level
   String _getDifficultyText(dynamic difficultyLevel) {
     if (difficultyLevel == null) {
       return 'Unspecified';
@@ -261,7 +240,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     }
   }
 
-  // Get difficulty color
   Color _getDifficultyColor(dynamic difficultyLevel, ColorScheme colorScheme) {
     if (difficultyLevel == null) {
       return colorScheme.surfaceContainerHigh;
@@ -281,7 +259,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     }
   }
 
-  // Helper methods to format book status
   String _getStatusText(dynamic status) {
     switch (status.toString()) {
       case 'BookStatus.published':
@@ -295,7 +272,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     }
   }
 
-  // Get status icon
   IconData _getStatusIcon(dynamic status) {
     switch (status.toString()) {
       case 'BookStatus.published':
@@ -309,7 +285,6 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
     }
   }
 
-  // Get status color
   Color _getStatusColor(dynamic status, ColorScheme colorScheme) {
     switch (status.toString()) {
       case 'BookStatus.published':

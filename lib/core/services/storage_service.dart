@@ -1,4 +1,3 @@
-// lib/core/services/storage_service.dart
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -17,19 +16,16 @@ class StorageService {
   })  : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
         _prefs = prefs ?? SharedPreferences.getInstance();
 
-  // Get authentication token with error handling
   Future<String?> getToken() async {
     try {
       return await _secureStorage.read(key: AppConstants.tokenKey);
     } catch (e) {
       debugPrint('Error retrieving token: $e');
-      // If there's a decryption error, clear tokens to prevent future errors
       await clearTokens();
       return null;
     }
   }
 
-  // Get refresh token with error handling
   Future<String?> getRefreshToken() async {
     try {
       return await _secureStorage.read(key: AppConstants.refreshTokenKey);
@@ -40,7 +36,6 @@ class StorageService {
     }
   }
 
-  // Get user data with error handling
   Future<Map<String, dynamic>?> getUserData() async {
     try {
       final prefs = await _prefs;
@@ -57,7 +52,6 @@ class StorageService {
     }
   }
 
-  // Check dark mode setting
   Future<bool> isDarkMode() async {
     try {
       final prefs = await _prefs;
@@ -68,25 +62,21 @@ class StorageService {
     }
   }
 
-  // Save token with error handling
   Future<void> saveToken(String token) async {
     try {
       await _secureStorage.write(key: AppConstants.tokenKey, value: token);
     } catch (e) {
       debugPrint('Error saving token: $e');
-      // Try to reset storage and save again
       await clearTokens();
       try {
         await _secureStorage.write(key: AppConstants.tokenKey, value: token);
       } catch (e) {
         debugPrint('Failed to save token after reset: $e');
-        // Final fallback: try to reset all secure storage
         await resetSecureStorage();
       }
     }
   }
 
-  // Save refresh token with error handling
   Future<void> saveRefreshToken(String refreshToken) async {
     try {
       await _secureStorage.write(
@@ -95,7 +85,6 @@ class StorageService {
       );
     } catch (e) {
       debugPrint('Error saving refresh token: $e');
-      // Try to reset and save again
       await clearTokens();
       try {
         await _secureStorage.write(
@@ -109,7 +98,6 @@ class StorageService {
     }
   }
 
-  // Save user data
   Future<void> saveUserData(Map<String, dynamic> userData) async {
     try {
       final prefs = await _prefs;
@@ -119,7 +107,6 @@ class StorageService {
     }
   }
 
-  // Save dark mode setting
   Future<void> saveDarkMode(bool isDarkMode) async {
     try {
       final prefs = await _prefs;
@@ -129,19 +116,16 @@ class StorageService {
     }
   }
 
-  // Clear authentication tokens
   Future<void> clearTokens() async {
     try {
       await _secureStorage.delete(key: AppConstants.tokenKey);
       await _secureStorage.delete(key: AppConstants.refreshTokenKey);
     } catch (e) {
       debugPrint('Error clearing tokens: $e');
-      // If individual deletion fails, try resetting all secure storage
       await resetSecureStorage();
     }
   }
 
-  // Clear user data
   Future<void> clearUserData() async {
     try {
       final prefs = await _prefs;
@@ -151,7 +135,6 @@ class StorageService {
     }
   }
 
-  // Reset all secure storage (emergency fallback)
   Future<void> resetSecureStorage() async {
     try {
       await _secureStorage.deleteAll();
@@ -161,7 +144,6 @@ class StorageService {
     }
   }
 
-  // String retrieval with error handling
   Future<String?> getString(String key) async {
     try {
       final prefs = await _prefs;
@@ -172,7 +154,6 @@ class StorageService {
     }
   }
 
-  // String storage with error handling
   Future<void> setString(String key, String value) async {
     try {
       final prefs = await _prefs;
@@ -182,7 +163,6 @@ class StorageService {
     }
   }
 
-  // Boolean retrieval with error handling
   Future<bool?> getBool(String key) async {
     try {
       final prefs = await _prefs;
@@ -193,7 +173,6 @@ class StorageService {
     }
   }
 
-  // Boolean storage with error handling
   Future<void> setBool(String key, bool value) async {
     try {
       final prefs = await _prefs;
@@ -203,7 +182,6 @@ class StorageService {
     }
   }
 
-  // Int retrieval with error handling
   Future<int?> getInt(String key) async {
     try {
       final prefs = await _prefs;
@@ -214,7 +192,6 @@ class StorageService {
     }
   }
 
-  // Int storage with error handling
   Future<void> setInt(String key, int value) async {
     try {
       final prefs = await _prefs;
@@ -224,7 +201,6 @@ class StorageService {
     }
   }
 
-  // Double retrieval with error handling
   Future<double?> getDouble(String key) async {
     try {
       final prefs = await _prefs;
@@ -235,7 +211,6 @@ class StorageService {
     }
   }
 
-  // Double storage with error handling
   Future<void> setDouble(String key, double value) async {
     try {
       final prefs = await _prefs;
@@ -245,7 +220,6 @@ class StorageService {
     }
   }
 
-  // String list retrieval with error handling
   Future<List<String>?> getStringList(String key) async {
     try {
       final prefs = await _prefs;
@@ -256,7 +230,6 @@ class StorageService {
     }
   }
 
-  // String list storage with error handling
   Future<void> setStringList(String key, List<String> value) async {
     try {
       final prefs = await _prefs;

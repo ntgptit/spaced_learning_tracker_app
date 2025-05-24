@@ -1,4 +1,3 @@
-// lib/presentation/widgets/buttons/slt_button_base.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,14 +63,11 @@ class SltButtonBase extends ConsumerWidget {
         ? ref.watch(buttonStateProvider(id: loadingId!))
         : false;
 
-    // Determine button style based on variant
     final ButtonStyle buttonStyle = _getButtonStyle(theme, colorScheme);
 
-    // Get effective size parameters
     final (effectiveHeight, effectiveIconSize) = _getSizeParameters();
     final effectivePadding = padding ?? _getDefaultPadding();
 
-    // Build button
     return SizedBox(
       width: isFullWidth ? double.infinity : null,
       height: effectiveHeight,
@@ -124,7 +120,6 @@ class SltButtonBase extends ConsumerWidget {
     final effectiveElevation = elevation ?? _getDefaultElevation();
     final effectiveBorderRadius = borderRadius ?? _getDefaultBorderRadius();
 
-    // Xác định màu chữ mặc định dựa trên loại button
     final defaultForegroundColor = variant == SltButtonVariant.filled
         ? Colors
               .white // Luôn sử dụng màu trắng cho filled button
@@ -241,7 +236,6 @@ class SltButtonBase extends ConsumerWidget {
       SltButtonSize.large => theme.textTheme.titleMedium,
     };
 
-    // Nếu là button filled, đảm bảo chữ luôn là trắng
     if (variant == SltButtonVariant.filled) {
       return baseStyle?.copyWith(
         color: foregroundColor ?? Colors.white,

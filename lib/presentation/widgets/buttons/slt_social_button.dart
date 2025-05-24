@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_social_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,7 +52,6 @@ class SltSocialButton extends ConsumerWidget {
       return customIcon;
     }
 
-    // Default icons for social platforms
     switch (type) {
       case SocialButtonType.google:
         return Icons.g_mobiledata;

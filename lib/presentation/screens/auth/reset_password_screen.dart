@@ -1,4 +1,3 @@
-// lib/presentation/screens/auth/reset_password_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,7 +76,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
     final colorScheme = theme.colorScheme;
     final size = MediaQuery.of(context).size;
 
-    // Show success state if password was reset successfully
     if (authState.hasValue && authState.value == true && !authState.isLoading) {
       return SltSuccessStateWidget(
         title: 'Password Reset Successfully',
@@ -144,11 +142,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
                             SizedBox(height: AppDimens.spaceXXL),
 
-                            // Error Display
                             if (authError != null) ...[
                               SltErrorStateWidget(
                                 title: 'Reset Failed',
@@ -159,7 +155,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                               SizedBox(height: AppDimens.spaceL),
                             ],
 
-                            // Password Form
                             _buildPasswordForm(
                               context,
                               theme,
@@ -168,7 +163,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                             ),
                             SizedBox(height: AppDimens.spaceL),
 
-                            // Password Requirements
                             _buildPasswordRequirements(
                               context,
                               theme,
@@ -177,11 +171,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
                             ),
                             SizedBox(height: AppDimens.spaceXXL),
 
-                            // Action Buttons
                             _buildActionButtons(context, theme, colorScheme),
                             SizedBox(height: AppDimens.spaceL),
 
-                            // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
                           ],
                         ),
@@ -201,7 +193,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
   ) {
     return Column(
       children: [
-        // Animated Icon
         Container(
           width: AppDimens.iconXXL * 1.3,
           height: AppDimens.iconXXL * 1.3,
@@ -232,7 +223,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
         ),
         SizedBox(height: AppDimens.spaceXL),
 
-        // Title and Description
         Text(
           'Create New Password',
           style: theme.textTheme.displaySmall?.copyWith(
@@ -296,7 +286,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Section Header
           Row(
             children: [
               Container(
@@ -337,7 +326,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           ),
           SizedBox(height: AppDimens.spaceL),
 
-          // New Password
           SltPasswordField(
             label: 'New Password',
             hint: 'Enter your new password',
@@ -350,7 +338,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           ),
           SizedBox(height: AppDimens.spaceL),
 
-          // Confirm Password
           SltPasswordField(
             label: 'Confirm New Password',
             hint: 'Confirm your new password',
@@ -421,7 +408,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen>
           ),
           SizedBox(height: AppDimens.spaceL),
 
-          // Requirements Grid
           Wrap(
             spacing: AppDimens.spaceM,
             runSpacing: AppDimens.spaceM,

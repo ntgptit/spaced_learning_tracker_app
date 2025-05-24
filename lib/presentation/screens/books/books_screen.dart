@@ -1,4 +1,3 @@
-// lib/presentation/screens/books/books_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -68,7 +67,6 @@ class _BooksScreenState extends ConsumerState<BooksScreen> {
                       ref
                           .read(selectedBookProvider.notifier)
                           .loadBookDetails(book.id);
-                      // Navigate to book details when implemented
                     },
                   ),
                 );

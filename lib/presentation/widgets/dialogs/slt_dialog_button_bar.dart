@@ -1,9 +1,6 @@
-// lib/presentation/widgets/common/dialog/sl_dialog_button_bar.dart
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-/// A widget that arranges dialog action buttons according to Material 3 guidelines.
-/// It enforces the "no else" rule by handling button presence declaratively.
 class SlDialogButtonBar extends StatelessWidget {
   final Widget? confirmButton;
   final Widget? cancelButton;
@@ -26,7 +23,6 @@ class SlDialogButtonBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> actionButtons = [];
 
-    // Handle buttons passed directly via 'buttons' parameter
     if (buttons.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(top: AppDimens.paddingM),
@@ -47,12 +43,10 @@ class SlDialogButtonBar extends StatelessWidget {
       );
     }
 
-    // Legacy mode with confirmButton, cancelButton, neutralButton
     if (neutralButton != null) {
       actionButtons.add(neutralButton!);
     }
 
-    // Spacer if neutral and other buttons exist
     if (neutralButton != null &&
         (cancelButton != null || confirmButton != null)) {
       actionButtons.add(const Spacer());
@@ -63,7 +57,6 @@ class SlDialogButtonBar extends StatelessWidget {
     }
 
     if (confirmButton != null) {
-      // Add spacing if cancel button is also present
       if (cancelButton != null) {
         actionButtons.add(SizedBox(width: spacing));
       }

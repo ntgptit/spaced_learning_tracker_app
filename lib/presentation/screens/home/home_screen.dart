@@ -1,4 +1,3 @@
-// lib/presentation/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,19 +31,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize data loading when screen is first created
     Future.microtask(() {
       _loadInitialData();
     });
   }
 
-  // Load all required data from APIs
   Future<void> _loadInitialData() async {
     final homeViewModel = ref.read(homeViewModelProvider.notifier);
     await homeViewModel.loadInitialData();
   }
 
-  // Refresh all data
   Future<void> _refreshData() async {
     final homeViewModel = ref.read(homeViewModelProvider.notifier);
     await homeViewModel.refreshData();
@@ -52,16 +48,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get home state, stats, and progress data
     final homeState = ref.watch(homeViewModelProvider);
     final learningStats = ref.watch(learningStatsStateProvider);
     final learningInsights = ref.watch(learningInsightsProvider);
     final dueProgress = ref.watch(todayDueTasksProvider);
 
-    // Get user
     final user = ref.watch(currentUserProvider);
 
-    // Personalized welcome message
     final welcomeMessage = user != null
         ? 'Welcome back, ${user.displayName ?? user.firstName ?? user.username}!'
         : 'Welcome to Spaced Learning!';
@@ -71,7 +64,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: 'Dashboard',
         centerTitle: true,
         actions: [
-          // Theme toggle button
           IconButton(
             icon: Icon(
               ref.watch(isDarkModeProvider)
@@ -102,7 +94,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Main content builder with state handling
   Widget _buildHomeContent(
     BuildContext context,
     HomeState homeState,
@@ -111,12 +102,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     AsyncValue learningInsights,
     List dueProgress,
   ) {
-    // Show loading state
     if (homeState.isFirstLoading) {
       return const SltLoadingStateWidget(message: 'Loading your dashboard...');
     }
 
-    // Show error state
     if (homeState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Dashboard',
@@ -125,36 +114,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     }
 
-    // Main content with scrolling
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppDimens.paddingL),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Welcome section
           Text(
             welcomeMessage,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Stats section
           _buildStatsSection(context, learningStats),
           const SizedBox(height: AppDimens.spaceXL),
 
-          // Insights section
           _buildInsightsSection(context, learningInsights),
           const SizedBox(height: AppDimens.spaceXL),
 
-          // Due tasks section
           _buildDueTasksSection(context, dueProgress),
         ],
       ),
     );
   }
 
-  // Stats grid section with 4 key metrics
   Widget _buildStatsSection(BuildContext context, AsyncValue learningStats) {
     final theme = Theme.of(context);
 
@@ -164,7 +147,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text('Learning Statistics', style: theme.textTheme.titleLarge),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Process learning stats state
         learningStats.when(
           data: (data) {
             if (data == null) {
@@ -175,7 +157,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               );
             }
 
-            // Stats grid with actual data
             return GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: AppDimens.spaceM,
@@ -225,7 +206,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Learning insights section
   Widget _buildInsightsSection(
     BuildContext context,
     AsyncValue learningInsights,
@@ -248,7 +228,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Process learning insights state
         learningInsights.when(
           data: (insights) {
             if (insights == null || insights.isEmpty) {
@@ -259,7 +238,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               );
             }
 
-            // Display insights cards
             return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -293,7 +271,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
 
-        // View all insights button if there are more than 3
         if (learningInsights.hasValue &&
             learningInsights.value != null &&
             learningInsights.value.length > 3) ...[
@@ -301,8 +278,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Center(
             child: TextButton.icon(
               onPressed: () {
-                // Navigate to insights screen
-                // context.push(AppRoutes.insights);
               },
               icon: const Icon(Icons.visibility_outlined),
               label: const Text('View All Insights'),
@@ -313,12 +288,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Due tasks section with progress cards
   Widget _buildDueTasksSection(BuildContext context, List dueProgress) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section header with divider
         SltSectionDivider(
           title: 'Due Today',
           icon: Icons.assignment_outlined,
@@ -329,7 +302,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Empty state or list of due tasks
         dueProgress.isEmpty
             ? SltEmptyStateWidget.noData(
                 title: 'No Tasks Due Today',
@@ -337,7 +309,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     'You\'re all caught up! Start a new module or check back later.',
                 buttonText: 'Browse Modules',
                 onButtonPressed: () {
-                  // Navigate to books/modules screen
                   ref.read(bottomNavigationStateProvider.notifier).goToBooks();
                 },
                 icon: Icons.check_circle_outline,
@@ -351,7 +322,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 itemBuilder: (context, index) {
                   final progress = dueProgress[index];
 
-                  // Get cycle info
                   String cycleInfo = '';
                   if (progress.cyclesStudied != null) {
                     cycleInfo = _getCycleInfo(progress.cyclesStudied);
@@ -369,7 +339,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 },
               ),
 
-        // View all button if more than 3 due tasks
         if (dueProgress.length > 3) ...[
           const SizedBox(height: AppDimens.spaceM),
           Center(
@@ -385,7 +354,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Get cycle info text based on cycle type
   String _getCycleInfo(dynamic cycleStudied) {
     switch (cycleStudied.toString()) {
       case 'CycleStudied.firstTime':
@@ -403,7 +371,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  // Map insight type to appropriate icon
   IconData _getInsightIcon(dynamic insightType) {
     switch (insightType.toString()) {
       case 'InsightType.vocabularyRate':
@@ -423,7 +390,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  // Map insight type to title
   String _getInsightTitle(dynamic insightType) {
     switch (insightType.toString()) {
       case 'InsightType.vocabularyRate':
@@ -443,7 +409,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  // Map insight type to appropriate color
   Color _getInsightColor(dynamic insightType, ColorScheme colorScheme) {
     switch (insightType.toString()) {
       case 'InsightType.vocabularyRate':
@@ -463,7 +428,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  // Show info dialog about insights
   void _showInsightsInfoDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -482,7 +446,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Show individual insight details dialog
   void _showInsightDetailsDialog(BuildContext context, dynamic insight) {
     showDialog(
       context: context,
@@ -499,7 +462,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  // Navigate to module details screen
   void _navigateToModuleDetails(String progressId) {
     context.push('${AppRoutes.moduleDetail}/$progressId');
   }

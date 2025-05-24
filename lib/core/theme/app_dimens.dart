@@ -1,9 +1,6 @@
-// lib/core/theme/app_dimens.dart
 import 'package:flutter/material.dart';
 
-/// App dimensions constants aligned with Material 3
 class AppDimens {
-  // Padding and margin (Material 3: multiples of 4 or 8)
   static const double paddingNone = 0.0;
   static const double paddingXXS = 2.0;
   static const double paddingXS = 4.0;
@@ -16,7 +13,6 @@ class AppDimens {
   static const double paddingSection = 56.0; // For larger section spacing
   static const double paddingPage = 64.0; // For overall page padding
 
-  // Border radius (Material 3: 4, 8, 12, 16, 24, 28 for some components)
   static const double radiusNone = 0.0;
   static const double radiusXXS = 2.0;
   static const double radiusXS = 4.0;
@@ -29,13 +25,11 @@ class AppDimens {
   static const double radiusXXXL = 32.0; // For very large rounded areas
   static const double radiusCircular = 1000.0; // Effectively circular
 
-  // Theme specific radius
   static const double dialogBorderRadius =
       radiusL; // Consistent with M3 dialogs (often 28, but 16 is also used)
   static const double bottomSheetBorderRadius =
       radiusXL; // M3 often uses 28 for top corners
 
-  // Icon sizes (Material 3: 18, 20, 24, 36, 48)
   static const double iconXXS = 10.0;
   static const double iconXS = 12.0;
   static const double iconS = 18.0;
@@ -44,19 +38,16 @@ class AppDimens {
   static const double iconXL = 48.0;
   static const double iconXXL = 64.0;
 
-  // Button heights (Material 3: 40, 48, 56 for different emphasis/types)
   static const double buttonHeightXS = 32.0; // For very small/compact buttons
   static const double buttonHeightS = 40.0; // M3 standard button height
   static const double buttonHeightM = 48.0;
   static const double buttonHeightL = 56.0;
   static const double buttonHeightXL = 64.0;
 
-  // Input field heights (Material 3: 56 for filled, 48 for outlined)
   static const double textFieldHeightS = 48.0; // Outlined text field height
   static const double textFieldHeight = 56.0; // Filled text field height
   static const double textFieldHeightL = 64.0;
 
-  // Other heights
   static const double appBarHeight = 64.0; // M3 Top App Bar height
   static const double tabBarHeight = 48.0;
   static const double bottomNavBarHeight = 80.0; // M3 Navigation Bar height
@@ -74,7 +65,6 @@ class AppDimens {
   static const double dividerThickness = 1.0;
   static const double thickDividerHeight = 4.0;
 
-  // Widths and thickness
   static const double buttonMinWidth = 64.0;
   static const double dialogMinWidth = 280.0;
   static const double dialogMaxWidth = 560.0; // M3 guidance for dialog width
@@ -86,7 +76,6 @@ class AppDimens {
   static const double tabIndicatorThickness = 2.0; // M3 Tab indicator thickness
   static const double borderWidthFocused = 2.0;
 
-  // Elevation (Material 3: Level 0 to 5, corresponding to 0, 1, 3, 6, 8, 12 dp)
   static const double elevationNone = 0.0; // Level 0
   static const double elevationXS = 1.0; // Level 1
   static const double elevationS = 3.0; // Level 2
@@ -97,14 +86,12 @@ class AppDimens {
       16.0; // Higher, for pronounced shadows if needed
   static const double elevationXXXL = 24.0; // For very distinct elements
 
-  // Shadows (More specific shadow properties are usually handled by ThemeData)
   static const double shadowRadiusS = 2.0;
   static const double shadowRadiusM = 4.0;
   static const double shadowRadiusL = 8.0;
   static const double shadowOffsetS = 1.0;
   static const double shadowOffsetM = 2.0;
 
-  // Font sizes (Material 3 type scale)
   static const double fontDisplayL = 57.0;
   static const double fontDisplayM = 45.0;
   static const double fontDisplayS = 36.0;
@@ -121,7 +108,6 @@ class AppDimens {
   static const double fontBodyM = 14.0;
   static const double fontBodyS = 12.0;
 
-  // Additional common font sizes (can be deprecated if M3 scale is strictly followed)
   static const double fontXXS = 8.0; // For very small text, captions
   static const double fontXS = 10.0;
   static const double fontS = 11.0; // Similar to labelSmall
@@ -132,8 +118,6 @@ class AppDimens {
   static const double fontXXXL = 20.0;
   static const double fontMicro = 10.0; // Renamed from 11 for clarity
 
-  // Spacing and gaps (Material 3: multiples of 4 or 8)
-  // These are semantically similar to padding but used for layout between elements
   static const double spaceXXS = 2.0;
   static const double spaceXS = 4.0;
   static const double spaceS = 8.0;
@@ -146,7 +130,6 @@ class AppDimens {
   static const double spaceSection = 56.0; // Renamed from gapSection
   static const double spacePage = 64.0; // Renamed from gapPage
 
-  // Gap widgets (Consider removing if `SizedBox(width/height: AppDimens.spaceX)` is preferred)
   static const SizedBox hSpaceXXS = SizedBox(width: spaceXXS);
   static const SizedBox hSpaceXS = SizedBox(width: spaceXS);
   static const SizedBox hSpaceS = SizedBox(width: spaceS);
@@ -167,7 +150,6 @@ class AppDimens {
   static const SizedBox vSpaceXXXL = SizedBox(height: spaceXXXL);
   static const SizedBox vSpaceXXXXL = SizedBox(height: spaceXXXXL);
 
-  // Grid
   static const double gridSpacingXS = 2.0;
   static const double gridSpacingS = 4.0;
   static const double gridSpacingM = 8.0;
@@ -176,7 +158,6 @@ class AppDimens {
   static const double gridItemMaxWidth = 200.0; // Increased max width
   static const double gridGutter = 16.0; // Spacing between columns
 
-  // Grid column counts for different screen sizes
   static const int gridColumnCountCompact = 2; // For very small screens
   static const int gridColumnCountSmall = 2; // M3: 4 columns for small handset
   static const int gridColumnCountMedium =
@@ -185,7 +166,6 @@ class AppDimens {
   static const int gridColumnCountXLarge =
       6; // For larger tablets/small desktops
 
-  // Avatar and thumbnail
   static const double avatarSizeXXS = 16.0; // New smaller avatar
   static const double avatarSizeXS = 24.0;
   static const double avatarSizeS = 32.0;
@@ -198,10 +178,6 @@ class AppDimens {
   static const double thumbnailSizeL = 140.0; // Adjusted
   static const double thumbnailSizeXL = 180.0; // New larger thumbnail
 
-  // Durations (Material 3: Short, Medium, Long)
-  // Short: 50ms, 100ms, 150ms, 200ms
-  // Medium: 250ms, 300ms, 350ms, 400ms
-  // Long: 450ms, 500ms, 550ms, 600ms
   static const int durationShort1 = 50;
   static const int durationShort2 = 100;
   static const int durationShort3 = 150;
@@ -217,7 +193,6 @@ class AppDimens {
   static const int durationLong3 = 550;
   static const int durationLong4 = 600;
 
-  // Generic (can be deprecated if specific M3 durations are used)
   static const int durationXXS = durationShort1; // 50
   static const int durationXS = durationShort2; // 100
   static const int durationS = durationShort4; // 200
@@ -225,7 +200,6 @@ class AppDimens {
   static const int durationL = durationLong2; // 500
   static const int durationXL = durationLong4 + 200; // 800
 
-  // Semantic Durations
   static const int durationFade = durationMedium1; // 250
   static const int durationSlide = durationMedium4; // 400
   static const int durationExpand = durationMedium2; // 300
@@ -233,7 +207,6 @@ class AppDimens {
   static const int durationTooltip =
       durationLong2; // 500 (how long it stays, not animation)
 
-  // Miscellaneous UI elements
   static const double moduleIndicatorSize = 36.0;
   static const double circularProgressSizeS =
       20.0; // M3 progress indicator small
@@ -251,7 +224,6 @@ class AppDimens {
   static const double switchTrackWidth = 36.0; // M3 switch track width
   static const double switchThumbSize = 20.0; // M3 switch thumb size
 
-  // Layout
   static const double maxContentWidthS = 600.0; // For mobile-focused content
   static const double maxContentWidthM = 840.0; // For tablet-focused content
   static const double maxContentWidthL = 1200.0; // For desktop-focused content
@@ -266,8 +238,6 @@ class AppDimens {
   static const double cardMinHeight = 80.0;
   static const double navigationRailWidth = 80.0; // M3 Navigation Rail width
 
-  // Breakpoints (Material 3: Compact <600dp, Medium 600dp-839dp, Expanded >=840dp)
-  // Additional breakpoints for larger screens can be useful.
   static const double breakpointCompact = 600.0;
   static const double breakpointMedium = 840.0;
   static const double breakpointExpanded =
@@ -276,18 +246,14 @@ class AppDimens {
   static const double breakpointXLarge = 1600.0; // Larger desktop
   static const double breakpointXXLarge = 1920.0; // Full HD
 
-  // Aliases for common Material 3 breakpoints
   static const double breakpointXS = breakpointCompact; // < 600dp
   static const double breakpointS = breakpointMedium; // 600dp - 839dp
   static const double breakpointM = breakpointExpanded; // >= 840dp
-  // breakpointL, breakpointXL, breakpointXXLarge remain as custom larger points
 
-  // Safe area and insets (these are device-dependent, provide typical values)
   static const double keyboardInset = 80.0; // Approximate
   static const double safeAreaTop = 44.0; // iOS typical
   static const double safeAreaBottom = 34.0; // iOS typical with home indicator
 
-  // Opacities (Material 3 - some are state-dependent and handled by themes)
   static const double opacityFull = 1.0;
   static const double opacityVeryHigh = 0.87; // High-emphasis text
   static const double opacityHigh = 0.60; // Medium-emphasis text, icons
@@ -297,7 +263,6 @@ class AppDimens {
   static const double opacityVeryLow = 0.08; // Dragged states overlays
   static const double opacityNone = 0.0;
 
-  // Semantic opacities (can map to M3 values or be custom)
   static const double opacityTextSubtle = opacityHigh;
   static const double opacityUnselected = opacityHigh;
   static const double opacityMediumHigh = 0.75; // Custom
@@ -308,11 +273,9 @@ class AppDimens {
   static const double opacityHintText = opacityHigh;
   static const double opacityDisabledOutline = opacityDisabled;
 
-  // Responsive scaling factors
   static const double scaleFactorSmall = 0.85;
   static const double scaleFactorLarge = 1.15;
 
-  // Padding presets
   static const EdgeInsets screenPadding = EdgeInsets.all(paddingM);
   static const EdgeInsets buttonPadding = EdgeInsets.symmetric(
     horizontal: paddingL,
@@ -330,7 +293,6 @@ class AppDimens {
     vertical: paddingS,
   );
 
-  // Content insets presets
   static const EdgeInsets contentInsetRegular = EdgeInsets.symmetric(
     horizontal: paddingL,
     vertical: paddingM,
@@ -341,7 +303,6 @@ class AppDimens {
   );
   static const EdgeInsets contentInsetTight = EdgeInsets.all(paddingS);
 
-  // Aspect ratios
   static const double aspectRatio21x9 = 21 / 9;
   static const double aspectRatio16x9 = 16 / 9;
   static const double aspectRatio3x2 = 3 / 2;
@@ -351,7 +312,6 @@ class AppDimens {
   static const double aspectRatio2x3 = 2 / 3;
   static const double aspectRatio9x16 = 9 / 16;
 
-  // Letter Spacing (Material 3)
   static const double letterSpacingDisplayLarge = -0.25;
   static const double letterSpacingDisplayMedium = 0;
   static const double letterSpacingDisplaySmall = 0;
@@ -369,13 +329,10 @@ class AppDimens {
   static const double letterSpacingBodyMedium = 0.25;
   static const double letterSpacingBodySmall = 0.4;
 
-  // Private constructor to prevent instantiation
   AppDimens._();
 }
 
-/// Extension methods for easily using responsive dimensions with BuildContext
 extension BuildContextDimensExtension on BuildContext {
-  // Responsive dimensions based on screen size
   double get responsiveSpacing {
     final width = MediaQuery.of(this).size.width;
     if (width < AppDimens.breakpointCompact) return AppDimens.spaceS;
@@ -383,7 +340,6 @@ extension BuildContextDimensExtension on BuildContext {
     return AppDimens.spaceL;
   }
 
-  // Responsive padding based on screen size
   EdgeInsets get responsivePadding {
     final width = MediaQuery.of(this).size.width;
     if (width < AppDimens.breakpointCompact) {
@@ -395,19 +351,14 @@ extension BuildContextDimensExtension on BuildContext {
     return const EdgeInsets.all(AppDimens.paddingL);
   }
 
-  // Get dimensions scaled by device pixel ratio for pixel-perfect UI
   double dp(double size) => size * MediaQuery.of(this).devicePixelRatio;
 
-  // Get screen width as double
   double get screenWidth => MediaQuery.of(this).size.width;
 
-  // Get screen height as double
   double get screenHeight => MediaQuery.of(this).size.height;
 
-  // Get screen density
   double get density => MediaQuery.of(this).devicePixelRatio;
 
-  // Check if screen is at different breakpoints
   bool get isCompactScreen =>
       screenWidth < AppDimens.breakpointCompact; // < 600dp
   bool get isMediumScreen =>
@@ -416,7 +367,6 @@ extension BuildContextDimensExtension on BuildContext {
   bool get isExpandedScreen =>
       screenWidth >= AppDimens.breakpointMedium; // >= 840dp
 
-  // For finer grain control if needed, aligning with older categories
   bool get isSmallScreen => isCompactScreen;
 
   bool get isLargeTabletScreen =>
@@ -425,7 +375,6 @@ extension BuildContextDimensExtension on BuildContext {
           AppDimens.breakpointLarge; // Example, if you need more distinctions
   bool get isDesktopScreen => screenWidth >= AppDimens.breakpointLarge;
 
-  // Get grid column count based on screen size (M3 guidance)
   int get gridColumnCount {
     if (isCompactScreen) return 4; // Small handsets often use 4 columns
     if (isMediumScreen) return 8; // Large handsets/small tablets
@@ -433,42 +382,32 @@ extension BuildContextDimensExtension on BuildContext {
   }
 }
 
-/// Extension for creating responsive dimensions as percentage of screen size
 extension ResponsiveSizeExtension on num {
-  // Get % of screen width
   double sw(BuildContext context) =>
       this * MediaQuery.of(context).size.width / 100;
 
-  // Get % of screen height
   double sh(BuildContext context) =>
       this * MediaQuery.of(context).size.height / 100;
 
-  // Responsive value based on design width (default 375.0 for mobile)
   double w(BuildContext context, {double designWidth = 375.0}) =>
       this * MediaQuery.of(context).size.width / designWidth;
 
-  // Responsive value based on design height (default 812.0 for mobile)
   double h(BuildContext context, {double designHeight = 812.0}) =>
       this * MediaQuery.of(context).size.height / designHeight;
 }
 
-/// Helper class for creating responsive dimensions (alternative to extensions)
 class ResponsiveDimensions {
-  // Scale dimensions based on screen size using M3 breakpoints
   static double scale(double size, BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < AppDimens.breakpointCompact) {
-      // Small devices
       return size * AppDimens.scaleFactorSmall;
     }
     if (width >= AppDimens.breakpointExpanded) {
-      // Large devices
       return size * AppDimens.scaleFactorLarge;
     }
     return size; // Medium devices
   }
 
-  // Get screen-size appropriate padding using M3 breakpoints
   static EdgeInsets getPadding(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < AppDimens.breakpointCompact) {
@@ -480,7 +419,6 @@ class ResponsiveDimensions {
     return const EdgeInsets.all(AppDimens.paddingL);
   }
 
-  // Convert design dimensions to current screen dimensions
   static double fromDesign(
     double value,
     BuildContext context, {
@@ -490,7 +428,6 @@ class ResponsiveDimensions {
     return value * currentWidth / designWidth;
   }
 
-  // Get appropriate icon size for screen size
   static double getAdaptiveIconSize(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < AppDimens.breakpointCompact) {
@@ -502,7 +439,6 @@ class ResponsiveDimensions {
     return AppDimens.iconL;
   }
 
-  // Get appropriate avatar size for screen size
   static double getAdaptiveAvatarSize(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < AppDimens.breakpointCompact) {
@@ -514,7 +450,6 @@ class ResponsiveDimensions {
     return AppDimens.avatarSizeXL;
   }
 
-  // Get appropriate text size scale factor for screen size
   static double getTextScaleFactor(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     if (width < AppDimens.breakpointCompact) {

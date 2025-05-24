@@ -68,7 +68,6 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<bool> checkEmailExists(String email) async {
     try {
-      // Assuming this is a placeholder implementation
       return false;
     } catch (e) {
       return false;

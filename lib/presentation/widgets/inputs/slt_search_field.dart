@@ -6,7 +6,6 @@ import 'package:spaced_learning_app/core/utils/debouncer.dart';
 
 part 'slt_search_field.g.dart';
 
-// Provider for the search query
 @riverpod
 class SearchQuery extends _$SearchQuery {
   final _debouncer = Debouncer(milliseconds: 300);
@@ -30,7 +29,6 @@ class SearchQuery extends _$SearchQuery {
   }
 }
 
-// Provider for search suggestions
 @riverpod
 class SearchSuggestions extends _$SearchSuggestions {
   @override
@@ -118,7 +116,6 @@ class _SlSearchFieldState<T> extends ConsumerState<SlSearchField<T>> {
 
     _focusNode.addListener(_onFocusChange);
 
-    // Initialize with existing query if any
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final currentQuery = ref.read(searchQueryProvider(widget.searchId));
       if (currentQuery.isNotEmpty && _controller.text.isEmpty) {

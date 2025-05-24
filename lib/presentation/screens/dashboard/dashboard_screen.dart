@@ -1,4 +1,3 @@
-// lib/presentation/screens/dashboard/dashboard_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,9 +16,6 @@ import 'package:spaced_learning_app/presentation/widgets/states/slt_error_state_
 
 import '../../../core/router/app_router.dart';
 
-/// Dashboard screen that serves as the main overview of learning progress and activities
-/// This screen is designed to provide a comprehensive view of the user's learning journey
-/// without being part of the bottom navigation flow
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
@@ -31,18 +27,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Load initial data when screen is created
     Future.microtask(() {
       _loadData();
     });
   }
 
-  // Load all required data for the dashboard
   Future<void> _loadData() async {
-    // Load learning statistics
     await ref.read(loadAllStatsProvider(refreshCache: false).future);
 
-    // Load due tasks for current user
     final user = ref.read(currentUserProvider);
     if (user != null) {
       await ref.read(progressStateProvider.notifier).loadDueProgress(user.id);
@@ -54,7 +46,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Watch required states
     final learningStats = ref.watch(learningStatsStateProvider);
     final learningInsights = ref.watch(learningInsightsProvider);
     final dueProgress = ref.watch(todayDueTasksProvider);
@@ -80,27 +71,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Personal greeting
               _buildGreetingSection(context, user),
               const SizedBox(height: AppDimens.spaceXL),
 
-              // Learning overview summary card
               _buildOverviewCard(context, learningStats),
               const SizedBox(height: AppDimens.spaceXL),
 
-              // Learning activity grid
               _buildLearningActivitySection(context, learningStats),
               const SizedBox(height: AppDimens.spaceXL),
 
-              // Due items section
               _buildDueItemsSection(context, dueProgress),
               const SizedBox(height: AppDimens.spaceXL),
 
-              // Insights section
               _buildInsightsSection(context, learningInsights),
               const SizedBox(height: AppDimens.spaceXL),
 
-              // Quick action buttons
               _buildQuickActionButtons(context),
             ],
           ),
@@ -109,12 +94,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build greeting section with user's name
   Widget _buildGreetingSection(BuildContext context, dynamic user) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Get appropriate greeting based on time of day
     final greeting = _getTimeBasedGreeting();
     final username = user != null
         ? (user.displayName ?? user.firstName ?? user.username)
@@ -155,7 +138,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build overview card with main stats
   Widget _buildOverviewCard(BuildContext context, AsyncValue learningStats) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -181,7 +163,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
             const SizedBox(height: AppDimens.spaceM),
 
-            // Show stats or loading state
             learningStats.when(
               data: (data) {
                 if (data == null) {
@@ -190,7 +171,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
                 return Column(
                   children: [
-                    // Current streak
                     _buildOverviewItem(
                       context,
                       'Learning Streak',
@@ -200,7 +180,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                     const Divider(),
 
-                    // Vocabulary completion
                     _buildOverviewItem(
                       context,
                       'Vocabulary Mastered',
@@ -210,7 +189,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                     const Divider(),
 
-                    // Tasks due
                     _buildOverviewItem(
                       context,
                       'Tasks Due Today',
@@ -236,7 +214,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build overview item row
   Widget _buildOverviewItem(
     BuildContext context,
     String label,
@@ -275,7 +252,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build learning activity section with stat cards
   Widget _buildLearningActivitySection(
     BuildContext context,
     AsyncValue learningStats,
@@ -293,7 +269,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Show stats grid or loading state
         learningStats.when(
           data: (data) {
             if (data == null) {
@@ -353,7 +328,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build due items section
   Widget _buildDueItemsSection(BuildContext context, List dueProgress) {
     final theme = Theme.of(context);
 
@@ -368,7 +342,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Show due tasks or empty state
         dueProgress.isEmpty
             ? SltEmptyStateWidget.noData(
                 title: 'Nothing Due Today',
@@ -377,7 +350,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               )
             : Column(
                 children: [
-                  // Show up to 3 due items
                   ...dueProgress
                       .take(3)
                       .map(
@@ -397,7 +369,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                       ),
 
-                  // View all button if more than 3 items
                   if (dueProgress.length > 3)
                     SltPrimaryButton(
                       text: 'View All Due Tasks',
@@ -410,7 +381,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build insights section
   Widget _buildInsightsSection(
     BuildContext context,
     AsyncValue learningInsights,
@@ -429,7 +399,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Show insights or loading state
         learningInsights.when(
           data: (insights) {
             if (insights == null || insights.isEmpty) {
@@ -440,7 +409,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               );
             }
 
-            // Show only the first insight
             final insight = insights.first;
             return SltInsightCard(
               title: _getInsightTitle(insight.type),
@@ -465,7 +433,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Build quick action buttons section
   Widget _buildQuickActionButtons(BuildContext context) {
     return Wrap(
       spacing: AppDimens.spaceM,
@@ -490,9 +457,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  // Helper methods
 
-  // Get appropriate greeting based on time of day
   String _getTimeBasedGreeting() {
     final hour = DateTime.now().hour;
 
@@ -507,7 +472,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return 'Good evening';
   }
 
-  // Get cycle info text based on cycle type
   String _getCycleInfo(dynamic cycleStudied) {
     if (cycleStudied == null) {
       return 'Learning in progress';
@@ -529,7 +493,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
-  // Map insight type to title
   String _getInsightTitle(dynamic insightType) {
     if (insightType == null) {
       return 'Learning Insight';
@@ -553,7 +516,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
-  // Map insight type to appropriate icon
   IconData _getInsightIcon(dynamic insightType) {
     if (insightType == null) {
       return Icons.insights;
@@ -577,7 +539,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
-  // Map insight type to appropriate color
   Color _getInsightColor(dynamic insightType, ColorScheme colorScheme) {
     if (insightType == null) {
       return colorScheme.primary;

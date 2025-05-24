@@ -1,4 +1,3 @@
-// lib/presentation/viewmodels/theme_viewmodel.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,7 +29,6 @@ class ThemeState extends _$ThemeState {
       await ref.read(storageServiceProvider).saveDarkMode(newIsDarkMode);
       state = newIsDarkMode ? ThemeMode.dark : ThemeMode.light;
     } catch (e) {
-      // Keep current state on error
     }
   }
 
@@ -41,7 +39,6 @@ class ThemeState extends _$ThemeState {
       await ref.read(storageServiceProvider).saveDarkMode(isDarkMode);
       state = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     } catch (e) {
-      // Keep current state on error
     }
   }
 }

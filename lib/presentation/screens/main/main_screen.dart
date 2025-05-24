@@ -1,4 +1,3 @@
-// lib/presentation/screens/main/main_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -19,10 +18,8 @@ class MainScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Current screen based on active tab
     Widget currentScreen;
 
-    // Set current screen based on active tab
     switch (tab) {
       case BottomNavigationTab.home:
         currentScreen = const HomeScreen();
@@ -69,7 +66,6 @@ class MainScreen extends ConsumerWidget {
             .setActiveTab(selectedTab);
       },
       destinations: [
-        // Home tab
         NavigationDestination(
           icon: Icon(
             Icons.home_outlined,
@@ -84,7 +80,6 @@ class MainScreen extends ConsumerWidget {
           label: 'Home',
         ),
 
-        // Books tab
         NavigationDestination(
           icon: Icon(
             Icons.book_outlined,
@@ -99,7 +94,6 @@ class MainScreen extends ConsumerWidget {
           label: 'Books',
         ),
 
-        // Due tab
         NavigationDestination(
           icon: Icon(
             Icons.assignment_outlined,
@@ -114,7 +108,6 @@ class MainScreen extends ConsumerWidget {
           label: 'Due',
         ),
 
-        // Stats tab
         NavigationDestination(
           icon: Icon(
             Icons.bar_chart_outlined,
@@ -129,7 +122,6 @@ class MainScreen extends ConsumerWidget {
           label: 'Stats',
         ),
 
-        // Profile tab
         NavigationDestination(
           icon: Icon(
             Icons.person_outline_rounded,

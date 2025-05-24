@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_time_picker_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,7 +16,6 @@ class SelectedTime extends _$SelectedTime {
   }
 }
 
-/// A time picker dialog with Material 3 design and customizable options.
 class SltTimePickerDialog extends ConsumerWidget {
   final TimeOfDay initialTime;
   final String title;
@@ -43,7 +41,6 @@ class SltTimePickerDialog extends ConsumerWidget {
   });
 
   factory SltTimePickerDialog._create({
-    // Private factory
     required TimeOfDay initialTime,
     String title = 'Select Time',
     String confirmText = 'OK',
@@ -67,7 +64,6 @@ class SltTimePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking a time
   factory SltTimePickerDialog.pickTime({
     required TimeOfDay initialTime,
     String title = 'Select Time',
@@ -80,7 +76,6 @@ class SltTimePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking a reminder time
   factory SltTimePickerDialog.pickReminderTime({
     TimeOfDay? initialTime,
     String title = 'Set Reminder Time',
@@ -92,7 +87,6 @@ class SltTimePickerDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for picking time in 24-hour format
   factory SltTimePickerDialog.pick24HourTime({
     required TimeOfDay initialTime,
     String title = 'Select Time (24h)',
@@ -106,9 +100,6 @@ class SltTimePickerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // This build method is for wrapping Flutter's TimePickerDialog
-    // Direct styling of buttons inside TimePickerDialog is limited.
-    // We rely on the global theme passed to showTimePicker's builder.
     Widget timePickerDialogWidget = TimePickerDialog(
       initialTime: initialTime,
       initialEntryMode: initialEntryMode,
@@ -126,7 +117,6 @@ class SltTimePickerDialog extends ConsumerWidget {
     return timePickerDialogWidget;
   }
 
-  /// Show the time picker dialog
   static Future<TimeOfDay?> show(
     BuildContext context,
     WidgetRef ref, {
@@ -181,7 +171,6 @@ class SltTimePickerDialog extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(AppDimens.radiusL),
               ),
               elevation: AppDimens.elevationM,
-              // Button styles for the native dialog
               cancelButtonStyle: TextButton.styleFrom(
                 foregroundColor: colorScheme.primary,
                 textStyle: theme.textTheme.labelLarge,
@@ -222,7 +211,6 @@ class SltTimePickerDialog extends ConsumerWidget {
               ),
             ),
             textButtonTheme: TextButtonThemeData(
-              // Fallback for dialog actions
               style: TextButton.styleFrom(
                 foregroundColor: colorScheme.primary,
                 textStyle: theme.textTheme.labelLarge,
@@ -236,7 +224,6 @@ class SltTimePickerDialog extends ConsumerWidget {
               ),
             ),
             dialogTheme: DialogThemeData(
-              // General dialog theming
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppDimens.radiusL),
               ),

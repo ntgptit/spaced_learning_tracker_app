@@ -1,1 +1,0 @@
-// Screen header placeholder 

@@ -1,4 +1,3 @@
-// lib/presentation/viewmodels/bottom_navigation_provider.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'bottom_navigation_provider.g.dart';

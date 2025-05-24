@@ -1,4 +1,3 @@
-// lib/presentation/widgets/inputs/slt_text_field.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -116,7 +115,6 @@ class SltTextField extends StatefulWidget {
     return SltTextField(
       controller: controller,
       initialValue: initialValue,
-      // <<--- ADDED
       hint: hint,
       prefixIcon: Icons.search,
       keyboardType: TextInputType.text,
@@ -142,7 +140,6 @@ class SltTextField extends StatefulWidget {
     return SltTextField(
       controller: controller,
       initialValue: initialValue,
-      // <<--- ADDED
       label: label,
       hint: hint,
       keyboardType: allowDecimal
@@ -173,7 +170,6 @@ class SltTextField extends StatefulWidget {
     return SltTextField(
       controller: controller,
       initialValue: initialValue,
-      // <<--- ADDED
       label: label,
       hint: hint,
       minLines: minLines,
@@ -193,7 +189,6 @@ class _SltTextFieldState extends State<SltTextField> {
   TextSelection? _previousSelection;
   String _previousText = '';
 
-  // (Các phương thức _getEffectiveContentPadding, _getEffectiveIconSize, etc. giữ nguyên)
   EdgeInsetsGeometry _getEffectiveContentPadding() {
     if (widget.contentPadding != null) {
       return widget.contentPadding!;
@@ -230,7 +225,6 @@ class _SltTextFieldState extends State<SltTextField> {
           theme.textTheme.bodyMedium ??
           theme.textTheme.bodyLarge!.copyWith(fontSize: 14);
     }
-    // Use a slightly more visible disabled color if possible, or stick to a standard opacity.
     final disabledTextColor = colorScheme.onSurface.withOpacity(
       0.38,
     ); // Standard disabled opacity
@@ -251,7 +245,6 @@ class _SltTextFieldState extends State<SltTextField> {
     }
 
     if (widget.errorText != null && widget.errorText!.isNotEmpty) {
-      // Check if errorText is not empty
       defaultLabelColor = widget.errorColor ?? colorScheme.error;
     }
 
@@ -261,7 +254,6 @@ class _SltTextFieldState extends State<SltTextField> {
   @override
   void initState() {
     super.initState();
-    // <<--- MODIFIED: Use initialValue if controller is not provided
     _controller =
         widget.controller ?? TextEditingController(text: widget.initialValue);
     _focusNode = widget.focusNode ?? FocusNode();
@@ -272,25 +264,20 @@ class _SltTextFieldState extends State<SltTextField> {
   }
 
   void _onControllerChanged() {
-    // Guard clause: if not mounted, do nothing.
     if (!mounted) return;
 
     final currentText = _controller.text;
     final currentSelection = _controller.selection;
 
-    // Check for unexpected cursor jump to the beginning when typing fast (common on some platforms/IDEs)
-    // This attempts to mitigate it by restoring previous selection if text changed and cursor is at 0.
     if (currentText != _previousText &&
         currentText.isNotEmpty &&
         currentSelection.baseOffset == 0 &&
         currentSelection.extentOffset == 0 &&
         _previousSelection != null &&
         _previousSelection!.baseOffset != 0) {
-      // More specific check: if a single character was prepended (often due to IME issues or fast typing)
       if (_previousText.isNotEmpty &&
           currentText.length == _previousText.length + 1 &&
           currentText.substring(1) == _previousText) {
-        // Likely an erroneous prepend, try to correct it by moving the char to the end
         final charPrepended = currentText[0];
         final correctedText = _previousText + charPrepended;
         _controller.value = TextEditingValue(
@@ -299,15 +286,12 @@ class _SltTextFieldState extends State<SltTextField> {
         );
       } else if (_previousSelection!.isValid &&
           _previousSelection!.baseOffset <= currentText.length) {
-        // Fallback to restoring previous valid selection if the specific prepend case isn't met
-        // _controller.selection = _previousSelection!; // This can cause loop, be careful
       }
     }
 
     _previousText = _controller.text;
     _previousSelection = _controller.selection;
 
-    // Propagate onChanged if it exists
     widget.onChanged?.call(currentText);
   }
 
@@ -338,8 +322,6 @@ class _SltTextFieldState extends State<SltTextField> {
       _controller.addListener(_onControllerChanged);
     } else if (widget.controller == null &&
         widget.initialValue != oldWidget.initialValue) {
-      // If using internal controller and initialValue changes, update controller text
-      // This ensures declarative updates to initialValue are reflected
       _controller.text = widget.initialValue ?? '';
       _previousText = _controller.text;
     }
@@ -355,8 +337,6 @@ class _SltTextFieldState extends State<SltTextField> {
     }
 
     if (widget.obscureText != oldWidget.obscureText && !widget.obscureText) {
-      // If obscureText is turned off, make password visible.
-      // If it's turned on, _passwordVisible remains as is (controlled by toggle).
       _passwordVisible = true;
     }
   }
@@ -398,7 +378,6 @@ class _SltTextFieldState extends State<SltTextField> {
             ? errorStateIconColor
             : (_hasFocus ? activeIconColor : defaultIconColor));
 
-    // Suffix icon logic
     Widget? finalSuffixWidget;
 
     if (widget.obscureText) {
@@ -458,14 +437,11 @@ class _SltTextFieldState extends State<SltTextField> {
         readOnly: widget.readOnly,
         enabled: widget.enabled,
         obscureText: widget.obscureText && !_passwordVisible,
-        // Use combined state
         maxLength: widget.maxLength,
         maxLines: widget.obscureText ? 1 : widget.maxLines,
-        // Password fields are single line
         minLines: widget.minLines,
         autofocus: widget.autofocus,
         onChanged: widget.onChanged,
-        // Direct pass-through, internal logic handled by listener
         onTap: widget.onTap,
         inputFormatters: widget.inputFormatters,
         onEditingComplete: widget.onEditingComplete,

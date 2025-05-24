@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/dialog/slt_bottom_sheet_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -6,7 +5,6 @@ import 'package:spaced_learning_app/presentation/widgets/dialogs/slt_dialog_butt
 
 import '../buttons/slt_primary_button.dart';
 
-/// A customizable bottom sheet dialog with Material 3 design principles.
 class SltBottomSheetDialog extends ConsumerWidget {
   final String? title;
   final String? message;
@@ -57,7 +55,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
   });
 
   factory SltBottomSheetDialog._create({
-    // Private factory
     String? title,
     String? message,
     Widget? content,
@@ -106,7 +103,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for a simple message bottom sheet
   static void showMessage(
     BuildContext context, {
     required String title,
@@ -123,7 +119,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
       showCloseButton: false,
       actions: [
         SltPrimaryButton(
-          // Using SltPrimaryButton
           text: closeButtonText,
           onPressed: () {
             Navigator.pop(context);
@@ -136,7 +131,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for an action sheet
   static void showActionSheet(
     BuildContext context, {
     String? title,
@@ -159,7 +153,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
     );
   }
 
-  /// Factory for a list view bottom sheet
   static void showList(
     BuildContext context, {
     required String title,
@@ -309,8 +302,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
                   (useSafeArea ? mediaQuery.padding.bottom : 0),
             ),
             child: SlDialogButtonBar(
-              // Using SlDialogButtonBar for consistency
-              // This assumes actions are typically [cancel, confirm] or just [confirm]
               cancelButton: actions!.length > 1 ? actions![0] : null,
               confirmButton: actions!.length == 1
                   ? actions![0]
@@ -327,7 +318,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
           color: effectiveBackgroundColor,
           borderRadius: effectiveBorderRadius,
           boxShadow: [
-            // M3 style elevation shadow
             BoxShadow(
               color: theme.shadowColor.withValues(alpha: 0.1),
               blurRadius: AppDimens.elevationS, // e.g., 3.0
@@ -346,7 +336,6 @@ class SltBottomSheetDialog extends ConsumerWidget {
     );
   }
 
-  /// Show the bottom sheet dialog
   static Future<T?> show<T>(
     BuildContext context, {
     String? title,
@@ -374,15 +363,11 @@ class SltBottomSheetDialog extends ConsumerWidget {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       useSafeArea: false,
-      // Let the SltBottomSheetDialog handle its own safe area for content
       backgroundColor: Colors.transparent,
-      // Make background transparent
       isScrollControlled: isScrollControlled,
       elevation: 0,
-      // Use custom shadow in SltBottomSheetDialog
       builder: (BuildContext builderContext) {
         return SltBottomSheetDialog._create(
-          // Using private factory
           title: title,
           message: message,
           content: content,

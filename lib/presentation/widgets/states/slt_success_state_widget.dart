@@ -256,7 +256,6 @@ class SltSuccessStateWidget extends ConsumerWidget {
     final textTheme = theme.textTheme;
     final effectiveSuccessColor = accentColor ?? colorScheme.primary;
 
-    // Handle auto-dismiss if needed
     if (autoHideDuration != null && context.mounted) {
       Future.delayed(autoHideDuration!, () {
         if (context.mounted) {

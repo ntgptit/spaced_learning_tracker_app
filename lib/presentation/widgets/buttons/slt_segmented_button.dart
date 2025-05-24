@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_segmented_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,7 +80,6 @@ class SltSegmentButton<T> extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Initialize state with initial value(s)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (isMultiSelect) {
         if (initialMultiSelections != null) {
@@ -100,7 +98,6 @@ class SltSegmentButton<T> extends ConsumerWidget {
       }
     });
 
-    // Set up effective colors
     final effectiveSelectedBackgroundColor =
         selectedBackgroundColor ?? colorScheme.primary;
     final effectiveBackgroundColor =
@@ -111,7 +108,6 @@ class SltSegmentButton<T> extends ConsumerWidget {
     final effectiveBorderRadius = borderRadius ?? AppDimens.radiusM;
 
     if (isMultiSelect) {
-      // Handle multi-selection segmented button
       final selectedValues = ref.watch(
         multiSegmentStateProvider(groupId: groupId),
       );
@@ -154,7 +150,6 @@ class SltSegmentButton<T> extends ConsumerWidget {
         ),
       );
     } else {
-      // Handle single-selection segmented button
       final selectedValue = ref.watch(segmentStateProvider(groupId: groupId));
 
       return SegmentedButton<T>(
@@ -200,7 +195,6 @@ class SltSegmentButton<T> extends ConsumerWidget {
     }
   }
 
-  // Helper method to convert string Set to typed Set
   Set<T> _convertToTypeSet<T>(Set<String> stringSet) {
     final result = <T>{};
 

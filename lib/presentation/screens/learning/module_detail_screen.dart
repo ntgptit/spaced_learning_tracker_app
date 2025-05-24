@@ -1,4 +1,3 @@
-// lib/presentation/screens/learning/module_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -30,23 +29,18 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
   void initState() {
     super.initState();
 
-    // Load module details and progress data
     Future.microtask(() {
       _loadData();
     });
   }
 
-  // Load all required data for this screen
   Future<void> _loadData() async {
-    // Load module details
     await ref
         .read(selectedModuleProvider.notifier)
         .loadModuleDetails(widget.moduleId);
 
-    // Get module data after loading
     final moduleData = ref.read(selectedModuleProvider).valueOrNull;
 
-    // If module has progress, load progress details and repetitions
     if (moduleData != null && moduleData.progress.isNotEmpty) {
       final progressId = moduleData.progress.first.id;
       await ref
@@ -60,7 +54,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch module, progress and repetitions state
     final moduleState = ref.watch(selectedModuleProvider);
     final progressState = ref.watch(selectedProgressProvider);
     final repetitionsState = ref.watch(repetitionStateProvider);
@@ -89,19 +82,16 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Build screen content based on states
   Widget _buildContent(
     BuildContext context,
     AsyncValue moduleState,
     AsyncValue progressState,
     AsyncValue repetitionsState,
   ) {
-    // Show loading state if module is loading
     if (moduleState.isLoading) {
       return const SltLoadingStateWidget(message: 'Loading module details...');
     }
 
-    // Show error state if module loading failed
     if (moduleState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Module',
@@ -110,7 +100,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // Get module data
     final module = moduleState.valueOrNull;
 
     if (module == null) {
@@ -124,21 +113,17 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Module header
         _buildModuleHeader(context, module),
         const SizedBox(height: AppDimens.spaceXL),
 
-        // Progress section
         Text('Your Progress', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Progress content or start learning button
         _buildProgressSection(context, module, progressState, repetitionsState),
       ],
     );
   }
 
-  // Module header with metadata
   Widget _buildModuleHeader(BuildContext context, dynamic module) {
     final theme = Theme.of(context);
 
@@ -149,7 +134,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Module title
             Text(
               module.title,
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -158,7 +142,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
             ),
             const SizedBox(height: AppDimens.spaceS),
 
-            // Book name
             if (module.bookName != null)
               Text(
                 'From: ${module.bookName}',
@@ -168,10 +151,8 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
               ),
             const SizedBox(height: AppDimens.spaceM),
 
-            // Module metadata
             Row(
               children: [
-                // Module number
                 Chip(
                   label: Text('Module ${module.moduleNo}'),
                   avatar: const Icon(Icons.bookmark),
@@ -179,7 +160,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
                 ),
                 const SizedBox(width: AppDimens.spaceM),
 
-                // Word count
                 Chip(
                   label: Text('${module.wordCount ?? 0} words'),
                   avatar: const Icon(Icons.text_fields),
@@ -193,17 +173,14 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Progress section or start learning button
   Widget _buildProgressSection(
     BuildContext context,
     dynamic module,
     AsyncValue progressState,
     AsyncValue repetitionsState,
   ) {
-    // Check if we have progress data
     final hasProgress = module.progress.isNotEmpty;
 
-    // If no progress, show start learning button
     if (!hasProgress) {
       return Center(
         child: Column(
@@ -226,7 +203,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // If progress is loading, show loading
     if (progressState.isLoading) {
       return const SizedBox(
         height: 200,
@@ -234,7 +210,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // If progress has error, show error
     if (progressState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Progress',
@@ -244,7 +219,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // Get progress data
     final progress = progressState.valueOrNull;
 
     if (progress == null) {
@@ -258,7 +232,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Progress card
         SltProgressCard(
           title: 'Learning Progress',
           subtitle: _getCycleInfo(progress.cyclesStudied),
@@ -268,17 +241,14 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
         ),
         const SizedBox(height: AppDimens.spaceXL),
 
-        // Repetitions section header
         Text(
           'Learning Schedule',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Repetitions list
         _buildRepetitionsSection(context, repetitionsState, progress.id),
 
-        // Continue learning button
         const SizedBox(height: AppDimens.spaceXL),
         Center(
           child: SltPrimaryButton(
@@ -291,13 +261,11 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Repetitions section
   Widget _buildRepetitionsSection(
     BuildContext context,
     AsyncValue repetitionsState,
     String progressId,
   ) {
-    // If repetitions are loading, show loading
     if (repetitionsState.isLoading) {
       return const SizedBox(
         height: 200,
@@ -305,7 +273,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // If repetitions have error, show error
     if (repetitionsState.hasError) {
       return SltErrorStateWidget(
         title: 'Error Loading Schedule',
@@ -317,7 +284,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
       );
     }
 
-    // Get repetitions data
     final repetitions = repetitionsState.valueOrNull ?? [];
 
     if (repetitions.isEmpty) {
@@ -353,7 +319,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Get repetition status icon
   Widget _getRepetitionStatusIcon(Repetition repetition) {
     final iconData = switch (repetition.status) {
       RepetitionStatus.completed => Icons.check_circle,
@@ -373,7 +338,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Get repetition status chip
   Widget _getRepetitionStatusChip(BuildContext context, Repetition repetition) {
     final text = switch (repetition.status) {
       RepetitionStatus.completed => 'Completed',
@@ -398,7 +362,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Format date for UI
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -416,7 +379,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  // Get cycle info text based on cycle type
   String _getCycleInfo(dynamic cycleStudied) {
     switch (cycleStudied.toString()) {
       case 'CycleStudied.firstTime':
@@ -434,13 +396,10 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     }
   }
 
-  // Start learning a new module
   Future<void> _startLearning() async {
     try {
-      // Show loading dialog
       _showLoadingDialog('Preparing your learning session...');
 
-      // Create progress for this module
       final progress = await ref
           .read(progressStateProvider.notifier)
           .createProgress(
@@ -452,7 +411,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
           );
 
       if (progress == null) {
-        // If progress creation failed, show error
         if (mounted) {
           Navigator.pop(context); // Close loading dialog
           _showErrorDialog(
@@ -462,23 +420,17 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
         return;
       }
 
-      // Create repetition schedule
       await ref
           .read(repetitionStateProvider.notifier)
           .createDefaultSchedule(progress.id);
 
-      // Reload data
       await _loadData();
 
-      // Close loading dialog if still mounted
       if (mounted) {
         Navigator.pop(context);
       }
 
-      // Navigate to learning session (to be implemented)
-      // context.push('/learning/${progress.id}');
     } catch (e) {
-      // Handle errors
       if (mounted) {
         Navigator.pop(context); // Close loading dialog
         _showErrorDialog('Error: ${e.toString()}');
@@ -486,13 +438,9 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     }
   }
 
-  // Continue existing progress
   void _continueProgress(dynamic progress) {
-    // Navigate to learning session (to be implemented)
-    // context.push('/learning/${progress.id}');
   }
 
-  // Helper method to show loading dialog
   void _showLoadingDialog(String message) {
     showDialog(
       context: context,
@@ -510,7 +458,6 @@ class _ModuleDetailScreenState extends ConsumerState<ModuleDetailScreen> {
     );
   }
 
-  // Helper method to show error dialog
   void _showErrorDialog(String message) {
     showDialog(
       context: context,

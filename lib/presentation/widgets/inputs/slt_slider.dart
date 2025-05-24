@@ -5,7 +5,6 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
 part 'slt_slider.g.dart';
 
-// Provider for slider state
 @riverpod
 class SliderState extends _$SliderState {
   @override
@@ -79,12 +78,10 @@ class SltSlider extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Set initial value if provided
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(sliderStateProvider(sliderId).notifier).setValue(value);
     });
 
-    // Get current value from provider
     final currentValue = ref.watch(sliderStateProvider(sliderId));
 
     final effectiveActiveColor = activeColor ?? colorScheme.primary;
@@ -97,7 +94,6 @@ class SltSlider extends ConsumerWidget {
       validator: validator,
       autovalidateMode: autovalidateMode,
       builder: (FormFieldState<double> field) {
-        // Handle field value changes
         void handleValueChange(double newValue) {
           field.didChange(newValue);
           ref.read(sliderStateProvider(sliderId).notifier).setValue(newValue);
@@ -109,7 +105,6 @@ class SltSlider extends ConsumerWidget {
         final isError = field.hasError || errorText != null;
         final displayedError = errorText ?? field.errorText;
 
-        // Format the value to display
         String formattedValue = currentValue.toStringAsFixed(valueDecimals);
         if (valuePrefix != null) {
           formattedValue = '$valuePrefix$formattedValue';

@@ -1,4 +1,3 @@
-// lib/presentation/widgets/cards/slt_image_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -6,9 +5,6 @@ import 'package:spaced_learning_app/core/theme/app_typography.dart';
 
 import '../media/slt_network_image.dart';
 
-/// A card that prominently features an image, either as a background or a central element.
-///
-/// It can overlay text or other widgets on top of the image.
 class SltImageCard extends ConsumerWidget {
   final String imageUrl;
   final BoxFit imageFit;
@@ -62,7 +58,6 @@ class SltImageCard extends ConsumerWidget {
     }
 
     Widget imageWidget = SltNetworkImage(
-      // Correct usage of SltNetworkImage
       imageUrl: imageUrl,
       fit: imageFit,
       width: double.infinity,
@@ -119,7 +114,6 @@ class SltImageCard extends ConsumerWidget {
                   end: Alignment.bottomCenter,
                 ),
                 borderRadius: BorderRadius.only(
-                  // This specifically needs BorderRadius
                   bottomLeft: (effectiveBorderRadiusGeometry is BorderRadius)
                       ? effectiveBorderRadiusGeometry.bottomLeft
                       : Radius.zero,

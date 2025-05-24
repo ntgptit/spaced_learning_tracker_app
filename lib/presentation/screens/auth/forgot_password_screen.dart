@@ -1,4 +1,3 @@
-// lib/presentation/screens/auth/forgot_password_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,7 +74,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
     final colorScheme = theme.colorScheme;
     final size = MediaQuery.of(context).size;
 
-    // Show success state if email was sent successfully
     if (forgotPasswordForm.isEmailSent) {
       return SltSuccessStateWidget(
         title: 'Reset Link Sent',
@@ -144,11 +142,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
                             SizedBox(height: AppDimens.spaceXXL),
 
-                            // Error Display
                             if (authError != null) ...[
                               SltErrorStateWidget(
                                 title: 'Reset Failed',
@@ -159,7 +155,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                               SizedBox(height: AppDimens.spaceL),
                             ],
 
-                            // Email Form
                             _buildEmailForm(
                               context,
                               theme,
@@ -168,15 +163,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
                             ),
                             SizedBox(height: AppDimens.spaceXXL),
 
-                            // Action Buttons
                             _buildActionButtons(context, theme, colorScheme),
                             SizedBox(height: AppDimens.spaceL),
 
-                            // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
                             SizedBox(height: AppDimens.spaceXXL),
 
-                            // Help Section
                             _buildHelpSection(context, theme, colorScheme),
                           ],
                         ),
@@ -196,7 +188,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
   ) {
     return Column(
       children: [
-        // Icon with animated background
         Container(
           width: AppDimens.iconXXL * 1.3,
           height: AppDimens.iconXXL * 1.3,
@@ -227,7 +218,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
         ),
         SizedBox(height: AppDimens.spaceXL),
 
-        // Title and Description
         Text(
           'Forgot Password?',
           style: theme.textTheme.displaySmall?.copyWith(
@@ -277,7 +267,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Section Header
           Row(
             children: [
               Container(
@@ -318,7 +307,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
           ),
           SizedBox(height: AppDimens.spaceL),
 
-          // Email Input
           SltTextField(
             label: 'Email Address',
             hint: 'Enter your email address',
@@ -433,7 +421,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
           ),
           SizedBox(height: AppDimens.spaceL),
 
-          // Help Action Cards
           Row(
             children: [
               Expanded(

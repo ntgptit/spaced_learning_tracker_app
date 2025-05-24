@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_chip_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,10 +83,8 @@ class SltChipButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Initialize chip state with initial value
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (groupId != null) {
-        // Handle group-based selection
         if (initialSelected) {
           final currentSelection = ref.read(
             chipGroupStateProvider(groupId: groupId!),
@@ -99,19 +96,16 @@ class SltChipButton extends ConsumerWidget {
           }
         }
       } else {
-        // Handle individual chip state
         ref
             .read(chipStateProvider(id: chipId).notifier)
             .setValue(initialSelected);
       }
     });
 
-    // Determine selection state
     final bool isSelected = groupId != null
         ? ref.watch(chipGroupStateProvider(groupId: groupId!)).contains(chipId)
         : ref.watch(chipStateProvider(id: chipId));
 
-    // Determine colors based on state and variant
     final effectiveBackgroundColor =
         backgroundColor ?? _getDefaultBackgroundColor(colorScheme);
     final effectiveForegroundColor =
@@ -143,7 +137,6 @@ class SltChipButton extends ConsumerWidget {
           )
         : null;
 
-    // Handle chip selection
     void handleSelection() {
       if (isDisabled) return;
 

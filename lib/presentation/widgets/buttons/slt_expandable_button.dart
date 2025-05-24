@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/button/slt_expandable_button.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,19 +49,16 @@ class SltExpandableButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Initialize expansion state
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(expandableButtonStateProvider(id: expandableId).notifier)
           .setValue(initiallyExpanded);
     });
 
-    // Get current expanded state
     final isExpanded = ref.watch(
       expandableButtonStateProvider(id: expandableId),
     );
 
-    // Calculate rotation for animation
     final rotationAngle = isExpanded ? 0.5 : 0.0;
 
     final effectiveBackgroundColor =
@@ -72,7 +68,6 @@ class SltExpandableButton extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Button header
         Material(
           color: effectiveBackgroundColor,
           borderRadius: BorderRadius.circular(AppDimens.radiusM),
@@ -138,7 +133,6 @@ class SltExpandableButton extends ConsumerWidget {
           ),
         ),
 
-        // Expandable content with animation
         AnimatedCrossFade(
           firstChild: const SizedBox(height: 0),
           secondChild: Padding(

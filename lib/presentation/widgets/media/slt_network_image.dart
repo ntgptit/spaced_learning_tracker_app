@@ -1,4 +1,3 @@
-// lib/presentation/widgets/media/slt_network_image.dart
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +46,6 @@ class SltNetworkImage extends ConsumerWidget {
       width: width,
       height: height,
       color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
-      // Subtle placeholder color
       child: const Center(
         child: Icon(
           Icons.image_search_rounded,
@@ -81,7 +79,6 @@ class SltNetworkImage extends ConsumerWidget {
       placeholder: (context, url) => placeholder ?? defaultPlaceholder,
       errorWidget: (context, url, error) => errorWidget ?? defaultErrorWidget,
       imageBuilder: (context, imageProvider) {
-        // If shape is circle or borderRadius is present, use Container for decoration
         if (shape == BoxShape.circle || borderRadius != null) {
           return Container(
             width: width,
@@ -89,14 +86,10 @@ class SltNetworkImage extends ConsumerWidget {
             decoration: BoxDecoration(
               shape: shape,
               borderRadius: (shape == BoxShape.rectangle) ? borderRadius : null,
-              // Apply borderRadius only if not circle
               image: DecorationImage(image: imageProvider, fit: fit),
             ),
           );
         }
-        // If no specific shape or borderRadius, return the image directly
-        // This might not be strictly necessary as CachedNetworkImage handles basic display,
-        // but Container gives more control if needed in future.
         return Image(
           image: imageProvider,
           fit: fit,
@@ -106,8 +99,6 @@ class SltNetworkImage extends ConsumerWidget {
       },
     );
 
-    // If borderRadius is provided and shape is rectangle, ClipRRect might be redundant
-    // if imageBuilder already handles borderRadius. However, it ensures clipping.
     if (borderRadius != null && shape == BoxShape.rectangle) {
       return ClipRRect(
         borderRadius: borderRadius!, // borderRadius is BorderRadiusGeometry

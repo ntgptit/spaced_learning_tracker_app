@@ -1,4 +1,3 @@
-// lib/presentation/widgets/managers/slt_dialog_manager.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +11,6 @@ import '../dialogs/slt_time_picker_dialog.dart';
 
 part 'slt_dialog_manager.g.dart';
 
-/// Enum for tracking different types of dialogs
 enum DialogType {
   alert,
   confirm,
@@ -24,7 +22,6 @@ enum DialogType {
   fullScreen,
 }
 
-/// Model class for dialog request
 class DialogRequest {
   final String id;
   final DialogType type;
@@ -33,7 +30,6 @@ class DialogRequest {
   DialogRequest({required this.id, required this.type, this.params = const {}});
 }
 
-/// Model class for dialog response
 class DialogResponse {
   final String id;
   final bool confirmed;
@@ -49,7 +45,6 @@ class DialogManager extends _$DialogManager {
   @override
   Map<String, DialogRequest> build() => {};
 
-  // Add a dialog to the active dialogs map
   void showDialog({
     required DialogType type,
     String id = defaultId,
@@ -60,20 +55,16 @@ class DialogManager extends _$DialogManager {
     state = {...state, id: request};
   }
 
-  // Remove a dialog from the active dialogs map
   void hideDialog(String id) {
     final newState = Map<String, DialogRequest>.from(state);
     newState.remove(id);
     state = newState;
   }
 
-  // Check if a dialog is currently showing
   bool isDialogActive(String id) => state.containsKey(id);
 
-  // Get all active dialogs
   List<DialogRequest> get activeDialogs => state.values.toList();
 
-  // Utility method to show an alert dialog
   Future<void> showAlertDialog(
     BuildContext context, {
     required String title,
@@ -84,10 +75,8 @@ class DialogManager extends _$DialogManager {
     IconData? icon,
     String id = 'alert_dialog',
   }) async {
-    // Register the dialog
     showDialog(type: DialogType.alert, id: id);
 
-    // Show the actual dialog
     await SltAlertDialog.show(
       context,
       ref as WidgetRef,
@@ -105,13 +94,11 @@ class DialogManager extends _$DialogManager {
       dialogId: id,
     );
 
-    // Ensure dialog is removed from state
     if (isDialogActive(id)) {
       hideDialog(id);
     }
   }
 
-  // Utility method to show a confirmation dialog
   Future<bool?> showConfirmDialog(
     BuildContext context, {
     required String title,
@@ -124,7 +111,6 @@ class DialogManager extends _$DialogManager {
     IconData? icon,
     String id = 'confirm_dialog',
   }) {
-    // Register the dialog
     showDialog(type: DialogType.confirm, id: id);
 
     return SltConfirmDialog.show(
@@ -153,7 +139,6 @@ class DialogManager extends _$DialogManager {
     });
   }
 
-  // Utility method to show a progress dialog
   Future<void> showProgressDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -164,7 +149,6 @@ class DialogManager extends _$DialogManager {
     VoidCallback? onTimeout,
     String id = 'progress_dialog',
   }) async {
-    // Register the dialog
     showDialog(type: DialogType.progress, id: id);
 
     await SltProgressDialog.show(
@@ -181,7 +165,6 @@ class DialogManager extends _$DialogManager {
     hideDialog(id);
   }
 
-  // Utility method to hide a progress dialog
   void hideProgressDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -193,7 +176,6 @@ class DialogManager extends _$DialogManager {
     }
   }
 
-  // Utility method to show a date picker dialog
   Future<DateTime?> showDatePickerDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -203,7 +185,6 @@ class DialogManager extends _$DialogManager {
     String title = 'Select Date',
     String id = 'date_picker_dialog',
   }) {
-    // Register the dialog
     showDialog(type: DialogType.date, id: id);
 
     return SltDatePickerDialog.show(
@@ -219,7 +200,6 @@ class DialogManager extends _$DialogManager {
     });
   }
 
-  // Utility method to show a time picker dialog
   Future<TimeOfDay?> showTimePickerDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -228,7 +208,6 @@ class DialogManager extends _$DialogManager {
     bool use24HourFormat = false,
     String id = 'time_picker_dialog',
   }) {
-    // Register the dialog
     showDialog(type: DialogType.time, id: id);
 
     return SltTimePickerDialog.show(
@@ -243,7 +222,6 @@ class DialogManager extends _$DialogManager {
     });
   }
 
-  // Utility method to show an input dialog
   Future<String?> showInputDialog(
     BuildContext context,
     WidgetRef ref, {
@@ -258,7 +236,6 @@ class DialogManager extends _$DialogManager {
     String? Function(String?)? validator,
     String id = 'input_dialog',
   }) {
-    // Register the dialog
     showDialog(type: DialogType.input, id: id);
 
     return SltInputDialog.show(

@@ -1,1 +1,0 @@
-// Stacked bar chart placeholder 

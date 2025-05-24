@@ -1,1 +1,0 @@
-// Shimmer loading placeholder 

@@ -1,1 +1,0 @@
-// Swipeable list tile placeholder 

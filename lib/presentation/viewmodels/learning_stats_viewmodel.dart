@@ -72,7 +72,6 @@ Future<void> loadAllStats(
       statsRepo.getLearningInsights(),
     ]);
 
-    // Invalidate để trigger rebuild và gọi lại build()
     ref.invalidate(learningStatsStateProvider);
     ref.invalidate(learningInsightsProvider);
   } catch (e) {

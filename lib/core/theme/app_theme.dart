@@ -5,7 +5,6 @@ import 'app_colors.dart';
 import 'app_dimens.dart';
 import 'app_typography.dart';
 
-/// App theme configuration for light and dark modes
 class AppTheme {
   static ThemeData get lightTheme => _buildTheme(Brightness.light);
 
@@ -42,7 +41,6 @@ class AppTheme {
       progressIndicatorTheme: _buildProgressIndicatorTheme(isLight),
       tooltipTheme: _buildTooltipTheme(isLight),
       extensions: [_buildSemanticColorExtension(isLight)],
-      // Enable touch ripples and ink effects
       splashFactory: InkRipple.splashFactory,
       materialTapTargetSize: MaterialTapTargetSize.padded,
     );
@@ -78,7 +76,6 @@ class AppTheme {
         inverseSurface: AppColors.surfaceDark,
         onInverseSurface: AppColors.textPrimaryDark,
         inversePrimary: AppColors.primaryLight,
-        // Material 3 container colors
         surfaceTint: AppColors.surfaceTint,
         surfaceContainerLowest: AppColors.surfaceContainerLowest,
         surfaceContainerLow: AppColors.surfaceContainerLow,
@@ -116,7 +113,6 @@ class AppTheme {
       inverseSurface: AppColors.surface,
       onInverseSurface: AppColors.textPrimary,
       inversePrimary: AppColors.primary,
-      // Material 3 container colors
       surfaceTint: AppColors.surfaceTintDark,
       surfaceContainerLowest: AppColors.surfaceContainerLowestDark,
       surfaceContainerLow: AppColors.surfaceContainerLowDark,
@@ -666,24 +662,20 @@ class AppTheme {
     );
   }
 
-  /// Create the semantic color extension for the theme
   static SemanticColorExtension _buildSemanticColorExtension(bool isLight) {
     return isLight
         ? SemanticColorExtension.light()
         : SemanticColorExtension.dark();
   }
 
-  /// Get theme based on system brightness
   static ThemeData getThemeByBrightness(Brightness brightness) {
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
 
-  /// Get theme based on a boolean isDark flag
   static ThemeData getTheme(bool isDark) {
     return isDark ? darkTheme : lightTheme;
   }
 
-  /// Create a custom theme from a seed color
   static ThemeData createThemeFromSeed({
     required Color seedColor,
     required Brightness brightness,
@@ -695,10 +687,8 @@ class AppTheme {
 
     final bool isLight = brightness == Brightness.light;
 
-    // Start with standard theme
     final ThemeData baseTheme = isLight ? lightTheme : darkTheme;
 
-    // Apply the new color scheme
     return baseTheme.copyWith(
       colorScheme: colorScheme,
       primaryColor: colorScheme.primary,
@@ -707,7 +697,6 @@ class AppTheme {
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
       ),
-      // Update other theme components as needed
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: baseTheme.elevatedButtonTheme.style?.copyWith(
           backgroundColor: WidgetStateProperty.resolveWith(
@@ -751,41 +740,33 @@ class AppTheme {
         labelColor: colorScheme.primary,
         indicatorColor: colorScheme.primary,
       ),
-      // Add more component theme customizations as needed
     );
   }
 }
 
-/// Import the SemanticColorExtension from color_extensions.dart
-/// This is just a placeholder to avoid compilation errors if the extension is not imported
 class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
-  // Score and rating colors
   final Color excellentColor;
   final Color goodColor;
   final Color averageColor;
   final Color belowAverageColor;
   final Color poorColor;
 
-  // Status colors
   final Color successColor;
   final Color warningColor;
   final Color errorColor;
   final Color infoColor;
   final Color neutralColor;
 
-  // Functional colors
   final Color disabledColor;
   final Color highlightColor;
   final Color selectedColor;
   final Color unselectedColor;
 
-  // Custom semantic colors
   final Color newItemColor;
   final Color updatedItemColor;
   final Color deletedItemColor;
   final Color archivedColor;
 
-  // Learning specific colors
   final Color masteringColor; // For fully mastered content
   final Color learningColor; // For in-progress learning
   final Color needsReviewColor; // For content that needs review
@@ -816,36 +797,30 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
     required this.notStartedColor,
   });
 
-  /// Default light theme semantic colors
   factory SemanticColorExtension.light() {
     return SemanticColorExtension(
-      // Score colors
       excellentColor: AppColors.excellent,
       goodColor: AppColors.good,
       averageColor: AppColors.average,
       belowAverageColor: AppColors.warning,
       poorColor: AppColors.poor,
 
-      // Status colors
       successColor: AppColors.success,
       warningColor: AppColors.warning,
       errorColor: AppColors.error,
       infoColor: AppColors.info,
       neutralColor: Colors.grey.shade600,
 
-      // Functional colors
       disabledColor: AppColors.textDisabled,
       highlightColor: AppColors.secondary.withValues(alpha: 0.15),
       selectedColor: AppColors.primary,
       unselectedColor: AppColors.textSecondary,
 
-      // Custom semantic colors
       newItemColor: AppColors.info,
       updatedItemColor: AppColors.success,
       deletedItemColor: AppColors.error,
       archivedColor: Colors.grey.shade600,
 
-      // Learning specific colors
       masteringColor: AppColors.excellent,
       learningColor: AppColors.info,
       needsReviewColor: AppColors.warning,
@@ -853,36 +828,30 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
     );
   }
 
-  /// Default dark theme semantic colors
   factory SemanticColorExtension.dark() {
     return SemanticColorExtension(
-      // Score colors
       excellentColor: AppColors.successDark,
       goodColor: AppColors.infoDark,
       averageColor: AppColors.warningDark,
       belowAverageColor: const Color(0xFFFBBD06),
       poorColor: AppColors.errorDark,
 
-      // Status colors
       successColor: AppColors.successDark,
       warningColor: AppColors.warningDark,
       errorColor: AppColors.errorDark,
       infoColor: AppColors.infoDark,
       neutralColor: Colors.grey.shade400,
 
-      // Functional colors
       disabledColor: AppColors.textDisabledDark,
       highlightColor: AppColors.secondaryLight.withValues(alpha: 0.15),
       selectedColor: AppColors.primaryLight,
       unselectedColor: AppColors.textSecondaryDark,
 
-      // Custom semantic colors
       newItemColor: AppColors.infoDark,
       updatedItemColor: AppColors.successDark,
       deletedItemColor: AppColors.errorDark,
       archivedColor: Colors.grey.shade400,
 
-      // Learning specific colors
       masteringColor: AppColors.successDark,
       learningColor: AppColors.infoDark,
       needsReviewColor: AppColors.warningDark,
@@ -992,7 +961,6 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
     );
   }
 
-  /// Helper method to get appropriate color for score value
   Color getScoreColor(double score, {double maxScore = 100}) {
     final percentage = score / maxScore;
 
@@ -1003,7 +971,6 @@ class SemanticColorExtension extends ThemeExtension<SemanticColorExtension> {
     return poorColor;
   }
 
-  /// Helper method to get color based on learning status
   Color getLearningStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'mastered':

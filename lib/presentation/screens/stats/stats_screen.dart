@@ -1,4 +1,3 @@
-// lib/presentation/screens/stats/stats_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -53,7 +52,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Streak stats
                   _buildSectionTitle(
                     context,
                     'Learning Streak',
@@ -63,7 +61,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   _buildStreakStats(context, stats),
                   const SizedBox(height: AppDimens.spaceXL),
 
-                  // Vocabulary stats
                   _buildSectionTitle(
                     context,
                     'Vocabulary Progress',
@@ -73,7 +70,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   _buildVocabularyStats(context, stats),
                   const SizedBox(height: AppDimens.spaceXL),
 
-                  // Due tasks stats
                   _buildSectionTitle(
                     context,
                     'Due Tasks',
@@ -83,7 +79,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   _buildDueStats(context, stats),
                   const SizedBox(height: AppDimens.spaceXL),
 
-                  // Completion stats
                   _buildSectionTitle(
                     context,
                     'Completion',
@@ -93,7 +88,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   _buildCompletionStats(context, stats),
                   const SizedBox(height: AppDimens.spaceXL),
 
-                  // Module cycle stats
                   _buildSectionTitle(
                     context,
                     'Learning Cycles',

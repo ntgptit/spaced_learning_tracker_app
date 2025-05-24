@@ -23,7 +23,6 @@ import '../../domain/repositories/learning_repository.dart';
 
 part 'providers.g.dart';
 
-// CORE SERVICES
 
 @riverpod
 ApiClient apiClient(Ref ref) => ApiClient();
@@ -34,66 +33,7 @@ StorageService storageService(Ref ref) => StorageService();
 @Riverpod(keepAlive: true)
 EventBus eventBus(Ref ref) => EventBus();
 
-// @riverpod
-// DeviceSettingsService deviceSettingsService(Ref ref) => DeviceSettingsService();
-//
-// // DEVICE SPECIFIC SERVICES
-//
-// @Riverpod(keepAlive: true)
-// FutureOr<DeviceSpecificService> deviceSpecificService(Ref ref) async {
-//   final deviceService = DeviceSpecificService(
-//     deviceSettingsService: ref.read(deviceSettingsServiceProvider),
-//   );
-//   await deviceService.initialize();
-//   return deviceService;
-// }
-//
-// // NOTIFICATION SERVICES
-//
-// @Riverpod(keepAlive: true)
-// FutureOr<NotificationService> notificationService(Ref ref) async {
-//   final deviceService = await ref.watch(deviceSpecificServiceProvider.future);
-//   final notificationService = NotificationService(
-//     deviceSpecificService: deviceService,
-//   );
-//   await notificationService.initialize();
-//   return notificationService;
-// }
-//
-// @riverpod
-// AlarmManagerService alarmManagerService(Ref ref) => AlarmManagerService(
-//   deviceSpecificService: ref.watch(
-//     deviceSpecificServiceProvider.future
-//         as ProviderListenable<DeviceSpecificService>,
-//   ),
-// );
-//
-// @riverpod
-// CloudReminderService cloudReminderService(Ref ref) => CloudReminderService(
-//   storageService: ref.read(storageServiceProvider),
-//   notificationService: ref.watch(
-//     notificationServiceProvider.future
-//         as ProviderListenable<NotificationService>,
-//   ),
-// );
-//
-// @Riverpod(keepAlive: true)
-// FutureOr<ReminderService> reminderService(Ref ref) async {
-//   final notificationService = await ref.watch(
-//     notificationServiceProvider.future,
-//   );
-//   return ReminderService(
-//     notificationService: notificationService,
-//     storageService: ref.read(storageServiceProvider),
-//     deviceSpecificService: await ref.watch(
-//       deviceSpecificServiceProvider.future,
-//     ),
-//     progressRepository: ref.read(progressRepositoryProvider),
-//     eventBus: ref.read(eventBusProvider),
-//   );
-// }
 
-// REPOSITORIES
 
 @riverpod
 AuthRepository authRepository(Ref ref) =>
@@ -123,32 +63,10 @@ UserRepository userRepository(Ref ref) =>
 LearningStatsRepository learningStatsRepository(Ref ref) =>
     LearningStatsRepositoryImpl(ref.read(apiClientProvider));
 
-// @riverpod
-// LearningProgressRepository learningProgressRepository(Ref ref) =>
-//     LearningProgressRepositoryImpl(ref.read(apiClientProvider));
 
 @riverpod
 LearningRepository learningRepository(Ref ref) {
   return LearningRepositoryImpl(ref.read(apiClientProvider));
 }
 
-// DATA SERVICES
 
-// @riverpod
-// LearningDataService learningDataService(Ref ref) =>
-//     LearningDataServiceImpl(ref.read(learningProgressRepositoryProvider));
-//
-// @Riverpod(keepAlive: true)
-// FutureOr<DailyTaskChecker> dailyTaskChecker(Ref ref) async {
-//   final reminderService = await ref.watch(reminderServiceProvider.future);
-//
-//   final dailyTaskChecker = DailyTaskChecker(
-//     progressRepository: ref.read(progressRepositoryProvider),
-//     storageService: ref.read(storageServiceProvider),
-//     eventBus: ref.read(eventBusProvider),
-//     reminderService: reminderService,
-//     notificationsPlugin: FlutterLocalNotificationsPlugin(),
-//   );
-//
-//   return dailyTaskChecker;
-// }

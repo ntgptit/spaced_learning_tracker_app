@@ -37,13 +37,6 @@ class LearningProgressState extends _$LearningProgressState {
     await loadData();
   }
 
-  // Future<bool> exportData() async {
-  //   try {
-  //     return await ref.read(learningRepositoryProvider).exportData();
-  //   } catch (_) {
-  //     return false;
-  //   }
-  // }
 
   Future<Map<String, dynamic>> getDashboardStats({
     String? book,

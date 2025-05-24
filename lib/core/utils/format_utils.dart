@@ -2,20 +2,15 @@ import 'dart:math';
 
 import 'package:intl/intl.dart';
 
-/// Format utilities
-/// Helper methods for formatting values
 class FormatUtils {
-  /// Format a number with commas (e.g., 1,234,567)
   static String formatNumber(num number) {
     return NumberFormat('#,##0').format(number);
   }
 
-  /// Format a number with specific decimal places
   static String formatDecimal(num number, {int decimalPlaces = 2}) {
     return NumberFormat('#,##0.${'0' * decimalPlaces}').format(number);
   }
 
-  /// Format a currency value
   static String formatCurrency(num amount,
       {String symbol = '\$', int decimalPlaces = 2}) {
     return NumberFormat.currency(
@@ -24,12 +19,10 @@ class FormatUtils {
     ).format(amount);
   }
 
-  /// Format a percentage value
   static String formatPercentage(num value, {int decimalPlaces = 1}) {
     return NumberFormat.percentPattern().format(value / 100);
   }
 
-  /// Format a file size (bytes to KB, MB, GB, etc.)
   static String formatFileSize(int bytes) {
     if (bytes < 1024) {
       return '$bytes B';
@@ -42,7 +35,6 @@ class FormatUtils {
     }
   }
 
-  /// Format a duration in milliseconds to mm:ss format
   static String formatDuration(int milliseconds) {
     final seconds = (milliseconds / 1000).floor();
     final minutes = (seconds / 60).floor();
@@ -53,7 +45,6 @@ class FormatUtils {
     return '$minutesStr:$secondsStr';
   }
 
-  /// Format a duration in hours, minutes, and seconds
   static String formatDurationHMS(int milliseconds) {
     final seconds = (milliseconds / 1000).floor();
     final minutes = (seconds / 60).floor();
@@ -68,9 +59,7 @@ class FormatUtils {
     }
   }
 
-  /// Format a phone number (e.g., (123) 456-7890)
   static String formatPhoneNumber(String phoneNumber) {
-    // Remove all non-digit characters
     final digitsOnly = phoneNumber.replaceAll(RegExp(r'\D'), '');
 
     if (digitsOnly.length == 10) {
@@ -82,20 +71,16 @@ class FormatUtils {
     }
   }
 
-  /// Format a credit card number (e.g., **** **** **** 1234)
   static String formatCreditCardNumber(String cardNumber) {
-    // Remove all non-digit characters
     final digitsOnly = cardNumber.replaceAll(RegExp(r'\D'), '');
 
     if (digitsOnly.length < 4) {
       return cardNumber;
     }
 
-    // Mask all digits except the last 4
     final lastFour = digitsOnly.substring(digitsOnly.length - 4);
     final masked = '*' * (digitsOnly.length - 4);
 
-    // Format with spaces every 4 digits
     final formattedMasked = masked
         .replaceAllMapped(
           RegExp(r'.{4}'),
@@ -106,9 +91,7 @@ class FormatUtils {
     return '$formattedMasked $lastFour';
   }
 
-  /// Format a credit card expiration date (MM/YY)
   static String formatCreditCardExpiration(String expiration) {
-    // Remove all non-digit characters
     final digitsOnly = expiration.replaceAll(RegExp(r'\D'), '');
 
     if (digitsOnly.length < 2) {
@@ -120,7 +103,6 @@ class FormatUtils {
     }
   }
 
-  /// Format a name (capitalize first letter of each word)
   static String formatName(String name) {
     if (name.isEmpty) {
       return name;
@@ -134,7 +116,6 @@ class FormatUtils {
     }).join(' ');
   }
 
-  /// Format an email address (mask middle part)
   static String maskEmail(String email) {
     if (!email.contains('@') || email.split('@').length != 2) {
       return email;
@@ -153,7 +134,6 @@ class FormatUtils {
     return '$maskedName@$domain';
   }
 
-  /// Truncate a string with ellipsis
   static String truncate(String text, int maxLength) {
     if (text.length <= maxLength) {
       return text;
@@ -162,7 +142,6 @@ class FormatUtils {
     return '${text.substring(0, maxLength)}...';
   }
 
-  /// Format a number with a suffix (e.g., 1st, 2nd, 3rd, 4th)
   static String formatOrdinal(int number) {
     if (number % 100 >= 11 && number % 100 <= 13) {
       return '${number}th';
@@ -180,7 +159,6 @@ class FormatUtils {
     }
   }
 
-  /// Format bytes to a human-readable string
   static String formatBytes(int bytes, {int decimals = 1}) {
     if (bytes == 0) return '0 Bytes';
 

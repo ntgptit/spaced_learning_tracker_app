@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/dialog/sl_full_screen_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -6,7 +5,6 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 import '../buttons/slt_dialog_button_bar.dart';
 import '../buttons/slt_primary_button.dart';
 
-/// A full-screen dialog with Material 3 design and customizable options.
 class SltFullScreenDialog extends ConsumerWidget {
   final String title;
   final Widget body;
@@ -45,7 +43,6 @@ class SltFullScreenDialog extends ConsumerWidget {
     this.customAppBar,
   });
 
-  // Factory for a simple informational full-screen dialog
   factory SltFullScreenDialog.info({
     required String title,
     required Widget contentBody,
@@ -65,7 +62,6 @@ class SltFullScreenDialog extends ConsumerWidget {
     );
   }
 
-  // Factory for a form editing full-screen dialog
   factory SltFullScreenDialog.form({
     required String title,
     required Widget formBody,
@@ -76,9 +72,7 @@ class SltFullScreenDialog extends ConsumerWidget {
     return SltFullScreenDialog(
       title: title,
       body: SingleChildScrollView(
-        // Ensure form is scrollable
         padding: const EdgeInsets.all(AppDimens.paddingL),
-        // Default padding for form
         child: formBody,
       ),
       actions: formActions,
@@ -88,7 +82,6 @@ class SltFullScreenDialog extends ConsumerWidget {
     );
   }
 
-  // Factory for a detailed view full-screen dialog
   factory SltFullScreenDialog.detail({
     required String title,
     required Widget detailBody,
@@ -98,7 +91,6 @@ class SltFullScreenDialog extends ConsumerWidget {
     return SltFullScreenDialog(
       title: title,
       body: detailBody,
-      // Body might be complex, let user handle scrolling
       appBarActions: appBarActions,
       leadingIcon: leadingIcon,
       centerTitle: false, // Titles often start left in detail views
@@ -139,17 +131,14 @@ class SltFullScreenDialog extends ConsumerWidget {
     );
   }
 
-  /// Build the actions bar at the bottom of the dialog
   Widget _buildActionsBar(
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
     return Container(
-      // M3 Bottom App Bar style for actions
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainer,
-        // M3 surface container for action bar
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withValues(alpha: 0.1),
@@ -167,7 +156,6 @@ class SltFullScreenDialog extends ConsumerWidget {
             (useSafeArea ? MediaQuery.of(context).padding.bottom : 0),
       ),
       child: SltDialogButtonBar(
-        // Use standardized button bar
         alignment: MainAxisAlignment.end,
         spacing: AppDimens.spaceM,
         buttons: actions ?? [],
@@ -175,7 +163,6 @@ class SltFullScreenDialog extends ConsumerWidget {
     );
   }
 
-  /// Build the app bar for the dialog
   PreferredSizeWidget? _buildAppBar(
     BuildContext context,
     ThemeData theme,
@@ -191,7 +178,6 @@ class SltFullScreenDialog extends ConsumerWidget {
           title: Text(
             title,
             style: theme.textTheme.titleLarge?.copyWith(
-              // M3 titleLarge
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
             ),
@@ -207,14 +193,11 @@ class SltFullScreenDialog extends ConsumerWidget {
           ),
           actions: appBarActions,
           backgroundColor: effectiveBackgroundColor,
-          // Should match scaffold's for seamless look
           elevation: 0,
-          // M3 often uses flat AppBars in full-screen dialogs
           surfaceTintColor: Colors.transparent, // M3
         );
   }
 
-  /// Show a full screen dialog as a new route
   static Future<T?> show<T>(
     BuildContext context, {
     required String title,

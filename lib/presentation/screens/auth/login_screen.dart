@@ -1,4 +1,3 @@
-// lib/presentation/screens/auth/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +35,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   void initState() {
     super.initState();
     _setupAnimations();
-    // ✅ Sử dụng mounted check và dispose-safe approach
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _checkBiometricAvailability();
@@ -73,15 +71,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.dispose();
   }
 
-  // ✅ Sửa lỗi: Dispose-safe biometric availability check
   Future<void> _checkBiometricAvailability() async {
-    // Early return nếu widget đã bị dispose
     if (!mounted) return;
 
     try {
       final availability = await ref.read(biometricAvailabilityProvider.future);
 
-      // Double-check mounted trước khi setState
       if (!mounted) return;
 
       if (availability == BiometricAuthState.available) {
@@ -90,10 +85,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         });
       }
     } catch (e) {
-      // Handle error gracefully và không crash app
       debugPrint('Biometric availability check failed: $e');
 
-      // Chỉ setState nếu widget vẫn mounted
       if (mounted) {
         setState(() {
           _showBiometricSection = false;
@@ -161,11 +154,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
                             const SizedBox(height: AppDimens.spaceXXL),
 
-                            // Biometric Section
                             if (_showBiometricSection) ...[
                               _buildBiometricSection(
                                 context,
@@ -177,7 +168,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               const SizedBox(height: AppDimens.spaceXL),
                             ],
 
-                            // Error Display
                             if (authError != null) ...[
                               SltErrorStateWidget(
                                 title: 'Login Failed',
@@ -188,7 +178,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               const SizedBox(height: AppDimens.spaceL),
                             ],
 
-                            // Login Form
                             _buildLoginForm(
                               context,
                               theme,
@@ -197,11 +186,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             const SizedBox(height: AppDimens.spaceL),
 
-                            // Action Buttons
-                            // _buildActionButtons(context, theme, colorScheme),
-                            // const SizedBox(height: AppDimens.spaceXXL),
 
-                            // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
                           ],
                         ),
@@ -221,7 +206,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   ) {
     return Column(
       children: [
-        // App Logo with Gradient Background
         Container(
           width: AppDimens.iconXXL * 1.5,
           height: AppDimens.iconXXL * 1.5,
@@ -252,7 +236,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         ),
         const SizedBox(height: AppDimens.spaceXL),
 
-        // Welcome Text
         Text(
           'Welcome Back',
           style: theme.textTheme.displaySmall?.copyWith(
@@ -458,7 +441,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
           const SizedBox(height: AppDimens.spaceM),
 
-          // Forgot Password Link
           Align(
             alignment: Alignment.centerRight,
             child: SltTextButton(
@@ -484,40 +466,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     );
   }
 
-  // Widget _buildActionButtons(
-  //   BuildContext context,
-  //   ThemeData theme,
-  //   ColorScheme colorScheme,
-  // ) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(
-  //       horizontal: AppDimens.paddingM,
-  //       vertical: AppDimens.paddingS,
-  //     ),
-  //     decoration: BoxDecoration(
-  //       color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-  //       borderRadius: BorderRadius.circular(AppDimens.radiusM),
-  //       border: Border.all(
-  //         color: colorScheme.outline.withValues(alpha: 0.2),
-  //         width: 1,
-  //       ),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.stretch,
-  //       children: [
-  //         SltPrimaryButton(
-  //           text: 'Sign In',
-  //           prefixIcon: Icons.login_rounded,
-  //           isFullWidth: true,
-  //           onPressed: () => _handleLogin(context, ref),
-  //           backgroundColor: colorScheme.primary,
-  //           foregroundColor: Colors.white,
-  //           elevation: AppDimens.elevationS,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildFooterLinks(
     BuildContext context,
@@ -544,7 +492,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Additional Help
         Container(
           padding: const EdgeInsets.all(AppDimens.paddingM),
           decoration: BoxDecoration(
@@ -591,9 +538,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     );
   }
 
-  // ✅ Sửa lỗi: Mounted-safe login handler
   Future<void> _handleLogin(BuildContext context, WidgetRef ref) async {
-    // Early return nếu widget đã bị dispose
     if (!mounted) return;
 
     HapticFeedback.lightImpact();
@@ -603,33 +548,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         .read(loginFormStateProvider.notifier)
         .submitLogin();
 
-    // Double-check mounted trước khi navigation
     if (success && mounted && context.mounted) {
       HapticFeedback.heavyImpact();
       context.go(AppRoutes.main);
     }
   }
 
-  // ✅ Sửa lỗi: Mounted-safe biometric success handler
   Future<void> _handleBiometricSuccess(
     BuildContext context,
     WidgetRef ref,
   ) async {
-    // Early return nếu widget đã bị dispose
     if (!mounted) return;
 
     HapticFeedback.heavyImpact();
 
     try {
-      // ✅ Approach 1: Gọi method login của auth notifier
-      // Giả sử có stored credentials hoặc token từ biometric
-      // final success = await ref.read(authStateProvider.notifier).loginWithBiometric();
 
-      // ✅ Approach 2: Đơn giản hơn - Navigate trực tiếp sau biometric thành công
-      // Vì biometric đã verify identity, có thể navigate luôn
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // Check mounted trước khi navigation
       if (!mounted) return;
 
       if (mounted && context.mounted) {
@@ -652,7 +588,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
         );
 
-        // Navigate trực tiếp vì biometric đã xác thực thành công
         context.go(AppRoutes.main);
       }
     } catch (e) {
@@ -664,7 +599,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   void _handleBiometricError(BuildContext context) {
-    // Early return nếu widget đã bị dispose
     if (!mounted) return;
 
     HapticFeedback.heavyImpact();

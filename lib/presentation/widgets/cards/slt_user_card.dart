@@ -1,4 +1,3 @@
-// lib/presentation/widgets/cards/slt_user_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
@@ -55,7 +54,6 @@ class SltUserCard extends ConsumerWidget {
     final Widget cardInnerContent = Row(
       children: [
         SltAvatarImage(
-          // Correct usage of SltAvatarImage
           imageUrl: avatarUrl,
           radius: AppDimens.avatarSizeM / 2,
           backgroundColor: colorScheme.primaryContainer,

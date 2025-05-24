@@ -5,7 +5,6 @@ import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
 part 'slt_range_slider.g.dart';
 
-// Provider for range slider state
 @riverpod
 class RangeSliderState extends _$RangeSliderState {
   @override
@@ -79,12 +78,10 @@ class SltRangeSlider extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Set initial values if provided
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(rangeSliderStateProvider(sliderId).notifier).setRange(values);
     });
 
-    // Get current values from provider
     final currentValues = ref.watch(rangeSliderStateProvider(sliderId));
 
     final effectiveActiveColor = activeColor ?? colorScheme.primary;
@@ -97,7 +94,6 @@ class SltRangeSlider extends ConsumerWidget {
       validator: validator != null ? (value) => validator!(value) : null,
       autovalidateMode: autovalidateMode,
       builder: (FormFieldState<RangeValues> field) {
-        // Handle field value changes
         void handleValueChange(RangeValues newValues) {
           field.didChange(newValues);
           ref
@@ -111,7 +107,6 @@ class SltRangeSlider extends ConsumerWidget {
         final isError = field.hasError || errorText != null;
         final displayedError = errorText ?? field.errorText;
 
-        // Format the values to display
         String formatValue(double value) {
           String formatted = value.toStringAsFixed(valueDecimals);
           if (valuePrefix != null) {

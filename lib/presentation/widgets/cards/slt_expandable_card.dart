@@ -1,16 +1,11 @@
-// lib/presentation/widgets/cards/slt_expandable_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-// Provider to manage the expansion state of each card
 final _isExpandedProvider = StateProvider.family<bool, String>(
   (ref, id) => false,
 );
 
-/// A card that can expand and collapse to show or hide additional content.
-///
-/// The header is always visible and tappable to toggle the expansion state.
 class SltExpandableCard extends ConsumerWidget {
   final String cardId; // Unique ID for this expandable card instance
   final Widget header;
@@ -49,7 +44,6 @@ class SltExpandableCard extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final isExpanded = ref.watch(_isExpandedProvider(cardId));
 
-    // Initialize the state if it's the first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.read(_isExpandedProvider(cardId).notifier).state !=
               initiallyExpanded &&
@@ -59,7 +53,6 @@ class SltExpandableCard extends ConsumerWidget {
       }
     });
 
-    // Determine effective styles
     final effectiveBackgroundColor =
         backgroundColor ?? colorScheme.surfaceContainerLow;
     final effectiveElevation = elevation ?? AppDimens.elevationS;
@@ -128,7 +121,6 @@ class SltExpandableCard extends ConsumerWidget {
               child: collapsedContent,
             ),
             secondChild: Container(
-              // Ensure expanded content has its own padding
               padding: effectivePadding,
               child: expandedContent,
             ),

@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_dimens.dart';
 
-/// App typography
-/// All text styles are defined here to ensure consistency across the app
 class AppTypography {
   static const String fontFamily = 'Poppins';
 
-  // Base text style
   static TextStyle _baseTextStyle(
     double fontSize,
     FontWeight fontWeight,
@@ -28,7 +25,6 @@ class AppTypography {
     );
   }
 
-  // Light Theme Text Styles (Material 3 type scale)
   static TextStyle get displayLarge => _baseTextStyle(
     AppDimens.fontDisplayL,
     FontWeight.w700,
@@ -149,7 +145,6 @@ class AppTypography {
     letterSpacing: 0.5,
   );
 
-  // Dark Theme Text Styles
   static TextStyle get displayLargeDark =>
       displayLarge.copyWith(color: AppColors.textPrimaryDark);
 
@@ -195,7 +190,6 @@ class AppTypography {
   static TextStyle get labelSmallDark =>
       labelSmall.copyWith(color: AppColors.textSecondaryDark);
 
-  // Get text style based on theme mode
   static TextStyle getTextStyle(
     TextStyle lightStyle,
     TextStyle darkStyle,

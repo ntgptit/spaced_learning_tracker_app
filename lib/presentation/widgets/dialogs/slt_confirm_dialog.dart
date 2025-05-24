@@ -1,4 +1,3 @@
-// lib/presentation/widgets/dialogs/slt_confirm_dialog.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,8 +6,6 @@ import '../buttons/slt_dialog_button_bar.dart';
 import '../buttons/slt_primary_button.dart';
 import '../buttons/slt_text_button.dart';
 
-/// A confirmation dialog with customizable title, content, and action buttons,
-/// using SltButtonBase derivatives.
 class SltConfirmDialog extends ConsumerWidget {
   final String title;
   final String message;
@@ -65,7 +62,6 @@ class SltConfirmDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for a standard confirmation
   factory SltConfirmDialog.standard({
     required String title,
     required String message,
@@ -87,7 +83,6 @@ class SltConfirmDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for a delete confirmation (dangerous action)
   factory SltConfirmDialog.delete({
     required String title,
     required String message,
@@ -108,7 +103,6 @@ class SltConfirmDialog extends ConsumerWidget {
     );
   }
 
-  // Factory constructor for a warning confirmation
   factory SltConfirmDialog.warning({
     required String title,
     required String message,
@@ -125,10 +119,8 @@ class SltConfirmDialog extends ConsumerWidget {
       onConfirm: onConfirm,
       onCancel: onCancel,
       isDangerAction: false,
-      // Warning is not necessarily a "danger" action like delete
       icon: Icons.warning_amber_rounded,
       iconColor: Colors.orange,
-      // Default warning color
       confirmButtonColor: Colors.orange, // Default warning color
     );
   }
@@ -181,7 +173,6 @@ class SltConfirmDialog extends ConsumerWidget {
       ),
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surfaceTint,
-      // M3 surface tint
       iconPadding: const EdgeInsets.only(
         top: AppDimens.paddingL,
         bottom: AppDimens.paddingS,
@@ -230,7 +221,6 @@ class SltConfirmDialog extends ConsumerWidget {
     );
   }
 
-  /// Show the confirmation dialog with the given parameters
   static Future<bool?> show(
     BuildContext context, {
     required String title,

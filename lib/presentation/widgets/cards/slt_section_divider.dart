@@ -1,4 +1,3 @@
-// lib/presentation/widgets/common/slt_section_divider.dart
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
@@ -29,14 +28,12 @@ class SltSectionDivider extends StatelessWidget {
 
     return Column(
       children: [
-        // Divider line
         Container(
           height: AppDimens.dividerThickness,
           color: colorScheme.surfaceContainerHighest,
           margin: const EdgeInsets.symmetric(vertical: AppDimens.spaceM),
         ),
 
-        // Title row
         Row(
           children: [
             if (icon != null) ...[
@@ -52,7 +49,6 @@ class SltSectionDivider extends StatelessWidget {
             ),
             const Spacer(),
 
-            // Optional action button
             if (onActionPressed != null &&
                 (actionText != null || actionIcon != null)) ...[
               TextButton.icon(

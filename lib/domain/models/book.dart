@@ -86,7 +86,6 @@ extension BookSummaryMapper on BookSummary {
       createdAt: createdAt,
       updatedAt: updatedAt,
       description: null,
-      // Vì BookSummary không có description
       modules: modules,
     );
   }

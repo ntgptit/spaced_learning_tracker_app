@@ -170,12 +170,10 @@ class SltMaintenanceStateWidget extends ConsumerWidget {
         displayTimeMessage =
         'Estimated time remaining: ~${difference.inMinutes} minute(s).';
       } else {
-        // This case handles remaining time less than a minute or very close to completion
         displayTimeMessage = 'Maintenance should be complete very soon.';
       }
     }
 
-    // The main content of the maintenance screen
     final Widget maintenanceContent = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

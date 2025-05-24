@@ -1,4 +1,3 @@
-// lib/presentation/viewmodels/auth_viewmodel.dart
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/domain/models/auth_response.dart';
@@ -47,7 +46,6 @@ class AuthState extends _$AuthState {
       }
     } catch (e) {
       debugPrint('Critical authentication check error: $e');
-      // Handle secure storage errors by resetting storage
       await ref.read(storageServiceProvider).resetSecureStorage();
       return false;
     }
@@ -126,7 +124,6 @@ class AuthState extends _$AuthState {
       state = const AsyncValue.data(false);
     } catch (e) {
       debugPrint('Logout error: $e');
-      // Even if there's an error, we still want to clear the user state
       ref.read(currentUserProvider.notifier).updateUser(null);
       state = AsyncValue.error(e, StackTrace.current);
     }
@@ -146,7 +143,6 @@ class AuthState extends _$AuthState {
       ref.read(currentUserProvider.notifier).updateUser(response.user);
     } catch (e) {
       debugPrint('Error handling auth response: $e');
-      // If we can't save the auth data, ensure user state is consistent
       ref.read(currentUserProvider.notifier).updateUser(response.user);
       rethrow;
     }
@@ -178,7 +174,6 @@ class AuthError extends _$AuthError {
   }
 }
 
-// Login Form Management
 @riverpod
 class LoginFormState extends _$LoginFormState {
   @override
@@ -211,7 +206,6 @@ class LoginFormState extends _$LoginFormState {
     return state.usernameOrEmailError == null && state.passwordError == null;
   }
 
-  // Handle login action
   Future<bool> submitLogin() async {
     if (!validateForm()) {
       return false;
@@ -222,7 +216,6 @@ class LoginFormState extends _$LoginFormState {
   }
 }
 
-// Register Form Management
 @riverpod
 class RegisterFormState extends _$RegisterFormState {
   @override
@@ -281,10 +274,8 @@ class RegisterFormState extends _$RegisterFormState {
       error = 'Password must be at least 8 characters';
     }
 
-    // Update password error
     state = state.copyWith(password: value, passwordError: error);
 
-    // Update confirm password error if needed
     if (confirmPassword.isNotEmpty && confirmPassword != value) {
       state = state.copyWith(confirmPasswordError: 'Passwords do not match');
     } else if (confirmPassword.isNotEmpty && confirmPassword == value) {
@@ -320,7 +311,6 @@ class RegisterFormState extends _$RegisterFormState {
         state.confirmPasswordError == null;
   }
 
-  // Handle registration action
   Future<bool> submitRegistration() async {
     if (!validateForm()) {
       return false;
@@ -337,7 +327,6 @@ class RegisterFormState extends _$RegisterFormState {
   }
 }
 
-// Forgot Password Form Management
 @riverpod
 class ForgotPasswordFormState extends _$ForgotPasswordFormState {
   @override
@@ -363,7 +352,6 @@ class ForgotPasswordFormState extends _$ForgotPasswordFormState {
     return state.emailError == null;
   }
 
-  // Handle forgot password action
   Future<bool> submitForgotPassword() async {
     if (!validateForm()) {
       return false;
@@ -380,7 +368,6 @@ class ForgotPasswordFormState extends _$ForgotPasswordFormState {
   }
 }
 
-// Reset Password Form Management
 @riverpod
 class ResetPasswordFormState extends _$ResetPasswordFormState {
   @override
@@ -396,10 +383,8 @@ class ResetPasswordFormState extends _$ResetPasswordFormState {
       error = 'Password must be at least 8 characters';
     }
 
-    // Update password error
     state = state.copyWith(password: value, passwordError: error);
 
-    // Update confirm password error if needed
     if (confirmPassword.isNotEmpty && confirmPassword != value) {
       state = state.copyWith(confirmPasswordError: 'Passwords do not match');
     } else if (confirmPassword.isNotEmpty && confirmPassword == value) {
@@ -426,7 +411,6 @@ class ResetPasswordFormState extends _$ResetPasswordFormState {
     return state.passwordError == null && state.confirmPasswordError == null;
   }
 
-  // Handle reset password action
   Future<bool> submitResetPassword(String token) async {
     if (!validateForm()) {
       return false;
@@ -437,7 +421,6 @@ class ResetPasswordFormState extends _$ResetPasswordFormState {
   }
 }
 
-// Form Model Classes
 
 class LoginFormModel {
   final String usernameOrEmail;

@@ -63,19 +63,16 @@ class RepetitionRepositoryImpl implements RepetitionRepository {
     double? percentComplete,
   }) async {
     try {
-      // Kiểm tra đầu vào
       if (status == null && reviewDate == null) {
         throw BadRequestException(
           'Either status or reviewDate must be provided',
         );
       }
 
-      // Gọi API cập nhật trạng thái hoàn thành nếu có status
       if (status != null) {
         return await _updateCompletionStatus(id, status, percentComplete);
       }
 
-      // Mặc định gọi API lập lịch lại nếu không cập nhật trạng thái
       return await _rescheduleRepetition(id, reviewDate!, rescheduleFollowing);
     } on AppException {
       rethrow;
@@ -84,7 +81,6 @@ class RepetitionRepositoryImpl implements RepetitionRepository {
     }
   }
 
-  /// Cập nhật trạng thái hoàn thành của một repetition
   Future<Repetition> _updateCompletionStatus(
     String id,
     RepetitionStatus status,
@@ -114,7 +110,6 @@ class RepetitionRepositoryImpl implements RepetitionRepository {
     return Repetition.fromJson(response['data']);
   }
 
-  /// Lập lịch lại một repetition
   Future<Repetition> _rescheduleRepetition(
     String id,
     DateTime reviewDate,
@@ -153,11 +148,9 @@ class RepetitionRepositoryImpl implements RepetitionRepository {
         return response['data'] as int;
       }
 
-      // Fallback to counting the actual repetitions
       final repetitions = await getRepetitionsByProgressId(moduleProgressId);
       return repetitions.length;
     } catch (e) {
-      // Fallback to counting the actual repetitions
       final repetitions = await getRepetitionsByProgressId(moduleProgressId);
       return repetitions.length;
     }

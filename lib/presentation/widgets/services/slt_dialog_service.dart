@@ -17,7 +17,6 @@ import '../states/slt_loading_state_widget.dart';
 
 part 'slt_dialog_service.g.dart';
 
-/// Types of dialogs that can be shown by the dialog service
 enum DialogType {
   alert,
   confirm,
@@ -29,28 +28,23 @@ enum DialogType {
   fullScreen,
 }
 
-/// Provider for managing dialog states
 @riverpod
 class DialogService extends _$DialogService {
   @override
   Map<String, bool> build() {
-    // Map of dialog IDs to visibility states
     return {};
   }
 
-  /// Mark a dialog as visible
   void showDialog(String dialogId) {
     state = {...state, dialogId: true};
   }
 
-  /// Mark a dialog as hidden
   void hideDialog(String dialogId) {
     final updatedState = Map<String, bool>.from(state);
     updatedState[dialogId] = false;
     state = updatedState;
   }
 
-  /// Hide all active dialogs
   void hideAllDialogs() {
     final Map<String, bool> updatedState = {};
     state.forEach((key, _) {
@@ -59,14 +53,11 @@ class DialogService extends _$DialogService {
     state = updatedState;
   }
 
-  /// Check if a dialog is currently visible
   bool isDialogVisible(String dialogId) {
     return state[dialogId] ?? false;
   }
 
-  // =================== ALERT DIALOG ===================
 
-  /// Show an alert dialog
   Future<void> showAlertDialog(
     BuildContext context, {
     required String title,
@@ -103,7 +94,6 @@ class DialogService extends _$DialogService {
     hideDialog(dialogId);
   }
 
-  /// Show a success alert dialog
   Future<void> showSuccessDialog(
     BuildContext context, {
     required String title,
@@ -125,7 +115,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show an error alert dialog
   Future<void> showErrorDialog(
     BuildContext context, {
     required String title,
@@ -144,9 +133,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== CONFIRM DIALOG ===================
 
-  /// Show a confirmation dialog
   Future<bool?> showConfirmDialog(
     BuildContext context, {
     required String title,
@@ -187,7 +174,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show a delete confirmation dialog
   Future<bool?> showDeleteConfirmDialog(
     BuildContext context, {
     required String title,
@@ -210,9 +196,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== PROGRESS DIALOG ===================
 
-  /// Show a progress dialog
   Future<void> showProgressDialog(
     BuildContext context, {
     required String dialogId,
@@ -240,13 +224,11 @@ class DialogService extends _$DialogService {
     hideDialog(dialogId);
   }
 
-  /// Hide a progress dialog
   void hideProgressDialog(BuildContext context, {required String dialogId}) {
     SltProgressDialog.hide(context, ref as WidgetRef, dialogId: dialogId);
     hideDialog(dialogId);
   }
 
-  /// Show a processing dialog (with longer timeout)
   Future<void> showProcessingDialog(
     BuildContext context, {
     required String dialogId,
@@ -264,7 +246,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show a saving dialog
   Future<void> showSavingDialog(
     BuildContext context, {
     required String dialogId,
@@ -282,9 +263,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== INPUT DIALOG ===================
 
-  /// Show an input dialog
   Future<String?> showInputDialog(
     BuildContext context, {
     required String dialogId,
@@ -321,7 +300,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show a text input dialog with prefilled validator
   Future<String?> showTextInputDialog(
     BuildContext context, {
     required String dialogId,
@@ -356,7 +334,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show an email input dialog
   Future<String?> showEmailInputDialog(
     BuildContext context, {
     required String dialogId,
@@ -391,7 +368,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show a password input dialog
   Future<String?> showPasswordInputDialog(
     BuildContext context, {
     required String dialogId,
@@ -423,9 +399,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== SCORE INPUT DIALOG ===================
 
-  /// Show a score input dialog
   Future<double?> showScoreInputDialog(
     BuildContext context, {
     required String dialogId,
@@ -460,7 +434,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show a feedback score dialog
   Future<double?> showFeedbackScoreDialog(
     BuildContext context, {
     required String dialogId,
@@ -479,9 +452,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== DATE & TIME PICKERS ===================
 
-  /// Show a date picker dialog
   Future<DateTime?> showDatePickerDialog(
     BuildContext context, {
     required DateTime initialDate,
@@ -517,7 +488,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show a date picker dialog for birth date
   Future<DateTime?> showBirthDatePickerDialog(
     BuildContext context, {
     DateTime? initialDate,
@@ -534,7 +504,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show a time picker dialog
   Future<TimeOfDay?> showTimePickerDialog(
     BuildContext context, {
     required TimeOfDay initialTime,
@@ -562,9 +531,7 @@ class DialogService extends _$DialogService {
     });
   }
 
-  // =================== BOTTOM SHEET DIALOG ===================
 
-  /// Show a bottom sheet dialog
   Future<T?> showBottomSheetDialog<T>(
     BuildContext context, {
     String? title,
@@ -622,7 +589,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show a message bottom sheet
   Future<void> showMessageBottomSheet(
     BuildContext context, {
     required String title,
@@ -656,7 +622,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show an action sheet
   Future<T?> showActionSheet<T>(
     BuildContext context, {
     String? title,
@@ -679,9 +644,7 @@ class DialogService extends _$DialogService {
     );
   }
 
-  // =================== FULL SCREEN DIALOG ===================
 
-  /// Show a full screen dialog
   Future<T?> showFullScreenDialog<T>(
     BuildContext context, {
     required String title,
@@ -738,7 +701,6 @@ class DialogService extends _$DialogService {
     });
   }
 
-  /// Show an info full screen dialog
   Future<T?> showInfoFullScreenDialog<T>(
     BuildContext context, {
     required String title,
@@ -765,7 +727,6 @@ class DialogService extends _$DialogService {
     );
   }
 
-  /// Show a form full screen dialog
   Future<T?> showFormFullScreenDialog<T>(
     BuildContext context, {
     required String title,

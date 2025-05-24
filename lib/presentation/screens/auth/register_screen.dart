@@ -1,4 +1,3 @@
-// lib/presentation/screens/auth/register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,11 +125,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Hero Section
                             _buildHeroSection(context, theme, colorScheme),
                             const SizedBox(height: AppDimens.spaceXXL),
 
-                            // Error Display
                             if (authError != null) ...[
                               SltErrorStateWidget(
                                 title: 'Registration Failed',
@@ -144,7 +141,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                               const SizedBox(height: AppDimens.spaceL),
                             ],
 
-                            // Registration Form
                             _buildRegistrationForm(
                               context,
                               theme,
@@ -153,7 +149,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: AppDimens.spaceL),
 
-                            // Password Strength Indicator
                             _buildPasswordStrengthIndicator(
                               context,
                               theme,
@@ -162,15 +157,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: AppDimens.spaceXL),
 
-                            // Terms and Conditions
                             _buildTermsSection(context, theme, colorScheme),
                             const SizedBox(height: AppDimens.spaceXL),
 
-                            // Register Button
                             _buildActionButtons(context, theme, colorScheme),
                             const SizedBox(height: AppDimens.spaceL),
 
-                            // Footer Links
                             _buildFooterLinks(context, theme, colorScheme),
                           ],
                         ),
@@ -190,7 +182,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
   ) {
     return Column(
       children: [
-        // App Icon with Animated Background
         Container(
           width: AppDimens.iconXXL * 1.2,
           height: AppDimens.iconXXL * 1.2,
@@ -221,7 +212,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
         ),
         const SizedBox(height: AppDimens.spaceXL),
 
-        // Welcome Text
         Text(
           'Join Our Community',
           style: theme.textTheme.displaySmall?.copyWith(
@@ -264,7 +254,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Personal Information Section
           _buildSectionHeader(
             context,
             theme,
@@ -273,7 +262,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceM),
 
-          // First Name and Last Name Row
           Row(
             children: [
               Expanded(
@@ -305,7 +293,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceXL),
 
-          // Account Information Section
           _buildSectionHeader(
             context,
             theme,
@@ -314,7 +301,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceM),
 
-          // Username
           SltTextField(
             label: 'Username',
             hint: 'Choose a unique username',
@@ -327,7 +313,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Email
           SltTextField(
             label: 'Email Address',
             hint: 'Enter your email address',
@@ -340,11 +325,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceXL),
 
-          // Password Section
           _buildSectionHeader(context, theme, colorScheme, 'Password Setup'),
           const SizedBox(height: AppDimens.spaceM),
 
-          // Password
           SltPasswordField(
             label: 'Password',
             hint: 'Create a strong password',
@@ -357,7 +340,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Confirm Password
           SltPasswordField(
             label: 'Confirm Password',
             hint: 'Confirm your password',
@@ -479,7 +461,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Strength Progress Bar
           Container(
             width: double.infinity,
             height: 6,
@@ -508,7 +489,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           ),
           const SizedBox(height: AppDimens.spaceL),
 
-          // Requirements
           Wrap(
             spacing: AppDimens.spaceM,
             runSpacing: AppDimens.spaceS,
@@ -703,7 +683,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
         ),
         const SizedBox(height: AppDimens.spaceM),
 
-        // Additional Help Section
         Container(
           padding: const EdgeInsets.all(AppDimens.paddingM),
           decoration: BoxDecoration(
