@@ -124,7 +124,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> forgotPassword(String email) async {
     try {
       await _apiClient.post('/auth/forgot-password', data: {'email': email});
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }
@@ -136,7 +136,7 @@ class AuthRepositoryImpl implements AuthRepository {
         '/auth/reset-password',
         data: {'token': token, 'newPassword': newPassword},
       );
-    } on DioException catch (e) {
+    } on DioException {
       rethrow;
     }
   }
