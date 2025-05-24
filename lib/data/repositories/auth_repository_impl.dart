@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:spaced_learning_app/core/constants/api_endpoints.dart';
 import 'package:spaced_learning_app/core/network/api_client.dart';
@@ -117,5 +118,26 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   String? getUsernameFromToken(String token) {
     return null;
+  }
+
+  @override
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _apiClient.post('/auth/forgot-password', data: {'email': email});
+    } on DioException catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String token, String newPassword) async {
+    try {
+      await _apiClient.post(
+        '/auth/reset-password',
+        data: {'token': token, 'newPassword': newPassword},
+      );
+    } on DioException catch (e) {
+      rethrow;
+    }
   }
 }

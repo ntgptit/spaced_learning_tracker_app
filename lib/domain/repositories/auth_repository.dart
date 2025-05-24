@@ -16,4 +16,8 @@ abstract class AuthRepository {
   Future<bool> validateToken(String token);
 
   String? getUsernameFromToken(String token);
+
+  Future<void> forgotPassword(String email);
+
+  Future<void> resetPassword(String token, String newPassword);
 }
