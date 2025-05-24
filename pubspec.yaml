@@ -77,6 +77,10 @@ dependencies:
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
   url_launcher: ^6.1.14
+  # Authentication
+  local_auth: ^2.3.0  # Biometric authentication
+  local_auth_android: ^1.0.41  # Android-specific auth
+  local_auth_darwin: ^1.4.1    # iOS/macOS-specific auth
 
 dev_dependencies:
   flutter_test:

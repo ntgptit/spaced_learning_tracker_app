@@ -1,0 +1,124 @@
+Spaced Learning Widget Cleanup Log 
+Started: 05/24/2025 Sat 12:24:39.50 
+======================================== 
+ 
+-------------------------------------------- 
+Animation Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\animations\slt_bounce_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_flare_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_flip_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_hero_transition.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_lottie_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_pulse_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_rotation_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_scale_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_slide_transition.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_typing_animation.dart 
+[SUCCESS] lib\presentation\widgets\animations\slt_fade_animation.dart 
+ 
+-------------------------------------------- 
+Chart Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\charts\slt_area_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_bubble_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_candlestick_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_gauge_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_heat_map.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_histogram.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_pie_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_radar_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_scatter_plot.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_stacked_bar_chart.dart 
+[SUCCESS] lib\presentation\widgets\charts\slt_data_table.dart 
+ 
+-------------------------------------------- 
+Media Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\media\slt_audio_player.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_camera_view.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_crop_image_view.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_document_viewer.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_file_preview.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_media_uploader.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_qr_scanner.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_thumbnail.dart 
+[SUCCESS] lib\presentation\widgets\media\slt_video_player.dart 
+ 
+-------------------------------------------- 
+Auth Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\auth\slt_auth_guard.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_auth_screen.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_biometric_auth.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_password_reset.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_permission_manager.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_permission_request.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_role_based_access.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_secure_storage.dart 
+[SUCCESS] lib\presentation\widgets\auth\slt_verification_code.dart 
+ 
+-------------------------------------------- 
+Navigation Widgets 
+-------------------------------------------- 
+[NOT FOUND] lib\presentation\widgets\navigation\slt_bottom_action_bar.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_breadcrumb.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_drawer.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_navigation_rail.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_nested_navigation.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_nested_tab_bar.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_page_indicator.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_quick_action_bar.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_side_menu.dart 
+[SUCCESS] lib\presentation\widgets\navigation\slt_bottom_sheet.dart 
+[NOT FOUND] lib\presentation\widgets\navigation\slt_page_wrapper.dart 
+ 
+-------------------------------------------- 
+List Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\lists\slt_filterable_list.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_infinite_grid_view.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_list_section_header.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_responsive_data_table.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_selectable_list_tile.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_sortable_data_table.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_sticky_header_list.dart 
+[SUCCESS] lib\presentation\widgets\lists\slt_swipeable_list_tile.dart 
+ 
+-------------------------------------------- 
+Filter Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\filters\slt_advanced_filter_panel.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_category_filter.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_date_range_filter.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_filter_bar.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_filter_bottom_sheet.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_filter_chip_group.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_search_history.dart 
+[SUCCESS] lib\presentation\widgets\filters\slt_search_suggestion.dart 
+ 
+-------------------------------------------- 
+Common Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\common\slt_bottom_action_bar.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_grid_layout.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_learning_footer.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_modal_bottom_sheet.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_responsive_layout.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_screen_header.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_sliver.dart 
+[SUCCESS] lib\presentation\widgets\common\slt_status_bar.dart 
+ 
+-------------------------------------------- 
+Card Widgets 
+-------------------------------------------- 
+[SUCCESS] lib\presentation\widgets\cards\slt_gradient_card.dart 
+[SUCCESS] lib\presentation\widgets\cards\slt_grid_tile.dart 
+ 
+======================================== 
+Summary 
+======================================== 
+Total Files: 76 
+Successfully Moved: 77 
+Failed: 0 
+Completed: 05/24/2025 Sat 12:24:40.72 

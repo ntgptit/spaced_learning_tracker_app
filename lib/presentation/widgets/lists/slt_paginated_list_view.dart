@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../states/slt_empty_state_widget.dart';
 import '../states/slt_error_state_widget.dart';
@@ -158,7 +157,7 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
     if (widget.items.isEmpty) {
       if (widget.isLoading) {
         return widget.loadingWidget ??
-            const SltLoadingStateWidget(message: AppStrings.loading);
+            const SltLoadingStateWidget(message: 'Loading items...');
       }
 
       if (widget.errorMessage != null) {
@@ -226,7 +225,7 @@ class _SltPaginatedListViewState<T> extends State<SltPaginatedListView<T>> {
                 if (widget.onRetry != null)
                   TextButton(
                     onPressed: widget.onRetry,
-                    child: const Text(AppStrings.retry),
+                    child: const Text('Retry'),
                   ),
               ],
             ),
