@@ -1,22 +1,11 @@
-
+// lib/presentation/widgets/buttons/slt_floating_action_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-part 'slt_floating_action_button.g.dart';
+import '../../providers/common_button_provider.dart';
 
 enum SltFabSize { small, regular, large, extended }
-
-@riverpod
-class FabState extends _$FabState {
-  @override
-  bool build({String id = 'default'}) => false;
-
-  void setLoading(bool isLoading) {
-    state = isLoading;
-  }
-}
 
 class SltFloatingActionButton extends ConsumerWidget {
   final VoidCallback? onPressed;
@@ -42,8 +31,9 @@ class SltFloatingActionButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
     final isLoading = loadingId != null
-        ? ref.watch(fabStateProvider(id: loadingId!))
+        ? ref.watch(buttonIsLoadingProvider(loadingId!))
         : false;
 
     final effectiveBackgroundColor = backgroundColor ?? colorScheme.primary;

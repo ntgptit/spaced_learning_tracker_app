@@ -1,24 +1,9 @@
-
+// lib/presentation/widgets/buttons/slt_expandable_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-part 'slt_expandable_button.g.dart';
-
-@riverpod
-class ExpandableButtonState extends _$ExpandableButtonState {
-  @override
-  bool build({String id = 'default'}) => false;
-
-  void toggle() {
-    state = !state;
-  }
-
-  void setValue(bool value) {
-    state = value;
-  }
-}
+import '../../providers/common_button_provider.dart';
 
 class SltExpandableButton extends ConsumerWidget {
   final String expandableId;
@@ -49,16 +34,15 @@ class SltExpandableButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    // Initialize expansion state
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(expandableButtonStateProvider(id: expandableId).notifier)
-          .setValue(initiallyExpanded);
+      final notifier = ref.read(commonButtonStateProvider.notifier);
+      if (initiallyExpanded && !notifier.isExpanded(expandableId)) {
+        notifier.setExpanded(expandableId, initiallyExpanded);
+      }
     });
 
-    final isExpanded = ref.watch(
-      expandableButtonStateProvider(id: expandableId),
-    );
-
+    final isExpanded = ref.watch(buttonIsExpandedProvider(expandableId));
     final rotationAngle = isExpanded ? 0.5 : 0.0;
 
     final effectiveBackgroundColor =
@@ -76,13 +60,11 @@ class SltExpandableButton extends ConsumerWidget {
             onTap: isDisabled
                 ? null
                 : () {
-                    ref
-                        .read(
-                          expandableButtonStateProvider(
-                            id: expandableId,
-                          ).notifier,
-                        )
-                        .toggle();
+                    final notifier = ref.read(
+                      commonButtonStateProvider.notifier,
+                    );
+                    notifier.toggleExpansion(expandableId);
+
                     if (onTap != null) {
                       onTap!();
                     }
@@ -116,8 +98,9 @@ class SltExpandableButton extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  Transform.rotate(
-                    angle: rotationAngle * 3.14159,
+                  AnimatedRotation(
+                    turns: rotationAngle,
+                    duration: const Duration(milliseconds: 200),
                     child: Icon(
                       Icons.keyboard_arrow_down,
                       color: isDisabled
@@ -132,7 +115,6 @@ class SltExpandableButton extends ConsumerWidget {
             ),
           ),
         ),
-
         AnimatedCrossFade(
           firstChild: const SizedBox(height: 0),
           secondChild: Padding(

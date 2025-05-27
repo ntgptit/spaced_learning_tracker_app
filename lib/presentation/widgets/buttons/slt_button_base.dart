@@ -1,25 +1,13 @@
-
+// lib/presentation/widgets/buttons/slt_button_base.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/theme/app_dimens.dart';
-
-part 'slt_button_base.g.dart';
+import '../../providers/common_button_provider.dart';
 
 enum SltButtonVariant { filled, tonal, outlined, text }
 
 enum SltButtonSize { small, medium, large }
-
-@riverpod
-class ButtonState extends _$ButtonState {
-  @override
-  bool build({String id = 'default'}) => false;
-
-  void setLoading(bool isLoading) {
-    state = isLoading;
-  }
-}
 
 class SltButtonBase extends ConsumerWidget {
   final String text;
@@ -59,12 +47,12 @@ class SltButtonBase extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
     final isLoading = loadingId != null
-        ? ref.watch(buttonStateProvider(id: loadingId!))
+        ? ref.watch(buttonIsLoadingProvider(loadingId!))
         : false;
 
     final ButtonStyle buttonStyle = _getButtonStyle(theme, colorScheme);
-
     final (effectiveHeight, effectiveIconSize) = _getSizeParameters();
     final effectivePadding = padding ?? _getDefaultPadding();
 
@@ -121,8 +109,7 @@ class SltButtonBase extends ConsumerWidget {
     final effectiveBorderRadius = borderRadius ?? _getDefaultBorderRadius();
 
     final defaultForegroundColor = variant == SltButtonVariant.filled
-        ? Colors
-              .white // Luôn sử dụng màu trắng cho filled button
+        ? Colors.white
         : (variant == SltButtonVariant.tonal
               ? colorScheme.onSecondaryContainer
               : colorScheme.primary);
@@ -249,7 +236,7 @@ class SltButtonBase extends ConsumerWidget {
   Color _getProgressColor(ColorScheme colorScheme) {
     switch (variant) {
       case SltButtonVariant.filled:
-        return Colors.white; // Luôn dùng màu trắng cho loading indicator
+        return Colors.white;
       case SltButtonVariant.tonal:
         return colorScheme.onSecondaryContainer;
       case SltButtonVariant.outlined:

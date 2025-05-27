@@ -1,24 +1,9 @@
-
+// lib/presentation/widgets/buttons/slt_toggle_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spaced_learning_app/core/theme/app_dimens.dart';
 
-part 'slt_toggle_button.g.dart';
-
-@riverpod
-class ToggleState extends _$ToggleState {
-  @override
-  bool build({String id = 'default'}) => false;
-
-  void toggle() {
-    state = !state;
-  }
-
-  void setValue(bool value) {
-    state = value;
-  }
-}
+import '../../providers/common_button_provider.dart';
 
 class SltToggleButton extends ConsumerWidget {
   final String toggleId;
@@ -47,13 +32,15 @@ class SltToggleButton extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    // Initialize the toggle state if needed
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(toggleStateProvider(id: toggleId).notifier)
-          .setValue(initialValue);
+      final notifier = ref.read(commonButtonStateProvider.notifier);
+      if (!notifier.getButtonState(toggleId).isToggled && initialValue) {
+        notifier.setToggle(toggleId, initialValue);
+      }
     });
 
-    final value = ref.watch(toggleStateProvider(id: toggleId));
+    final value = ref.watch(buttonIsToggledProvider(toggleId));
 
     final effectiveActiveColor = activeColor ?? colorScheme.primary;
     final effectiveInactiveColor =
@@ -62,12 +49,13 @@ class SltToggleButton extends ConsumerWidget {
     void handleToggle() {
       if (isDisabled) return;
 
-      ref.read(toggleStateProvider(id: toggleId).notifier).toggle();
+      final notifier = ref.read(commonButtonStateProvider.notifier);
+      notifier.toggle(toggleId);
+
       if (onChanged != null) {
         onChanged!(!value);
       }
     }
-
 
     return InkWell(
       onTap: isDisabled ? null : handleToggle,
